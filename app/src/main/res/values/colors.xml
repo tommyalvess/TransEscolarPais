@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#007FFF</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="AzulTema">#007fff</color>
+    <color name="holo_light_primary">#007fff</color>
+    <color name="background_holo_light">#007fff</color>
+    <color name="secondary_text_holo_dark">#00ff7f</color>
+    <color name="primary_text_holo_light">#007fff</color>
+    <color name="holo_light_primary_dark">#fbf7f7</color>
+</resources>
