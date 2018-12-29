@@ -121,9 +121,8 @@ public class LoginActivity extends AppCompatActivity {
                                     String cpf = object.getString("cpf").trim();
                                     String tell = object.getString("tell").trim();
                                     String img = object.getString("img").trim();
-                                    String idTio = object.getString("idTios").trim();
 
-                                    sessionManager.createSession(id, nome, email, cpf, tell, img, idTio);
+                                    sessionManager.createSession(id, nome, email, cpf, tell, img);
 
                                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                     intent.putExtra("idPais", id);
@@ -132,7 +131,6 @@ public class LoginActivity extends AppCompatActivity {
                                     intent.putExtra("cpf", cpf);
                                     intent.putExtra("tell", tell);
                                     intent.putExtra("img", tell);
-                                    intent.putExtra("idTios", idTio);
                                     startActivity(intent);
 
                                     loginProgress.setVisibility(View.GONE);

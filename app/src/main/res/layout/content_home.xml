@@ -54,7 +54,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:text="Filhos"
+        android:text="Alunos"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/user"
         app:layout_constraintEnd_toEndOf="@+id/passageiros"

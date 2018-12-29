@@ -53,7 +53,7 @@ public class SessionManager {
 
     }
 
-    public void createSession(String id, String nome, String email, String cpf, String tell){
+    public void createSession(String s, String id, String nome, String email, String cpf, String tell){
         editor.putBoolean(LOGIN, true);
         editor.putString(NAME, nome);
         editor.putString(EMAIL, email);

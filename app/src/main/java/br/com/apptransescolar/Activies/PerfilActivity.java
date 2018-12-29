@@ -42,13 +42,16 @@ import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static br.com.apptransescolar.API.URLs.URL_READ;
+import static br.com.apptransescolar.API.URLs.URL_UPLOAD;
+
 public class PerfilActivity extends AppCompatActivity {
 
     private static final String TAG = PerfilActivity.class.getSimpleName();
     TextView textNomeU, textEmailU, textCpfU, textTellU;
     CircleImageView imgPerfilT;
-    private static String URL_READ = "http://192.168.1.227/apiapptransescolar/read_pais.php?apicall=findAll";
-    private static String URL_UPLOAD = "http://192.168.1.227/apiapptransescolar/uploadpais.php";
+    //private static String URL_READ = "http://192.168.1.227/apiapptransescolar/read_pais.php?apicall=findAll";
+    //private static String URL_UPLOAD = "http://192.168.1.227/apiapptransescolar/uploadpais.php";
     String getId;
     String getCpf;
     private Bitmap bitmap;

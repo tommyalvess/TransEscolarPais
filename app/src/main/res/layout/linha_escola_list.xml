@@ -33,50 +33,50 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="15dp"
-                android:layout_x="19dp"
-                android:layout_y="12dp"
+                android:layout_x="14dp"
+                android:layout_y="11dp"
                 android:text="Nome:"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/nomeText"
-                android:layout_width="287dp"
-                android:layout_height="wrap_content"
+                android:layout_width="221dp"
+                android:layout_height="31dp"
                 android:layout_alignParentEnd="true"
-                android:layout_x="66dp"
-                android:layout_y="12dp"
+                android:layout_x="93dp"
+                android:layout_y="8dp"
                 android:text="Nome"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_x="18dp"
-                android:layout_y="47dp"
+                android:layout_x="14dp"
+                android:layout_y="72dp"
                 android:text="Emdereço:"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/endeText"
-                android:layout_width="260dp"
-                android:layout_height="wrap_content"
+                android:layout_width="221dp"
+                android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_x="93dp"
-                android:layout_y="47dp"
+                android:layout_y="71dp"
                 android:autoLink="map"
                 android:text="Endereço" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:layout_alignTop="@+id/nomeText"
+                android:layout_alignParentStart="true"
                 android:layout_marginStart="121dp"
-                android:layout_x="18dp"
-                android:layout_y="85dp"
+                android:layout_x="16dp"
+                android:layout_y="43dp"
                 android:text="Telefone:"
                 android:textStyle="bold" />
 
@@ -84,13 +84,13 @@
                 android:id="@+id/tellText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
                 android:layout_marginEnd="142dp"
                 android:layout_x="93dp"
-                android:layout_y="87dp"
-                android:text="Telefone"
-                android:autoLink="phone"/>
+                android:layout_y="43dp"
+                android:autoLink="phone"
+                android:text="Telefone" />
 
         </AbsoluteLayout>
 
