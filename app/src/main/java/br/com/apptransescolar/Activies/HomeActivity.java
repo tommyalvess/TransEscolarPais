@@ -126,20 +126,7 @@ public class HomeActivity extends AppCompatActivity {
         if (verificaConexao() == true) {
             sessionManager.checkLogin();
         } else {
-            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(intent);
-
-            Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, "Message is deleted", Snackbar.LENGTH_LONG)
-                    .setAction("OK", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Snackbar snackbar1 = Snackbar.make(coordinatorLayout, "Message is restored!", Snackbar.LENGTH_SHORT);
-                            snackbar1.show();
-                        }
-                    });
-
-            snackbar.show();
+            Toast.makeText(this, "Sem conexão!!!", Toast.LENGTH_SHORT).show();
         }
     }// onResume
 

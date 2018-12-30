@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                                 for ( int i = 0; i < valArray.length(); i++) {
                                     JSONObject object = valArray.getJSONObject(i);
                                     String id = object.getString("idPais").trim();
-                                    String nome = object.getString("nome").trim();
+                                    String nome = object.getString("nm_pai").trim();
                                     String email = object.getString("email").trim();
                                     String cpf = object.getString("cpf").trim();
                                     String tell = object.getString("tell").trim();
@@ -126,11 +126,11 @@ public class LoginActivity extends AppCompatActivity {
 
                                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                     intent.putExtra("idPais", id);
-                                    intent.putExtra("nome", nome);
+                                    intent.putExtra("nm_pai", nome);
                                     intent.putExtra("email", email);
                                     intent.putExtra("cpf", cpf);
                                     intent.putExtra("tell", tell);
-                                    intent.putExtra("img", tell);
+                                    intent.putExtra("img", img);
                                     startActivity(intent);
 
                                     loginProgress.setVisibility(View.GONE);

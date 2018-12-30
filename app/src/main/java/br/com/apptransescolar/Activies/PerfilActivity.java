@@ -1,6 +1,7 @@
 package br.com.apptransescolar.Activies;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -10,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -27,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -42,16 +45,13 @@ import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static br.com.apptransescolar.API.URLs.URL_READ;
-import static br.com.apptransescolar.API.URLs.URL_UPLOAD;
-
 public class PerfilActivity extends AppCompatActivity {
 
     private static final String TAG = PerfilActivity.class.getSimpleName();
     TextView textNomeU, textEmailU, textCpfU, textTellU;
     CircleImageView imgPerfilT;
-    //private static String URL_READ = "http://192.168.1.227/apiapptransescolar/read_pais.php?apicall=findAll";
-    //private static String URL_UPLOAD = "http://192.168.1.227/apiapptransescolar/uploadpais.php";
+    private static String URL_READ = "http://192.168.1.111/apiapptransescolar/read_pais.php?apicall=findTiosAll";
+    private static String URL_UPLOAD = "http://192.168.1.111/apiapptransescolar/pai/uploadpais.php";
     String getId;
     String getCpf;
     private Bitmap bitmap;
@@ -86,10 +86,7 @@ public class PerfilActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sessionManager.logout();
-                finish();
-                Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
-                startActivity(intent);
+                dialogExit();
             }
         });
 
@@ -99,6 +96,7 @@ public class PerfilActivity extends AppCompatActivity {
                 chosseFile();
             }
         });
+
     }
 
     //Pegar inf da sessão
@@ -110,15 +108,16 @@ public class PerfilActivity extends AppCompatActivity {
         String nTell = user.get(sessionManager.TELL);
         String nIMG = user.get(sessionManager.IMG);
 
+        getSupportActionBar().setTitle(nNome);
         textNomeU.setText(nNome);
         textEmailU.setText(nEmail);
         textCpfU.setText(nCpf);
         textTellU.setText(nTell);
-        textTellU.setText(nIMG);
+        Picasso.get().load(nIMG).into(imgPerfilT);
 
     }
 
-    //Pegar as infs do user
+    //Pegar as infs do BD
     private void getUserDetail(){
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_READ,
                 new Response.Listener<String>() {
@@ -129,11 +128,12 @@ public class PerfilActivity extends AppCompatActivity {
                             JSONObject json = new JSONObject(response);
                             JSONArray nameArray = json.names();
                             JSONArray valArray = json.toJSONArray( nameArray );
+
                             if (!json.optBoolean("0")){
                                 for (int i = 0; i < valArray.length(); i++) {
                                     JSONObject object = valArray.getJSONObject(i);
                                     String id = object.getString("idPais").trim();
-                                    String nome = object.getString("nome").trim();
+                                    String nome = object.getString("nm_pai").trim();
                                     String email = object.getString("email").trim();
                                     String cpf = object.getString("cpf").trim();
                                     String tell = object.getString("tell").trim();
@@ -158,7 +158,7 @@ public class PerfilActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PerfilActivity.this, "Opss!! Sem Conexão a internet", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PerfilActivity.this, "Opss!!! Sem Conexão a internet.", Toast.LENGTH_SHORT).show();
                         Log.e("VolleyError", "Error", error);
                     }
                 }){
@@ -172,7 +172,7 @@ public class PerfilActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -204,6 +204,7 @@ public class PerfilActivity extends AppCompatActivity {
             getUserDetail();
         }else {
             getUserDetailSessão();
+            Toast.makeText(this, "Você está sem internet!", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -288,6 +289,28 @@ public class PerfilActivity extends AppCompatActivity {
         String encodedImage = Base64.encodeToString(imageByteArray, Base64.DEFAULT);
 
         return encodedImage;
+    }
+
+    //Dialo para sair da tele
+    private void dialogExit(){
+        // Use the Builder class for convenient dialog construction
+        AlertDialog.Builder builder = new AlertDialog.Builder(PerfilActivity.this);
+        builder.setMessage("VOCÊ DESEJA SAIR?")
+                .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        sessionManager.logout();
+                        finish();
+                        Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+        // Create the AlertDialog object and return it
+        builder.show();
     }
 
 }

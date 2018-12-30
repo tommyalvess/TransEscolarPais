@@ -64,18 +64,6 @@ public class SessionManager {
 
     }
 
-    public void createSessionKid(String nome, String dt_nas, String end_principal, String periodo, String idTios, String idEscola, String idPais, String id){
-        editor.putBoolean(LOGIN, true);
-        editor.putString(NAME, nome);
-        editor.putString(DATE, dt_nas);
-        editor.putString(ENDERECO, end_principal);
-        editor.putString(PERIODO, periodo);
-        editor.putString(IDT, idTios);
-        editor.putString(IDE, idEscola);
-        editor.putString(IDP, idPais);
-        editor.putString(ID, id);
-        editor.apply();
-    }
 
     public boolean isLoggin(){
         return sharedPreferences.getBoolean(LOGIN, false);
