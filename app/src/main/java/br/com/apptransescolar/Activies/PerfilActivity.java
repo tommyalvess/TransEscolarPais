@@ -327,12 +327,12 @@ public class PerfilActivity extends AppCompatActivity {
         builder.show();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_perfil, menu);
         return true;
-    }
+
+    };
 
     //Editar Perfil
     public void EditarNome(View view) {

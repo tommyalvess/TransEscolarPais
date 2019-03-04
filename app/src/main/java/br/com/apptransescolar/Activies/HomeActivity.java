@@ -2,6 +2,7 @@ package br.com.apptransescolar.Activies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -33,6 +34,8 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Get the ActionBar here to configure the way it behaves.
         final ActionBar ab = getSupportActionBar();
