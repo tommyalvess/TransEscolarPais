@@ -12,13 +12,13 @@ import retrofit2.http.Query;
 
 import static br.com.apptransescolar.API.URLs.URL_ASP;
 
-public interface IKids {
+public interface ITios {
 
-    @GET("crianca")
-    Call<List<Kids>> getKids(@Query("id") int idPai);
+    @GET("tio")
+    Call<List<Tios>> getTios(@Query("id") int idPai);
 
-    @GET("getKids.php")
-    Call<List<Kids>> getAllKids(
+    @GET("getTios.php")
+    Call<List<Tios>> getTios(
             @Query("item_type") String item_type,
             @Query("key") String keyword
     );
@@ -27,5 +27,4 @@ public interface IKids {
             .baseUrl(URL_ASP)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
-
 }

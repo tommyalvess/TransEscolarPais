@@ -39,26 +39,26 @@ public class SessionManager {
         editor = sharedPreferences.edit();
     }
 
-    public void createSession(String id, String nome, String email, String cpf, String tell, String img, String idTio){
-
+    public void createSession(String id, String nome, String email, String cpf, String tell, String img){
         editor.putBoolean(LOGIN, true);
         editor.putString(NAME, nome);
         editor.putString(EMAIL, email);
         editor.putString(CPF, cpf);
         editor.putString(TELL, tell);
         editor.putString(IMG, img);
-        editor.putString(IDT, idTio);
         editor.putString(ID, id);
         editor.apply();
 
     }
 
-    public void createSession(String s, String id, String nome, String email, String cpf, String tell){
-        editor.putBoolean(LOGIN, true);
+
+    public void createSessionFilhos(String id, String nome, String dtNas, String end_principal, String periodo, String img){
+        //editor.putBoolean(LOGIN, true);
         editor.putString(NAME, nome);
-        editor.putString(EMAIL, email);
-        editor.putString(CPF, cpf);
-        editor.putString(TELL, tell);
+        editor.putString(DATE, dtNas);
+        editor.putString(ENDERECO, end_principal);
+        editor.putString(PERIODO, periodo);
+        editor.putString(IMG, img);
         editor.putString(ID, id);
         editor.apply();
 
@@ -87,7 +87,6 @@ public class SessionManager {
         user.put(CPF, sharedPreferences.getString(CPF, null));
         user.put(TELL, sharedPreferences.getString(TELL, null));
         user.put(IMG, sharedPreferences.getString(IMG, null));
-        user.put(IDT, sharedPreferences.getString(IDT, null));
         user.put(ID, sharedPreferences.getString(ID, null));
 
         return user;

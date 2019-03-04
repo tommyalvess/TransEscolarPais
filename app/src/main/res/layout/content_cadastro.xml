@@ -7,19 +7,21 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Activies.CadastroActivity"
     tools:layout_editor_absoluteY="81dp"
+    android:background="@color/ColorTheme"
     tools:showIn="@layout/activity_cadastro">
 
     <EditText
         android:id="@+id/editNomeT"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="41dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:background="@drawable/edit_text_style"
         android:ems="10"
-        android:hint="Nome:"
+        android:hint=" Nome:"
         android:inputType="textPersonName"
+        android:imeOptions="actionNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toEndOf="@+id/guideline2"
@@ -27,71 +29,73 @@
         tools:ignore="MissingConstraints" />
 
     <EditText
-        android:id="@+id/editEmailT"
+        android:id="@+id/dtNasc"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="41dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:background="@drawable/edit_text_style"
         android:ems="10"
-        android:hint="Email:"
+        android:hint=" Email:"
         android:inputType="textPersonName"
+        android:imeOptions="actionNext"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toEndOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/editNomeT"
         tools:ignore="MissingConstraints" />
 
-    <EditText
-        android:id="@+id/editCpfT"
+    <com.santalu.widget.MaskEditText
+        android:id="@+id/end"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="41dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:background="@drawable/edit_text_style"
         android:ems="10"
-        android:hint="CPF:"
+        android:hint=" CPF:"
+        android:imeOptions="actionNext"
         android:inputType="number"
-        android:maxLength="11"
+        app:met_mask="###.###.###-##"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toEndOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/editEmailT"
+        app:layout_constraintTop_toBottomOf="@+id/dtNasc"
         tools:ignore="MissingConstraints" />
 
-    <EditText
-        android:id="@+id/editTellT"
+    <com.santalu.widget.MaskEditText
+        android:id="@+id/periodo"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="41dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:background="@drawable/edit_text_style"
-        android:digits="0123456789+"
         android:ems="10"
-        android:hint="Telefone:"
-        android:inputType="phone|number"
-        android:lines="1"
-        android:maxLength="15"
+        android:hint=" Telefone:"
+        android:inputType="number"
+        android:imeOptions="actionNext"
+        app:met_mask="(##)#####-####"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toEndOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/editCpfT"
+        app:layout_constraintTop_toBottomOf="@+id/end"
         tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/editSenhaT"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="41dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="12dp"
         android:background="@drawable/edit_text_style"
         android:ems="10"
-        android:hint="Senha:"
+        android:hint=" Senha:"
+        android:imeOptions="actionDone"
         android:inputType="textPassword"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toEndOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/editTellT"
+        app:layout_constraintTop_toBottomOf="@+id/periodo"
         tools:ignore="MissingConstraints" />
 
     <Button
@@ -137,19 +141,5 @@
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="MissingConstraints" />
 
-    <LinearLayout
-        android:id="@+id/custom_toast_container"
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:padding="8dp">
-
-        <TextView android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000"
-            />
-
-    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -9,4 +9,5 @@
     <color name="secondary_text_holo_dark">#00ff7f</color>
     <color name="primary_text_holo_light">#007fff</color>
     <color name="holo_light_primary_dark">#fbf7f7</color>
+    <color name="ColorTheme">#b0c4de</color>
 </resources>

@@ -13,7 +13,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
 
-    <EditText
+    <com.santalu.widget.MaskEditText
         android:background="@drawable/edit_text_style"
         android:hint="CPF:"
         android:id="@+id/login_main"
@@ -21,9 +21,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:ems="10"
-        android:digits="0123456789+"
         android:inputType="number"
-        android:maxLength="11"
+        android:imeOptions="actionNext"
+        app:met_mask="###.###.###-##"
+        android:nextFocusForward="@+id/login_password"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -39,6 +40,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPassword"
+        android:imeOptions="actionDone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />

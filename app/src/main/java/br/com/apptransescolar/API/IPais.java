@@ -18,4 +18,16 @@ public interface IPais {
             @Field("senha") String senha
     );
 
+    @FormUrlEncoded
+    @POST("createKids")
+    Call<ResponseBody> createkids (
+            @Field("nome") String nome,
+            @Field("dt_nas") String data,
+            @Field("end_principal") String end,
+            @Field("periodo") String periodo,
+            @Field("idTios") int idTios,
+            @Field("idEscola") int idEscola,
+            @Field("idPais") int idPais
+    );
+
 }

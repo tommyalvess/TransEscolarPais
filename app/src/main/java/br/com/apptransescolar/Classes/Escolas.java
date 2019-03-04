@@ -25,5 +25,7 @@ public class Escolas {
         return tell;
     }
 
-
+    public String toString(){
+        return this.nome;
+    }
 }

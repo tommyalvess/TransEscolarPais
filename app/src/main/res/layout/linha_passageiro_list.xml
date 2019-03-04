@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="#fff"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <AbsoluteLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="82dp"
+        app:cardBackgroundColor="#b0c4de"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="5dp"
@@ -19,60 +24,88 @@
             android:id="@+id/imgPass"
             android:layout_width="58dp"
             android:layout_height="63dp"
-            android:layout_x="6dp"
-            android:layout_y="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_x="7dp"
+            android:layout_y="3dp"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/user"
             app:civ_border_color="#000"
-            app:civ_border_width="2dp" />
+            app:civ_border_width="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/textNome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView15"
+            android:layout_alignStart="@+id/textEscola"
             android:layout_alignTop="@+id/imageView2"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="250dp"
             android:layout_x="73dp"
             android:layout_y="11dp"
             android:text="Nome"
             android:textColor="#000"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline10"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView15"
-            android:layout_width="245dp"
+            android:id="@+id/textEscola"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="79dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="250dp"
             android:layout_x="73dp"
             android:layout_y="30dp"
             android:text="Escola"
             android:textColor="#000"
-            android:textSize="@dimen/fab_margin" />
+            android:textSize="@dimen/fab_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline10"
+            app:layout_constraintTop_toBottomOf="@+id/textNome" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/textPeriodo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="230dp"
+            android:layout_marginBottom="2dp"
             android:layout_x="74dp"
             android:layout_y="54dp"
             android:text="Periodo"
             android:textAllCaps="true"
-            android:textColor="#000" />
+            android:textColor="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline10"
+            app:layout_constraintTop_toBottomOf="@+id/textEscola"
+            app:layout_constraintVertical_bias="0.0" />
 
-        <View
-            android:id="@+id/secondDivider"
-            android:layout_width="251dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="10dp"
-            android:layout_x="69dp"
-            android:layout_y="78dp"
-            android:background="@color/AzulTema" />
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="96dp" />
 
-    </AbsoluteLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>
+

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -29,10 +30,10 @@ public class KidsAdapter  extends RecyclerView.Adapter<KidsAdapter.MyViewHolder>
     public KidsAdapter(List<Kids> filhos, Context context) {
         this.context = context;
         this.nData = filhos;
-        options = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.drawable.kids)
-                .error(R.drawable.kids);
+//        options = new RequestOptions()
+//                .centerCrop()
+//                .placeholder(R.drawable.kids)
+//                .error(R.drawable.kids);
     }
 
 
@@ -48,12 +49,12 @@ public class KidsAdapter  extends RecyclerView.Adapter<KidsAdapter.MyViewHolder>
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         final Kids kids = this.nData.get(position);
-        holder.nome.setText(nData.get(position).getNome().toUpperCase());
+        holder.nome.setText(nData.get(position).getNome());
         holder.escola.setText(nData.get(position).getNm_escola());
         holder.periodo.setText(nData.get(position).getPeriodo());
         //holder.end.setText(nData.get(position).getEnd_principal());
         //holder.dtnas.setText(nData.get(position).getDt_nas());
-        Glide.with(context).load(nData.get(position).getImg()).apply(options).into(holder.img);
+        //Glide.with(context).load(nData.get(position).getImg()).apply(options).into(holder.img);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,6 +63,7 @@ public class KidsAdapter  extends RecyclerView.Adapter<KidsAdapter.MyViewHolder>
                 KidsAdapter.this.context.startActivity(it);
             }
         });
+        holder.itemView.setLongClickable(true);
     }
 
 
@@ -74,7 +76,7 @@ public class KidsAdapter  extends RecyclerView.Adapter<KidsAdapter.MyViewHolder>
 
         CardView cardView;
         TextView nome, escola, periodo, end, dtnas;
-        CircleImageView img;
+        //CircleImageView img;
 
         private final Context context;
 
@@ -84,10 +86,18 @@ public class KidsAdapter  extends RecyclerView.Adapter<KidsAdapter.MyViewHolder>
             context = itemView.getContext();
 
             cardView = (CardView) itemView;
-            nome = itemView.findViewById(R.id.textView14);
-            escola = itemView.findViewById(R.id.textView15);
-            periodo = itemView.findViewById(R.id.textView16);
-            img = itemView.findViewById(R.id.imgPass);
+            nome = itemView.findViewById(R.id.textNome);
+            escola = itemView.findViewById(R.id.textEscola);
+            periodo = itemView.findViewById(R.id.textPeriodo);
+            //img = itemView.findViewById(R.id.imgPass);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(context, "Vc precionou!", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
         }
 
     }

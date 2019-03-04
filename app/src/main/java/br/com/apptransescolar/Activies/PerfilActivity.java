@@ -1,8 +1,10 @@
 package br.com.apptransescolar.Activies;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -13,12 +15,17 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,13 +52,20 @@ import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static br.com.apptransescolar.API.URLs.URL_EDIT;
+import static br.com.apptransescolar.API.URLs.URL_EDIT_SENHA;
+import static br.com.apptransescolar.API.URLs.URL_READ;
+import static br.com.apptransescolar.API.URLs.URL_UPLOAD;
+
 public class PerfilActivity extends AppCompatActivity {
 
     private static final String TAG = PerfilActivity.class.getSimpleName();
     TextView textNomeU, textEmailU, textCpfU, textTellU;
+    EditText editSenha, editSenhaConfirme;
     CircleImageView imgPerfilT;
-    private static String URL_READ = "http://192.168.1.111/apiapptransescolar/read_pais.php?apicall=findTiosAll";
-    private static String URL_UPLOAD = "http://192.168.1.111/apiapptransescolar/pai/uploadpais.php";
+    Button btnSalvar;
+    //private static String URL_READ = "http://apptransescolar.com.br/apiapptransescolar/read_pais.php?apicall=findAll";
+    //private static String URL_UPLOAD = "http://apptransescolar.com.br/apiapptransescolar/pai/uploadpais.php";
     String getId;
     String getCpf;
     private Bitmap bitmap;
@@ -62,8 +76,8 @@ public class PerfilActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
@@ -128,8 +142,7 @@ public class PerfilActivity extends AppCompatActivity {
                             JSONObject json = new JSONObject(response);
                             JSONArray nameArray = json.names();
                             JSONArray valArray = json.toJSONArray( nameArray );
-
-                            if (!json.optBoolean("0")){
+                            if (!json.equals("0")){
                                 for (int i = 0; i < valArray.length(); i++) {
                                     JSONObject object = valArray.getJSONObject(i);
                                     String id = object.getString("idPais").trim();
@@ -172,7 +185,7 @@ public class PerfilActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -291,6 +304,7 @@ public class PerfilActivity extends AppCompatActivity {
         return encodedImage;
     }
 
+
     //Dialo para sair da tele
     private void dialogExit(){
         // Use the Builder class for convenient dialog construction
@@ -311,6 +325,355 @@ public class PerfilActivity extends AppCompatActivity {
                 });
         // Create the AlertDialog object and return it
         builder.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_perfil, menu);
+        return true;
+    }
+
+    //Editar Perfil
+    public void EditarNome(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PerfilActivity.this);
+
+        HashMap<String, String> user = sessionManager.getUserDetail();
+        String nNome = user.get(sessionManager.NAME);
+        String nId = user.get(sessionManager.ID);
+        int id = Integer.parseInt(nId);
+
+        alertDialog.setTitle("Editar Nome");
+
+        final EditText input = new EditText(PerfilActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        input.setText(nNome);
+        alertDialog.setView(input);
+
+        alertDialog.setPositiveButton("Sim",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        HashMap<String, String> user = sessionManager.getUserDetail();
+
+                        final String id = getId;
+                        final String nome = input.getText().toString().trim();
+                        final String email = user.get(sessionManager.EMAIL);
+                        final String cpf = user.get(sessionManager.CPF);
+                        final String tell = user.get(sessionManager.TELL);
+                        final String img = user.get(sessionManager.IMG);
+
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        //progess.setVisibility(View.GONE);
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(response);
+                                            //boolean success = jsonObject.getBoolean("success");
+                                            String success = jsonObject.getString("success");
+
+                                            if (success.equals("1")){
+                                                sessionManager.createSession(id, nome, email, cpf, tell, img);
+                                                Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                            }else {
+                                                Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                            }
+
+                                        } catch (JSONException e1) {
+                                            Log.e("JSON", "Error parsing JSON", e1);
+
+                                        }
+                                        Log.e(TAG, "response: " + response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.e("JSON", "Error parsing JSON", error);
+
+                                    }
+                                }){
+
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> params = new HashMap<>();
+                                params.put("idPais", getId);
+                                params.put("nm_pai", nome);
+                                params.put("email", email);
+                                params.put("cpf", getCpf);
+                                params.put("tell", tell);
+                                params.put("img", img);
+                                return params;
+                            }
+                        };
+                        RequestQueue requestQueue = Volley.newRequestQueue(PerfilActivity.this);
+                        requestQueue.add(stringRequest);
+                    }
+                });
+        alertDialog.setNegativeButton("Não", null);
+        alertDialog.show();
+    }
+
+    public void EditarEmail(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PerfilActivity.this);
+
+        HashMap<String, String> user = sessionManager.getUserDetail();
+        String nNome = user.get(sessionManager.EMAIL);
+        String nId = user.get(sessionManager.ID);
+        int id = Integer.parseInt(nId);
+
+        alertDialog.setTitle("Editar Email");
+
+        final EditText input = new EditText(PerfilActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        input.setText(nNome);
+        alertDialog.setView(input);
+
+        alertDialog.setPositiveButton("Sim",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        HashMap<String, String> user = sessionManager.getUserDetail();
+
+                        final String id = getId;
+                        final String nome = user.get(sessionManager.NAME);
+                        final String email = input.getText().toString().trim();
+                        final String cpf = user.get(sessionManager.CPF);
+                        final String tell = user.get(sessionManager.TELL);
+                        final String img = user.get(sessionManager.IMG);
+
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        //progess.setVisibility(View.GONE);
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(response);
+                                            //boolean success = jsonObject.getBoolean("success");
+                                            String success = jsonObject.getString("success");
+
+                                            if (success.equals("1")){
+                                                sessionManager.createSession(id, nome, email, cpf, tell, img);
+                                                Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                            }else {
+                                                Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                            }
+
+                                        } catch (JSONException e1) {
+                                            Log.e("JSON", "Error parsing JSON", e1);
+
+                                        }
+                                        Log.e(TAG, "response: " + response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.e("JSON", "Error parsing JSON", error);
+
+                                    }
+                                }){
+
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> params = new HashMap<>();
+                                params.put("idPais", getId);
+                                params.put("nm_pai", nome);
+                                params.put("email", email);
+                                params.put("cpf", getCpf);
+                                params.put("tell", tell);
+                                params.put("img", img);
+                                return params;
+                            }
+                        };
+                        RequestQueue requestQueue = Volley.newRequestQueue(PerfilActivity.this);
+                        requestQueue.add(stringRequest);
+                    }
+                });
+        alertDialog.setNegativeButton("Não", null);
+        alertDialog.show();
+    }
+
+    public void EditarCpf(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PerfilActivity.this);
+
+        HashMap<String, String> user = sessionManager.getUserDetail();
+        String nNome = user.get(sessionManager.CPF);
+        String nId = user.get(sessionManager.ID);
+        int id = Integer.parseInt(nId);
+
+        alertDialog.setTitle("Editar CPF");
+
+        final EditText input = new EditText(PerfilActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        input.setText(nNome);
+        alertDialog.setView(input);
+
+        alertDialog.setPositiveButton("Sim",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        HashMap<String, String> user = sessionManager.getUserDetail();
+
+                        final String id = getId;
+                        final String nome = user.get(sessionManager.NAME);
+                        final String email = user.get(sessionManager.EMAIL);
+                        final String cpf = input.getText().toString().trim();
+                        final String tell = user.get(sessionManager.TELL);
+                        final String img = user.get(sessionManager.IMG);
+
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        //progess.setVisibility(View.GONE);
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(response);
+                                            //boolean success = jsonObject.getBoolean("success");
+                                            String success = jsonObject.getString("success");
+
+                                            if (success.equals("1")){
+                                                sessionManager.createSession(id, nome, email, cpf, tell, img);
+                                                Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                            }else {
+                                                Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                            }
+
+                                        } catch (JSONException e1) {
+                                            Log.e("JSON", "Error parsing JSON", e1);
+
+                                        }
+                                        Log.e(TAG, "response: " + response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.e("JSON", "Error parsing JSON", error);
+
+                                    }
+                                }){
+
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> params = new HashMap<>();
+                                params.put("idPais", getId);
+                                params.put("nm_pai", nome);
+                                params.put("email", email);
+                                params.put("cpf", getCpf);
+                                params.put("tell", tell);
+                                params.put("img", img);
+                                return params;
+                            }
+                        };
+                        RequestQueue requestQueue = Volley.newRequestQueue(PerfilActivity.this);
+                        requestQueue.add(stringRequest);
+                    }
+                });
+        alertDialog.setNegativeButton("Não", null);
+        alertDialog.show();
+    }
+
+    public void EditarTell(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PerfilActivity.this);
+
+        HashMap<String, String> user = sessionManager.getUserDetail();
+        String nNome = user.get(sessionManager.TELL);
+        String nId = user.get(sessionManager.ID);
+        int id = Integer.parseInt(nId);
+
+        alertDialog.setTitle("Editar Telefone");
+
+        final EditText input = new EditText(PerfilActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        input.setText(nNome);
+        alertDialog.setView(input);
+
+        alertDialog.setPositiveButton("Sim",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        HashMap<String, String> user = sessionManager.getUserDetail();
+
+                        final String id = getId;
+                        final String nome = user.get(sessionManager.NAME);
+                        final String email = user.get(sessionManager.EMAIL);
+                        final String cpf = user.get(sessionManager.CPF);
+                        final String tell = input.getText().toString().trim();
+                        final String img = user.get(sessionManager.IMG);
+
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        //progess.setVisibility(View.GONE);
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(response);
+                                            //boolean success = jsonObject.getBoolean("success");
+                                            String success = jsonObject.getString("success");
+
+                                            if (success.equals("1")){
+                                                sessionManager.createSession(id, nome, email, cpf, tell, img);
+                                                Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                            }else {
+                                                Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                            }
+
+                                        } catch (JSONException e1) {
+                                            Log.e("JSON", "Error parsing JSON", e1);
+
+                                        }
+                                        Log.e(TAG, "response: " + response);
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Log.e("JSON", "Error parsing JSON", error);
+
+                                    }
+                                }){
+
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> params = new HashMap<>();
+                                params.put("idPais", getId);
+                                params.put("nm_pai", nome);
+                                params.put("email", email);
+                                params.put("cpf", getCpf);
+                                params.put("tell", tell);
+                                params.put("img", img);
+                                return params;
+                            }
+                        };
+                        RequestQueue requestQueue = Volley.newRequestQueue(PerfilActivity.this);
+                        requestQueue.add(stringRequest);
+                    }
+                });
+        alertDialog.setNegativeButton("Não", null);
+        alertDialog.show();
+    }
+
+    public void alterarSenha(MenuItem item) {
+        Intent intent = new Intent(PerfilActivity.this, AlterarSenhaActivity.class);
+        startActivity(intent);
     }
 
 }

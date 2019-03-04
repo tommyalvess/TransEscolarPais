@@ -43,45 +43,54 @@
             android:name=".Activies.PaisMapsActivity"
             android:label="@string/title_activity_driver_maps"
             android:parentActivityName=".Activies.PaisMapsActivity"
-            android:theme="@android:style/ThemeOverlay.Material" />
+            android:theme="@android:style/ThemeOverlay.Material">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.HomeActivity" />
+        </activity>
         <activity android:name=".Activies.LoginActivity" />
-
         <activity
             android:name=".Activies.FilhosActivity"
             android:parentActivityName=".Activies.FilhosActivity"
             android:theme="@style/AppTheme">
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.HomeActivity" />
         </activity>
-
         <activity
             android:name=".Activies.HomeActivity"
             android:label="@string/title_activity_home"
             android:parentActivityName=".Activies.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Activies.InfFilhosActivity"
             android:label="@string/title_activity_inf_filhos"
             android:parentActivityName=".Activies.InfFilhosActivity"
-            android:theme="@style/AppTheme" />
-
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.FilhosActivity" />
+        </activity>
         <activity
             android:name=".Activies.InfTioActivity"
             android:label="@string/title_activity_inf_tio"
             android:parentActivityName=".Activies.InfTioActivity"
-            android:theme="@style/AppTheme" />
-
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.TiosActivity" />
+        </activity>
         <activity
             android:name=".Activies.EscolaActivity"
             android:label="Escolas"
             android:parentActivityName=".Activies.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -93,7 +102,6 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".Activies.NotificacaoActivity"
             android:label="@string/title_activity_notificacao"
@@ -101,13 +109,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />
-
         </activity>
         <activity
             android:name=".Activies.CadastroActivity"
             android:label="@string/title_activity_cadastro"
-            android:parentActivityName=".Activies.HomeActivity">
-
+            android:parentActivityName=".Activies.CadastroActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />
@@ -115,15 +121,42 @@
         <activity
             android:name=".Activies.PerfilActivity"
             android:label="@string/title_activity_perfil"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.HomeActivity" />
+        </activity>
         <activity
             android:name=".Activies.PaisActivity"
             android:label="@string/title_activity_pais"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.HomeActivity" />
+        </activity>
         <activity
             android:name=".Activies.TiosActivity"
             android:label="@string/title_activity_tios"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.HomeActivity" />
+        </activity>
+        <activity android:name=".Activies.CadastroFilhoActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.FilhosActivity" />
+        </activity>
+        <activity android:name=".Activies.AlterarSenhaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.PerfilActivity" />
+        </activity>
+        <activity android:name=".Activies.EditarFilhoActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.apptransescolar.Activies.FilhosActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -1,18 +1,15 @@
 package br.com.apptransescolar.Activies;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -43,8 +40,10 @@ public class CadastroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
@@ -52,10 +51,10 @@ public class CadastroActivity extends AppCompatActivity {
 
 
         editNome = findViewById(R.id.editNomeT);
-        editCpf =  findViewById(R.id.editCpfT);
-        editTell =  findViewById(R.id.editTellT);
+        editCpf =  findViewById(R.id.end);
+        editTell =  findViewById(R.id.periodo);
         editSenha = findViewById(R.id.editSenhaT);
-        editEmail = findViewById(R.id.editEmailT);
+        editEmail = findViewById(R.id.dtNasc);
 
         findViewById(R.id.btnSaveCadastro).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,11 +97,11 @@ public class CadastroActivity extends AppCompatActivity {
             editEmail.requestFocus();
             return;
         }
-//        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-//            editEmail.setError("Email invalido!");
-//            editEmail.requestFocus();
-//            return;
-//        }
+        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            editEmail.setError("Email invalido!");
+            editEmail.requestFocus();
+            return;
+        }
 
         if (senha.isEmpty()){
             editSenha.setError("Insira sua senha!");

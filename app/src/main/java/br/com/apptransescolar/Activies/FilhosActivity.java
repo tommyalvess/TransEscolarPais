@@ -2,6 +2,7 @@ package br.com.apptransescolar.Activies;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,17 +13,27 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import br.com.apptransescolar.API.ApiClient;
 import br.com.apptransescolar.API.IKids;
+import br.com.apptransescolar.API.ITios;
+import br.com.apptransescolar.Adpter.FilhosAdapter;
 import br.com.apptransescolar.Adpter.KidsAdapter;
+import br.com.apptransescolar.Adpter.TiosAdapter;
+import br.com.apptransescolar.Classes.FilhosDAO;
 import br.com.apptransescolar.Classes.Kids;
+import br.com.apptransescolar.Classes.Tios;
 import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import retrofit2.Call;
@@ -34,10 +45,9 @@ public class FilhosActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private List<Kids> kids;
-    private KidsAdapter kidAdapter;
-    private IKids apiInterface;
-
-    private ListView lstViewAddPassageiros;
+    private KidsAdapter kidsAdapter;
+    private IKids iKids;
+    private TextView textAviso;
     ProgressBar progressBar;
     SessionManager sessionManager;
     String getId;
@@ -50,71 +60,80 @@ public class FilhosActivity extends AppCompatActivity {
 
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         //getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
-        //getSupportActionBar().setTitle("Alunos Cadastrados");     //Titulo para ser exibido na sua Action Bar em frente à seta
+        getSupportActionBar().setTitle("Filhos Cadastrados");     //Titulo para ser exibido na sua Action Bar em frente à seta
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         progressBar = findViewById(R.id.progess);
-        recyclerView = findViewById(R.id.kidsList);
+        recyclerView = findViewById(R.id.paisList);
+        textAviso = findViewById(R.id.textAviso);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        fetchAllKids("users", "");
+        fetchKids();
+
     }
 
-    private void fetchAllKids(String type, String key) {
+    private void fetchKids() {
 
-        apiInterface = ApiClient.getApiClient().create(IKids.class);
+        sessionManager = new SessionManager(this);
 
-        Call<List<Kids>> call = apiInterface.getAllKids(type, key);
+        HashMap<String, String> user = sessionManager.getUserDetail();
+        getId = user.get(sessionManager.ID);
+        id = Integer.parseInt(getId);
+        iKids = IKids.retrofit.create(IKids.class);
+
+        final Call<List<Kids>> call = iKids.getKids(id);
+
         call.enqueue(new Callback<List<Kids>>() {
             @Override
             public void onResponse(Call<List<Kids>> call, Response<List<Kids>> response) {
-                if (response == null){
-                    Toast.makeText(FilhosActivity.this, "Nenhum passageiro localizado!", Toast.LENGTH_SHORT).show();
+                if (!response.body().isEmpty()){
+                    progressBar.setVisibility(View.GONE);
+                    textAviso.setVisibility(View.GONE);
+                    kids = response.body();
+                    kidsAdapter = new KidsAdapter(kids, FilhosActivity.this);
+                    recyclerView.setAdapter(kidsAdapter);
+                    kidsAdapter.notifyDataSetChanged();
                 }else {
                     progressBar.setVisibility(View.GONE);
-                    kids = response.body();
-                    kidAdapter = new KidsAdapter(kids, FilhosActivity.this);
-                    recyclerView.setAdapter(kidAdapter);
-                    kidAdapter.notifyDataSetChanged();
+                    textAviso.setVisibility(View.VISIBLE);
+                    Toast.makeText(FilhosActivity.this, "Opss! Você não tem tio vinculado!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Kids>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(FilhosActivity.this, "Error\n"+t.toString(), Toast.LENGTH_LONG).show();
-                Log.e("Chamada", "Erro", t);
+                textAviso.setVisibility(View.VISIBLE);
+                Toast.makeText(FilhosActivity.this, "Opss! Nada foi encontrado!", Toast.LENGTH_SHORT).show();
+                Log.e("Call", "carregar dados", t);
             }
         });
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if ( item.getItemId() == R.id.action_edit ) {
+            Intent it = new Intent(this, CadastroFilhoActivity.class);
+            startActivity(it);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_escola, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                fetchAllKids("users", query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                fetchAllKids("users", newText);
-                return false;
-            }
-        });
+        inflater.inflate(R.menu.menu_aluno, menu);
         return true;
+
+    };
+
+    public void add(MenuItem item) {
+        Intent it = new Intent(this, CadastroFilhoActivity.class);
+        startActivity(it);
     }
 
 }

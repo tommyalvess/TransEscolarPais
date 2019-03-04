@@ -130,16 +130,5 @@ public class HomeActivity extends AppCompatActivity {
         }
     }// onResume
 
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_home, menu);
-
-        return true;
-
-    };
-
-    public void notificar(MenuItem item) {
-        Toast.makeText(this, "Em breve", Toast.LENGTH_SHORT).show();
-    }
 
 }// HomeActivity

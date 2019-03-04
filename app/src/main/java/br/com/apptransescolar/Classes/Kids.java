@@ -7,28 +7,31 @@ import java.io.Serializable;
 public class Kids implements Serializable {
 
     @SerializedName("idKids") private int idKids;
-    @SerializedName("idTios") private int idTios;
-    @SerializedName("nome") private String nome;
-    @SerializedName("periodo") private String periodo;
-    @SerializedName("img") private String img;
-    @SerializedName("nm_escola") private String nm_escola;
-    @SerializedName("dt_nas") private String dt_nas;
-    @SerializedName("end_principal") private String end_principal;
-    @SerializedName("nm_pais") private String nm_pais;
+    @SerializedName("Nome") private String nome;
+    @SerializedName("Periodo") private String periodo;
+    @SerializedName("Img") private String img;
+    @SerializedName("Escola") private String nm_escola;
+    @SerializedName("DtNas") private String dt_nas;
+    @SerializedName("End") private String end_principal;
 
-    public Kids(int idKids, int idTios, String nome, String periodo, String img, String nm_escola, String dt_nas, String end_principal, String nm_pais) {
-        this.idKids = idKids;
-        this.idTios = idTios;
+
+    public Kids(String nome, String escola, String periodo, String endereco, String dtNas) {
         this.nome = nome;
+        this.nm_escola = escola;
         this.periodo = periodo;
-        this.img = img;
-        this.nm_escola = nm_escola;
-        this.dt_nas = dt_nas;
-        this.end_principal = end_principal;
-        this.nm_pais = nm_pais;
+        this.end_principal = endereco;
+        this.dt_nas = dtNas;
+
     }
 
-    public Kids() {
+
+    public Kids(int id, String nome, String escola, String periodo, String endereco, String dtNas) {
+        this.idKids = id;
+        this.nome = nome;
+        this.nm_escola = escola;
+        this.periodo = periodo;
+        this.end_principal = endereco;
+        this.dt_nas = dtNas;
     }
 
     public int getIdKids() {
@@ -37,14 +40,6 @@ public class Kids implements Serializable {
 
     public void setIdKids(int idKids) {
         this.idKids = idKids;
-    }
-
-    public int getIdTios() {
-        return idTios;
-    }
-
-    public void setIdTios(int idTios) {
-        this.idTios = idTios;
     }
 
     public String getNome() {
@@ -95,15 +90,7 @@ public class Kids implements Serializable {
         this.end_principal = end_principal;
     }
 
-    public String getNm_pais() {
-        return nm_pais;
-    }
-
-    public void setNm_pais(String nm_pais) {
-        this.nm_pais = nm_pais;
-    }
-
     public String toString(){
-        return "Nome: " + this.nome + "\n" + "Escola: " + this.nm_escola + "\n" + "Periodo: " + this.periodo;
+        return this.nome;
     }
 }

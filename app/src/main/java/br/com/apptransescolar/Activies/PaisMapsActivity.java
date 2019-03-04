@@ -92,6 +92,7 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
     private Marker pickupMarker;
     private Boolean requestBol = false;
     private LatLng pickupLocation;
+    public static final int MY_PERMISSION_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +117,7 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
         getActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         getActionBar().setHomeButtonEnabled(true);      //Ativar o botão
         getActionBar().setTitle("Mapa");
+
 
     }
 
@@ -262,7 +264,7 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
             if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
 
             }else{
-                checkLocationPermission();
+                setUplocation();
             }
         }
 
@@ -270,14 +272,41 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
         mMap.setMyLocationEnabled(true);
     }// onMapReady
 
+    private void setUplocation(){
+        if (android.support.v4.app.ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && android.support.v4.app.ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            requestRuntimePermission();
+        }
+    }
+
+    private void requestRuntimePermission() {
+        android.support.v4.app.ActivityCompat.requestPermissions(this, new String[]
+                {
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                },MY_PERMISSION_CODE);
+    }
+
     private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-            } else {
-                ActivityCompat.requestPermissions(PaisMapsActivity.this,
-                        new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                new android.app.AlertDialog.Builder(this)
+                        .setTitle("give permission")
+                        .setMessage("give permission message")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ActivityCompat.requestPermissions(PaisMapsActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+            else{
+                ActivityCompat.requestPermissions(PaisMapsActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
         }
     }
@@ -375,8 +404,6 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
         }
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
@@ -387,5 +414,18 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
         return super.onOptionsItemSelected(item);
     }
 
+    private void myAlertDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Localização");
+        builder.setMessage("Para funcionmento precisa ter permição")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ActivityCompat.requestPermissions(PaisMapsActivity.this,
+                                new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
 
 }

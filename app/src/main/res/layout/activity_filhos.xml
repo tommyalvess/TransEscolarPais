@@ -5,20 +5,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#d3d3d3"
     tools:context=".Activies.FilhosActivity">
 
-    <ProgressBar
-        android:id="@+id/progess"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <ProgressBar
+            android:id="@+id/progess"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/kidsList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/paisList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+        <TextView
+            android:id="@+id/textAviso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="240dp"
+            android:gravity="center"
+            android:text="Nenhuma Criança Localizada!"
+            android:textAlignment="center"
+            android:textSize="25dp"
+            android:textStyle="italic|bold" />
 </RelativeLayout>

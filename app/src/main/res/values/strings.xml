@@ -102,6 +102,12 @@
     <string name="title_activity_pais">PaisActivity</string>
     <string name="title_activity_tios">TiosActivity</string>
     <string name="call_uber">call Uber</string>
+    <string name="endere_o">Endereço:</string>
+    <string name="escola">Escola:</string>
 
+    <string-array name="periodo_arrays">
+        <item>Manhã</item>
+        <item>Tarde</item>
+    </string-array>
 
 </resources>
