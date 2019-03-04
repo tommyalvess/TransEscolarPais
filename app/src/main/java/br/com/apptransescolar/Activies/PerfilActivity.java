@@ -366,6 +366,7 @@ public class PerfilActivity extends AppCompatActivity {
                         final String cpf = user.get(sessionManager.CPF);
                         final String tell = user.get(sessionManager.TELL);
                         final String img = user.get(sessionManager.IMG);
+                        //final String senha = user.get(sessionManager.SENHA);
 
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT,
                                 new Response.Listener<String>() {
@@ -450,6 +451,7 @@ public class PerfilActivity extends AppCompatActivity {
                         final String cpf = user.get(sessionManager.CPF);
                         final String tell = user.get(sessionManager.TELL);
                         final String img = user.get(sessionManager.IMG);
+                        //final String senha = user.get(sessionManager.SENHA);
 
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT,
                                 new Response.Listener<String>() {
@@ -534,6 +536,7 @@ public class PerfilActivity extends AppCompatActivity {
                         final String cpf = input.getText().toString().trim();
                         final String tell = user.get(sessionManager.TELL);
                         final String img = user.get(sessionManager.IMG);
+                        //final String senha = user.get(sessionManager.SENHA);
 
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT,
                                 new Response.Listener<String>() {
@@ -618,6 +621,7 @@ public class PerfilActivity extends AppCompatActivity {
                         final String cpf = user.get(sessionManager.CPF);
                         final String tell = input.getText().toString().trim();
                         final String img = user.get(sessionManager.IMG);
+                        //final String senha = user.get(sessionManager.SENHA);
 
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT,
                                 new Response.Listener<String>() {

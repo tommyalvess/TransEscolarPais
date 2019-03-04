@@ -22,6 +22,7 @@ public class SessionManager {
     public static final String EMAIL = "EMAIL";
     public static final String CPF = "CPF";
     public static final String TELL = "TELL";
+    public static final String SENHA = "SENHA";
     public static final String IMG = "IMG";
     public static final String ID = "ID";
 
@@ -51,18 +52,18 @@ public class SessionManager {
 
     }
 
-
-    public void createSessionFilhos(String id, String nome, String dtNas, String end_principal, String periodo, String img){
-        //editor.putBoolean(LOGIN, true);
+    public void createSessionForgot(String id, String nome, String email, String cpf, String tell, String img){
+        editor.putBoolean(LOGIN, true);
         editor.putString(NAME, nome);
-        editor.putString(DATE, dtNas);
-        editor.putString(ENDERECO, end_principal);
-        editor.putString(PERIODO, periodo);
+        editor.putString(EMAIL, email);
+        editor.putString(CPF, cpf);
+        editor.putString(TELL, tell);
         editor.putString(IMG, img);
         editor.putString(ID, id);
         editor.apply();
 
     }
+
 
 
     public boolean isLoggin(){

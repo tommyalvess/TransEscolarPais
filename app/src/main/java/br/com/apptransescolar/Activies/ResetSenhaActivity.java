@@ -28,7 +28,7 @@ import br.com.apptransescolar.R;
 
 import static br.com.apptransescolar.API.URLs.URL_EDIT_SENHA;
 
-public class AlterarSenhaActivity extends AppCompatActivity {
+public class ResetSenhaActivity extends AppCompatActivity {
 
     private static final String TAG = PerfilActivity.class.getSimpleName();
 
@@ -82,13 +82,13 @@ public class AlterarSenhaActivity extends AppCompatActivity {
                                             String success = jsonObject.getString("success");
 
                                             if (success.equals("1")) {
-                                                Toast.makeText(AlterarSenhaActivity.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                                                Toast.makeText(ResetSenhaActivity.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                                                 editSenha.setText("");
                                                 editSenhaConfirme.setText("");
-                                                Intent intent = new Intent(AlterarSenhaActivity.this, PerfilActivity.class);
+                                                Intent intent = new Intent(ResetSenhaActivity.this, LoginActivity.class);
                                                 startActivity(intent);
                                             } else {
-                                                Toast.makeText(AlterarSenhaActivity.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                                                Toast.makeText(ResetSenhaActivity.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                                             }
 
                                         } catch (JSONException e1) {
@@ -114,17 +114,18 @@ public class AlterarSenhaActivity extends AppCompatActivity {
                                 return params;
                             }
                         };
-                        RequestQueue requestQueue = Volley.newRequestQueue(AlterarSenhaActivity.this);
+                        RequestQueue requestQueue = Volley.newRequestQueue(ResetSenhaActivity.this);
                         requestQueue.add(stringRequest);
 
                     }else {
-                        Toast.makeText(AlterarSenhaActivity.this, "Senha deve ter pelo menos 6 caracteres!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ResetSenhaActivity.this, "Senha deve ter pelo menos 6 caracteres!", Toast.LENGTH_SHORT).show();
                     }
                 }else {
-                    Toast.makeText(AlterarSenhaActivity.this, "As senhas não são iguais!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ResetSenhaActivity.this, "As senhas não são iguais!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-    }
-}
+    }//on create
+}//class
+

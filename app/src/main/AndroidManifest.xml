@@ -157,6 +157,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.FilhosActivity" />
         </activity>
+        <activity android:name=".Activies.RecuperarSenhaActivity" />
+        <activity android:name=".Activies.ResetSenhaActivity"></activity>
     </application>
 
 </manifest>

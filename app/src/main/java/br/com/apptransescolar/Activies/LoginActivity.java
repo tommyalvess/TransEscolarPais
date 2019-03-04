@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -44,8 +45,9 @@ import static br.com.apptransescolar.API.URLs.URL_LOGIN;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    Button btnLogin, btncadastro;
+    Button btnLogin;
     EditText editCpf, editSenha;
+    TextView textForgotP;
 
     ProgressBar loginProgress;
     SessionManager sessionManager;
@@ -62,8 +64,16 @@ public class LoginActivity extends AppCompatActivity {
         editCpf = findViewById(R.id.login_main);
         editSenha = findViewById(R.id.login_password);
         btnLogin = findViewById(R.id.btn_login);
-        btncadastro = findViewById(R.id.btn_cadastro);
         loginProgress = findViewById(R.id.login_progress);
+        textForgotP = findViewById(R.id.textForgotP);
+
+        textForgotP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RecuperarSenhaActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,14 +99,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 login(cpf,senha);
-            }
-        });
-
-        btncadastro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, CadastroActivity.class);
-                startActivity(intent);
             }
         });
 
