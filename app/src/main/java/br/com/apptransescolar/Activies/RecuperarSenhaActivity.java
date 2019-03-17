@@ -61,7 +61,11 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 cpf1 = editTextCPF.getText().toString();
-                getUserDetail();
+                if(cpf1.isEmpty()){
+                    Toast.makeText(RecuperarSenhaActivity.this, "Digite o CPF!", Toast.LENGTH_SHORT).show();
+                }else {
+                    getUserDetail();
+                }
             }
         });
 
@@ -104,6 +108,7 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
                                 Toast.makeText(RecuperarSenhaActivity.this,json.getString("message"),Toast.LENGTH_LONG).show();
                             }
                         }catch ( JSONException e ) {
+                            Toast.makeText(RecuperarSenhaActivity.this, "Opss!!! Não localizado!", Toast.LENGTH_SHORT).show();
                             Log.e("JSON", "Error parsing JSON", e);
                         }
                     }

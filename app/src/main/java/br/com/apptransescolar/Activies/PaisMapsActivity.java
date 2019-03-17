@@ -349,7 +349,7 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
 
                 LatLng driverLocation = new LatLng(location.latitude, location.longitude);
 
-                Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLocation).title(key).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car)));
+                Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLocation).title(key).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
                 mDriverMarker.setTag(key);
 
                 markers.add(mDriverMarker);

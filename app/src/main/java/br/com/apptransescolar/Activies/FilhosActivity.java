@@ -71,6 +71,9 @@ public class FilhosActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
+        textAviso.setVisibility(View.GONE);
+
+
         fetchKids();
 
     }

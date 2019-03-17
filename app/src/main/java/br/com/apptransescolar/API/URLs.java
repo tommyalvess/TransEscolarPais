@@ -6,7 +6,7 @@ public class URLs {
 
     //Perfil
     public static String URL_READ = "http://apptransescolar.com.br/apiapptransescolar/read_pais.php?apicall=findAll";
-    public static String URL_UPLOAD = "http://apptransescolar.com.br/apiapptransescolar/uploadpais.php";
+    public static String URL_UPLOAD = "http://apptransescolar.com.br/apiapptransescolar/pai/uploadpais.php";
 
     //Escola Search
     public static final String BASE_URL2 = "http://apptransescolar.com.br/retrofit/GET/";
@@ -17,8 +17,8 @@ public class URLs {
     //cadastro filho
     public static final String PATH_TO_SERVER = "http://apptransescolar.com.br/apiapptransescolar/pais";
     public static final String PATH_TO_SERVER2 = "http://apptransescolar.com.br/apiapptransescolar/escolas";
-
-    //Registro Criança
+    //
+    //    //Registro Criança
     public static String URL_REGIST = "http://apptransescolar.com.br/apiapptransescolar/registerKids.php";
 
     //Editar Perfil

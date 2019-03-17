@@ -79,7 +79,7 @@ public class EscolaActivity extends AppCompatActivity {
         //layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        fetchEscolas("users", "");
+            fetchEscolas("users", "");
     }
 
     private void fetchEscolas(String type, String key) {

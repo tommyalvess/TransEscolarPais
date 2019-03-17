@@ -58,7 +58,7 @@
                 android:layout_centerVertical="true"
                 android:layout_x="14dp"
                 android:layout_y="72dp"
-                android:text="Emdereço:"
+                android:text="Endereço:"
                 android:textStyle="bold" />
 
             <TextView
