@@ -125,6 +125,9 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
 
         spinnerPeriodo = findViewById(R.id.spinnerTios);
 
+        DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child("Tio Tom");
+        current_user_db.setValue(true);
+
 
     }//on create
 
@@ -159,12 +162,12 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
                                     driverFound = true;
                                     driverFoundID = dataSnapshot.getKey();
 
-                                    DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("customerRequest");
-                                    String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                    HashMap map = new HashMap();
-                                    map.put("customerRideId", getId);
-                                    map.put("destination", destination);
-                                    driverRef.updateChildren(map);
+//                                    DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("customerRequest");
+//                                    String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//                                    HashMap map = new HashMap();
+//                                    map.put("customerRideId", getId);
+//                                    map.put("destination", destination);
+//                                    driverRef.updateChildren(map);
 
                                     getDriverLocation();
                                 }
@@ -209,19 +212,26 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
     private DatabaseReference driverLocationRef;
     private ValueEventListener driverLocationRefListener;
     private void getDriverLocation(){
-        driverLocationRef = FirebaseDatabase.getInstance().getReference().child("driversAvailable");
-        driverLocationRefListener = driverLocationRef.addValueEventListener(new ValueEventListener() {
+        DatabaseReference zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
+        DatabaseReference zone1Ref = zonesRef.child("Tio Alex");
+        DatabaseReference zone1NameRef = zone1Ref.child("l");
+        //driverLocationRef = FirebaseDatabase.getInstance().getReference().child("driversAvailable").child(driverFoundID).child("l");
+        driverLocationRefListener = zone1NameRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && requestBol){
-                    List<Object> map = (List<Object>) dataSnapshot.getValue();
+
+
+                for (DataSnapshot zoneSnapshot: dataSnapshot.getChildren()) {
+                    //Map<String, Object> driverMap = (Map<String, Object>) dataSnapshot.getValue();
+                    List<Object> driverMap = (List<Object>) dataSnapshot.getValue();
                     double locationLat = 0;
                     double locationLng = 0;
-                    if(map.get(0) != null){
-                        locationLat = Double.parseDouble(map.get(0).toString());
+
+                    if(driverMap.get(0) != null){
+                        locationLat = Double.parseDouble(driverMap.get(0).toString());
                     }
-                    if(map.get(1) != null){
-                        locationLng = Double.parseDouble(map.get(1).toString());
+                    if(driverMap.get(1) != null){
+                        locationLng = Double.parseDouble(driverMap.get(1).toString());
                     }
                     LatLng driverLatLng = new LatLng(locationLat,locationLng);
                     if(mDriverMarker != null){
@@ -238,13 +248,16 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
                     float distance = loc1.distanceTo(loc2);
 
                     if (distance<100){
-                        mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("your driver"));
-
                     }else{
-                        //mRequest.setText("Driver Found: " + String.valueOf(distance));
                     }
 
-                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("your driver"));
+                    Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Seu Tio").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
+                    mDriverMarker.setTag("Seu Tio");
+
+                    markers.add(mDriverMarker);
+                }
+                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()<0){
+
                 }
 
             }
@@ -325,15 +338,13 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
                     mLastLocation = location;
 
                     LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-
+                    getDriverLocation();
                     //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                     //mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
                     if(!getDriversAroundStarted)
-                        getDriversAround();
-                        //getDriverLocation();
+                        //getDriversAround();
+                        getDriverLocation();
                         //getClosestDriver();
-
-
                 }
             }
         }
@@ -343,10 +354,8 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
     List<Marker> markers = new ArrayList<Marker>();
     private void getDriversAround(){
         getDriversAroundStarted = true;
-        DatabaseReference driverLocation = FirebaseDatabase.getInstance().getReference().child("driversAvailable");
-
-
-        GeoFire geoFire = new GeoFire(driverLocation);
+        DatabaseReference zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
+        GeoFire geoFire = new GeoFire(zonesRef);
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(mLastLocation.getLongitude(), mLastLocation.getLatitude()), 999999999);
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -360,22 +369,11 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
 
                 LatLng driverLocation = new LatLng(location.latitude, location.longitude);
 
-                Location loc1 = new Location("");
-                loc1.setLatitude(location.latitude);
-                loc1.setLongitude(location.longitude);
+                Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLocation).title(key).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
+                mDriverMarker.setTag(key);
 
-                Location loc2 = new Location("");
-                loc2.setLatitude(mLastLocation.getLatitude());
-                loc2.setLongitude(mLastLocation.getLongitude());
+                markers.add(mDriverMarker);
 
-                float distance = loc1.distanceTo(loc2);
-
-                if (distance<10000){
-                    Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLocation).title(key).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
-                    mDriverMarker.setTag(key);
-
-                    markers.add(mDriverMarker);
-                }
 
             }
 
@@ -411,7 +409,7 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     protected void onRestart() {
         super.onRestart();
-        getDriversAround();
+        getDriverLocation();
     }
 
     @Override
