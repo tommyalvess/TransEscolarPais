@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TransEscolar</string>
+    <string name="app_name">TransEscolar Pais</string>
     <string name="title_activity_driver_maps">Map</string>
     <string name="title_activity_home">TransEscolar</string>
     <string name="title_activity_inf_filhos">InfFilhosActivity</string>
@@ -104,6 +104,7 @@
     <string name="call_uber">call Uber</string>
     <string name="endere_o">Endereço:</string>
     <string name="escola">Escola:</string>
+    <string name="mensagem_enviada">Mensagem Enviada!</string>
 
     <string-array name="periodo_arrays">
         <item>Manhã</item>

@@ -90,11 +90,12 @@ public class KidsAdapter  extends RecyclerView.Adapter<KidsAdapter.MyViewHolder>
             escola = itemView.findViewById(R.id.textEscola);
             periodo = itemView.findViewById(R.id.textPeriodo);
             //img = itemView.findViewById(R.id.imgPass);
+            final Kids kids = new Kids();
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Toast.makeText(context, "Vc precionou!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, kids.getNome(), Toast.LENGTH_SHORT).show();
                     return true;
                 }
             });

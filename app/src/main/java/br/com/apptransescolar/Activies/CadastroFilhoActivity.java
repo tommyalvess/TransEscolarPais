@@ -1,9 +1,15 @@
 package br.com.apptransescolar.Activies;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,21 +25,28 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import br.com.apptransescolar.API.ApiClient;
+import br.com.apptransescolar.API.IEscolas;
+import br.com.apptransescolar.Adpter.EscolaAdapter;
+import br.com.apptransescolar.Adpter.SchoolAdapter;
 import br.com.apptransescolar.Adpter.SpinnerEscolaAdapter;
 import br.com.apptransescolar.Adpter.SpinnerTiosAdapter;
 import br.com.apptransescolar.Classes.Escolas;
@@ -45,14 +58,19 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
+//Escola Pesquisa
+
 import static br.com.apptransescolar.API.URLs.PATH_TO_SERVER;
 import static br.com.apptransescolar.API.URLs.PATH_TO_SERVER2;
 import static br.com.apptransescolar.API.URLs.URL_REGIST;
 
 
-public class CadastroFilhoActivity extends AppCompatActivity {
 
-    Spinner spinnerPeriodo, spinnerTios, spinnerEscola;
+
+public class CadastroFilhoActivity extends AppCompatActivity implements  SearchableSpinner.OnItemSelectedListener {
+
+    Spinner spinnerPeriodo;
+    SearchableSpinner spinnerTios, spinnerEscola;
     EditText editNomeT,dtNasc,endT;
     boolean isUpdating = false;
     Kids kids;
@@ -80,6 +98,10 @@ public class CadastroFilhoActivity extends AppCompatActivity {
     int escola;
     String periodo;
 
+    String Url="http://apptransescolar.com.br/apiapptransescolar/escolas";
+    public static List<String> lst1=null;
+    public static List<String> lst2=null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,16 +118,17 @@ public class CadastroFilhoActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
-        getSupportActionBar().setTitle("Alunos");
+        getSupportActionBar().setTitle("Cadastrar Filho");
 
+        spinnerEscola= (SearchableSpinner) findViewById(R.id.spinnerE);
+        spinnerTios= (SearchableSpinner) findViewById(R.id.spinnerT);
         spinnerPeriodo = findViewById(R.id.spinnerP);
-        spinnerTios = findViewById(R.id.spinnerT);
-        spinnerEscola = findViewById(R.id.spinnerE);
 
         editNomeT = findViewById(R.id.editNomeT);
         dtNasc = findViewById(R.id.dtNasc);
         endT = findViewById(R.id.end);
         btnSaveCadastro = findViewById(R.id.btnSaveCadastro);
+
 
         // Spinner periodo
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, name);
@@ -136,7 +159,7 @@ public class CadastroFilhoActivity extends AppCompatActivity {
         btnSaveCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nome  = editNomeT.getText().toString().trim();
+                nome  = editNomeT.getText().toString().toUpperCase().trim();
                 dtNas  = dtNasc.getText().toString().trim();
                 end = endT.getText().toString().trim();
                 periodo = record.trim();
@@ -168,33 +191,122 @@ public class CadastroFilhoActivity extends AppCompatActivity {
         });
 
         spinnerPeriodo.setPrompt("Selecione um Periodo:");
-        spinnerTios.setPrompt("Selecione um Tio");
-        spinnerEscola.setPrompt("Selecionar uma Escola");
 
         //Spinner Setting
-        queue = Volley.newRequestQueue(this);
-        requestJsonObjectTios();
-        requestJsonObjectEscolas();
-
-
         //
-        // Tela de editar
         //
+        // queue = Volley.newRequestQueue(this);
+        //requestJsonObjectTios();
+        //requestJsonObjectEscolas();
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            isUpdating = true;
-            kids = (Kids) bundle.get("kids");
 
-            if ( kids != null ) {
-                getSupportActionBar().setTitle("Editar Aluno");
-                editNomeT.setText( kids.getNome() );
-                dtNasc.setText( kids.getDt_nas() );
-                endT.setText( kids.getEnd_principal() );
-            }
-        }
+        //Spinner Escola
+        new GetDataEscola().execute();
+        new GetDataTios().execute();
+        spinnerEscola.setTitle("Selecionar uma Escola");
+        spinnerTios.setTitle("Selecione um Tio");
+        spinnerEscola.setOnItemSelectedListener(this);
+        spinnerTios.setOnItemSelectedListener(this);
 
     }//onCreate
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+    class GetDataEscola extends AsyncTask<String,String,String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            lst1=new ArrayList<String>();
+            JsonArrayRequest movieReq = new JsonArrayRequest(PATH_TO_SERVER2,
+                    new Response.Listener<JSONArray>()
+                    {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            for(int i=0;i<response.length();i++){
+                                try {
+                                    //Getting json object
+                                    JSONObject json = response.getJSONObject(i);
+                                    //Adding the name of the student to array list
+                                    lst1.add(json.getString("nm_escola"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            ArrayAdapter adapter=new ArrayAdapter(getBaseContext(), R.layout.support_simple_spinner_dropdown_item, lst1);
+                            spinnerEscola.setAdapter(adapter);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    });
+            //Creating a request queue
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            //Adding request to the queue
+            requestQueue.add(movieReq);
+            return null;
+        }
+
+    }
+
+    class GetDataTios extends AsyncTask<String,String,String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            lst2=new ArrayList<String>();
+            JsonArrayRequest movieReq = new JsonArrayRequest(PATH_TO_SERVER,
+                    new Response.Listener<JSONArray>()
+                    {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            for(int i=0;i<response.length();i++){
+                                try {
+                                    //Getting json object
+                                    JSONObject json = response.getJSONObject(i);
+                                    //Adding the name of the student to array list
+                                    lst2.add(json.getString("nome"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            ArrayAdapter adapter=new ArrayAdapter(getBaseContext(), R.layout.support_simple_spinner_dropdown_item, lst2);
+                            spinnerTios.setAdapter(adapter);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    });
+            //Creating a request queue
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            //Adding request to the queue
+            requestQueue.add(movieReq);
+            return null;
+        }
+    }
 
     public void regist() {
 //        nome  = editNomeT.getText().toString().trim();
@@ -333,7 +445,6 @@ public class CadastroFilhoActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
-
     private void requestJsonObjectEscolas() {
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, PATH_TO_SERVER2, new Response.Listener<String>() {
@@ -358,5 +469,8 @@ public class CadastroFilhoActivity extends AppCompatActivity {
         });
         queue.add(stringRequest);
     }
+
+
+
 
 }// CadastroFilhoActivity

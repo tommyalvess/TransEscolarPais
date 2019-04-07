@@ -5,7 +5,7 @@ public class URLs {
     public static final String BASE_URL = "http://apptransescolar.com.br/Slim3RestApi/public/";
 
     //Perfil
-    public static String URL_READ = "http://apptransescolar.com.br/apiapptransescolar/read_pais.php?apicall=findAll";
+    public static String URL_READ = "http://apptransescolar.com.br/apiapptransescolar/read_pais.php?apicall=findPaisAll";
     public static String URL_UPLOAD = "http://apptransescolar.com.br/apiapptransescolar/pai/uploadpais.php";
 
     //Escola Search

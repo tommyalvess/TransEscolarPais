@@ -34,6 +34,10 @@ public class Kids implements Serializable {
         this.dt_nas = dtNas;
     }
 
+    public Kids() {
+
+    }
+
     public int getIdKids() {
         return idKids;
     }

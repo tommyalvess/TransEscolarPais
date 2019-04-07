@@ -79,7 +79,6 @@
         </activity>
         <activity
             android:name=".Activies.InfTioActivity"
-            android:label="@string/title_activity_inf_tio"
             android:parentActivityName=".Activies.InfTioActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

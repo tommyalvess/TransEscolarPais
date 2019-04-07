@@ -28,6 +28,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.onesignal.OneSignal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,12 +56,17 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar loginProgress;
     SessionManager sessionManager;
 
+    static String LoggedIn_User_Email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        //OneSignal
+        OneSignal.startInit(this).init();
 
         sessionManager = new SessionManager(this);
 
@@ -99,6 +108,11 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 login(cpf,senha);
+
+                LoggedIn_User_Email = cpf.toString();
+
+                OneSignal.sendTag("User_ID", LoggedIn_User_Email);
+
             }
         });
 

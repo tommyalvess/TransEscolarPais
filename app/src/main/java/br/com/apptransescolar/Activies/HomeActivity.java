@@ -1,12 +1,17 @@
 package br.com.apptransescolar.Activies;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +20,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import com.onesignal.OneSignal;
 
 import java.util.HashMap;
 
@@ -27,6 +37,9 @@ public class HomeActivity extends AppCompatActivity {
     SessionManager sessionManager;
     CoordinatorLayout coordinatorLayout;
 
+    static String LoggedIn_User_Email;
+    String getCpf;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +49,8 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        checkLocationPermission();
 
         // Get the ActionBar here to configure the way it behaves.
         final ActionBar ab = getSupportActionBar();
@@ -50,8 +65,16 @@ public class HomeActivity extends AppCompatActivity {
 
         sessionManager.checkLogin();
 
+        //OneSignal
+        OneSignal.startInit(this).init();
+
         // pegar infs da session
         HashMap<String, String> user = sessionManager.getUserDetail();
+        getCpf = user.get(sessionManager.CPF);
+
+        LoggedIn_User_Email = getCpf;
+
+        OneSignal.sendTag("User_ID", LoggedIn_User_Email);
 
         CircleImageView imgFilhos =  findViewById(R.id.passageiros);
         CircleImageView imgEscola = findViewById(R.id.escolas);
@@ -133,5 +156,25 @@ public class HomeActivity extends AppCompatActivity {
         }
     }// onResume
 
+    private void checkLocationPermission() {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                new android.app.AlertDialog.Builder(this)
+                        .setTitle("De permissão!")
+                        .setMessage("O app precisa da permissão para usar o localização!")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ActivityCompat.requestPermissions(HomeActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+            else{
+                ActivityCompat.requestPermissions(HomeActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+        }
+    }
 
 }// HomeActivity
