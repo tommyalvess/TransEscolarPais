@@ -10,8 +10,10 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -56,11 +58,16 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
+import br.com.apptransescolar.Classes.Tios;
 import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 
@@ -96,7 +103,7 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
     private LatLng pickupLocation;
     public static final int MY_PERMISSION_CODE = 1;
 
-    String meuTio;
+    String meuTio, tioCPF;
     Spinner spinnerPeriodo;
 
     @Override
@@ -110,6 +117,10 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
 
         mapFragment.getMapAsync(this);
 
+        Tios tios = (Tios) getIntent().getExtras().get("tios");
+
+        meuTio = tios.getApelido().trim();
+        tioCPF = tios.getCpf().trim();
         //iniciando a sessão
         sessionManager = new SessionManager(this);
 
@@ -135,12 +146,13 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
     private int radius = 1;
     private Boolean driverFound = false;
     private String driverFoundID = "Tio Tom";
-
     GeoQuery geoQuery;
     private void getClosestDriver() {
-        DatabaseReference driverLocation = FirebaseDatabase.getInstance().getReference().child("driversAvailable");
+        DatabaseReference zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
+        DatabaseReference zone1Ref = zonesRef.child(meuTio);
+        DatabaseReference zone1NameRef = zone1Ref.child("l");
 
-        GeoFire geoFire = new GeoFire(driverLocation);
+        GeoFire geoFire = new GeoFire(zone1NameRef);
         geoQuery = geoFire.queryAtLocation(new GeoLocation(pickupLocation.latitude, pickupLocation.longitude), radius);
         geoQuery.removeAllListeners();
 
@@ -148,34 +160,37 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 if (!driverFound && requestBol){
-                    DatabaseReference mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(key);
-                    mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    DatabaseReference zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
+                    DatabaseReference zone1Ref = zonesRef.child(meuTio);
+                    DatabaseReference zone1NameRef = zone1Ref.child("l");
+                    zone1NameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
-                                Map<String, Object> driverMap = (Map<String, Object>) dataSnapshot.getValue();
-                                if (driverFound){
-                                    return;
+                            for (DataSnapshot zoneSnapshot: dataSnapshot.getChildren()) {
+                                    List<Object> driverMap = (List<Object>) dataSnapshot.getValue();
+                                    double locationLat = 0;
+                                    double locationLng = 0;
+
+                                    if(driverMap.get(0) != null){
+                                        locationLat = Double.parseDouble(driverMap.get(0).toString());
+                                    }
+                                    if(driverMap.get(1) != null){
+                                        locationLng = Double.parseDouble(driverMap.get(1).toString());
+                                    }
+                                    //driverLatLng = new LatLng(locationLat,locationLng);
+                                    if(mDriverMarker != null){
+                                        mDriverMarker.remove();
+                                    }
+
                                 }
 
-                                if(driverMap.get("service").equals(requestService)){
-                                    driverFound = true;
-                                    driverFoundID = dataSnapshot.getKey();
 
-//                                    DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("customerRequest");
-//                                    String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//                                    HashMap map = new HashMap();
-//                                    map.put("customerRideId", getId);
-//                                    map.put("destination", destination);
-//                                    driverRef.updateChildren(map);
-
-                                    getDriverLocation();
-                                }
-                            }
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+
                         }
+
                     });
                 }
             }
@@ -213,33 +228,40 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
     private ValueEventListener driverLocationRefListener;
     private void getDriverLocation(){
         DatabaseReference zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
-        DatabaseReference zone1Ref = zonesRef.child("Tio Alex");
+        DatabaseReference zone1Ref = zonesRef.child(meuTio);
         DatabaseReference zone1NameRef = zone1Ref.child("l");
         //driverLocationRef = FirebaseDatabase.getInstance().getReference().child("driversAvailable").child(driverFoundID).child("l");
         driverLocationRefListener = zone1NameRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                LatLng driverLatLng = null;
 
+                    for (DataSnapshot zoneSnapshot: dataSnapshot.getChildren()) {
+                        List<Object> driverMap = (List<Object>) dataSnapshot.getValue();
+                        double locationLat = 0;
+                        double locationLng = 0;
 
-                for (DataSnapshot zoneSnapshot: dataSnapshot.getChildren()) {
-                    //Map<String, Object> driverMap = (Map<String, Object>) dataSnapshot.getValue();
-                    List<Object> driverMap = (List<Object>) dataSnapshot.getValue();
-                    double locationLat = 0;
-                    double locationLng = 0;
+                        if (driverMap == null){
+                            Toast.makeText(PaisMapsActivity.this, "Null", Toast.LENGTH_SHORT).show();
+                        }
 
-                    if(driverMap.get(0) != null){
-                        locationLat = Double.parseDouble(driverMap.get(0).toString());
+                        if(driverMap.get(0) != null){
+                            locationLat = Double.parseDouble(driverMap.get(0).toString());
+                        }
+                        if(driverMap.get(1) != null){
+                            locationLng = Double.parseDouble(driverMap.get(1).toString());
+                        }
+                        driverLatLng = new LatLng(locationLat,locationLng);
+
+                        if(mDriverMarker != null){
+                            mDriverMarker.remove();
+                        }
+
                     }
-                    if(driverMap.get(1) != null){
-                        locationLng = Double.parseDouble(driverMap.get(1).toString());
-                    }
-                    LatLng driverLatLng = new LatLng(locationLat,locationLng);
-                    if(mDriverMarker != null){
-                        mDriverMarker.remove();
-                    }
+
                     Location loc1 = new Location("");
-                    loc1.setLatitude(pickupLocation.latitude);
-                    loc1.setLongitude(pickupLocation.longitude);
+                    loc1.setLatitude(mLastLocation.getLatitude());
+                    loc1.setLongitude(mLastLocation.getLongitude());
 
                     Location loc2 = new Location("");
                     loc2.setLatitude(driverLatLng.latitude);
@@ -247,26 +269,99 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
 
                     float distance = loc1.distanceTo(loc2);
 
-                    if (distance<100){
-                    }else{
+                    Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title(meuTio).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
+                    mDriverMarker.setTag(meuTio);
+                    markers.add(mDriverMarker);
+
+                    for(Marker markerIt : markers){
+                        if(markerIt.getTag().equals(meuTio)){
+                            markerIt.setPosition(new LatLng(driverLatLng.latitude, driverLatLng.longitude));
+                        }
+
                     }
 
-                    Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Seu Tio").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
-                    mDriverMarker.setTag("Seu Tio");
 
-                    markers.add(mDriverMarker);
-                }
-                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()<0){
-
-                }
+                    if (distance>299 && distance<301){
+                        Toast.makeText(PaisMapsActivity.this, "Tamo Chegando", Toast.LENGTH_SHORT).show();
+                    }else if (distance<99 && distance>101){
+                        Toast.makeText(PaisMapsActivity.this, "Chegamos!", Toast.LENGTH_SHORT).show();
+                    }
 
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(PaisMapsActivity.this, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
+
+    private void sendNotificationFirst()
+    {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                int SDK_INT = android.os.Build.VERSION.SDK_INT;
+                if (SDK_INT > 8) {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                            .permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                    String send_email = getCpf;
+
+                    try {
+                        String jsonResponse;
+
+                        URL url = new URL("https://onesignal.com/api/v1/notifications");
+                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                        con.setUseCaches(false);
+                        con.setDoOutput(true);
+                        con.setDoInput(true);
+
+                        con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                        con.setRequestProperty("Authorization", "Basic MzUzNzMxMjMtOTIxNy00ZTBlLTg2YjktMDRlOTg4YmEwNzFh");
+                        con.setRequestMethod("POST");
+
+                        String strJsonBody = "{"
+                                + "\"app_id\": \"ef54b0b1-d6b0-46e0-ad4f-4e15d9f7dfe6\","
+
+                                + "\"filters\": [{\"field\": \"tag\", \"key\": \"User_ID\", \"relation\": \"=\", \"value\": \"" + send_email + "\"}],"
+
+                                + "\"data\": {\"foo\": \"bar\"},"
+                                + "\"contents\": {\"en\": \" "+ meuTio +" "+"está chegando!"+"\"}"
+                                + "}";
+
+
+                        System.out.println("strJsonBody:\n" + strJsonBody);
+
+                        byte[] sendBytes = strJsonBody.getBytes("UTF-8");
+                        con.setFixedLengthStreamingMode(sendBytes.length);
+
+                        OutputStream outputStream = con.getOutputStream();
+                        outputStream.write(sendBytes);
+
+                        int httpResponse = con.getResponseCode();
+                        System.out.println("httpResponse: " + httpResponse);
+
+                        if (httpResponse >= HttpURLConnection.HTTP_OK
+                                && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
+                            Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                            scanner.close();
+                        } else {
+                            Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                            scanner.close();
+                        }
+                        System.out.println("jsonResponse:\n" + jsonResponse);
+
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
 
@@ -338,42 +433,72 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
                     mLastLocation = location;
 
                     LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-                    getDriverLocation();
                     //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                     //mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
                     if(!getDriversAroundStarted)
-                        //getDriversAround();
-                        getDriverLocation();
-                        //getClosestDriver();
+                        getDriversAround();
                 }
             }
         }
     };
-
     boolean getDriversAroundStarted = false;
+    DatabaseReference zonesRef;
+    private ValueEventListener dLocationRefListener;
+
     List<Marker> markers = new ArrayList<Marker>();
     private void getDriversAround(){
         getDriversAroundStarted = true;
-        DatabaseReference zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
+        zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
         GeoFire geoFire = new GeoFire(zonesRef);
         GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(mLastLocation.getLongitude(), mLastLocation.getLatitude()), 999999999);
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-
                 for(Marker markerIt : markers){
                     if(markerIt.getTag().equals(key))
                         return;
                 }
 
-                LatLng driverLocation = new LatLng(location.latitude, location.longitude);
 
-                Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLocation).title(key).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
-                mDriverMarker.setTag(key);
+                DatabaseReference zone1Ref = zonesRef.child(meuTio);
+                DatabaseReference zone1NameRef = zone1Ref.child("l");
+                dLocationRefListener = zone1NameRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        LatLng drLatLng = null;
+                        for (DataSnapshot zoneSnapshot: dataSnapshot.getChildren()) {
+                            List<Object> driverMap = (List<Object>) dataSnapshot.getValue();
+                            double locationLat = 0;
+                            double locationLng = 0;
 
-                markers.add(mDriverMarker);
+                            if (driverMap == null){
+                                Toast.makeText(PaisMapsActivity.this, "Null", Toast.LENGTH_SHORT).show();
+                            }
 
+                            if(driverMap.get(0) != null){
+                                locationLat = Double.parseDouble(driverMap.get(0).toString());
+                            }
+                            if(driverMap.get(1) != null){
+                                locationLng = Double.parseDouble(driverMap.get(1).toString());
+                            }
+                            drLatLng = new LatLng(locationLat,locationLng);
+
+                            if(mDriverMarker != null){
+                                mDriverMarker.remove();
+                            }
+                        }//for
+
+                        Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(drLatLng).title(meuTio).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
+                        mDriverMarker.setTag(meuTio);
+                        markers.add(mDriverMarker);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
             }
 
@@ -409,7 +534,7 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     protected void onRestart() {
         super.onRestart();
-        getDriverLocation();
+        //getDriverLocation();
     }
 
     @Override

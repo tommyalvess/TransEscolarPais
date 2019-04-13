@@ -1,6 +1,7 @@
 package br.com.apptransescolar.Activies;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import br.com.apptransescolar.Adpter.TiosAdapter;
 import br.com.apptransescolar.Classes.Tios;
 import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
@@ -43,6 +45,8 @@ public class InfTioActivity extends AppCompatActivity {
     SessionManager sessionManager;
 
     View contextView;
+
+    Tios tios;
 
     final String[] items = {"Desculpe, ele não irá hoje!", "Desculpe, estamos atrasados!"};
 
@@ -66,7 +70,7 @@ public class InfTioActivity extends AppCompatActivity {
         getCpf = user.get(sessionManager.CPF);
         getNome = user.get(sessionManager.NAME);
 
-        Tios tios = (Tios) getIntent().getExtras().get("tios");
+        tios = (Tios) getIntent().getExtras().get("tios");
         getSupportActionBar().setTitle("");
         nomeT = findViewById(R.id.nomeK);
         emailT = findViewById(R.id.periodoK);
@@ -88,7 +92,10 @@ public class InfTioActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               notificationMesage();
+                Intent it = new Intent(InfTioActivity.this, PaisMapsActivity.class);
+                it.putExtra("tios", tios);
+                InfTioActivity.this.startActivity(it);
+
             }
         });
     }

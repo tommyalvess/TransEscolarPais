@@ -73,13 +73,11 @@ public class HomeActivity extends AppCompatActivity {
         getCpf = user.get(sessionManager.CPF);
 
         LoggedIn_User_Email = getCpf;
-
         OneSignal.sendTag("User_ID", LoggedIn_User_Email);
 
         CircleImageView imgFilhos =  findViewById(R.id.passageiros);
         CircleImageView imgEscola = findViewById(R.id.escolas);
         CircleImageView imgUsuario = findViewById(R.id.user);
-        CircleImageView imgMap = findViewById(R.id.maps);
         CircleImageView imgTios = findViewById(R.id.tios);
 
         imgFilhos.setOnClickListener(new View.OnClickListener() {
@@ -100,16 +98,6 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });// Fim imgEscola
-
-
-        imgMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("OnClick","MapActivity");
-                Intent intent = new Intent(HomeActivity.this, PaisMapsActivity.class);
-                startActivity(intent);
-            }
-        }); // FIm do imgMap
 
         imgUsuario.setOnClickListener(new View.OnClickListener() {
             @Override

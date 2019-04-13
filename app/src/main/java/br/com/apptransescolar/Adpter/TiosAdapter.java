@@ -75,36 +75,30 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
         holder.tell.setText(nData.get(position).getTell());
         holder.email.setText(nData.get(position).getEmail());
         Glide.with(context).load(nData.get(position).getImg()).apply(options).into(holder.img);
-//        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                Intent it = new Intent(TiosAdapter.this.context, InfTioActivity.class);
-//                it.putExtra("tios", tios);
-//                TiosAdapter.this.context.startActivity(it);
-//                return false;
-//            }
-//        });
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(final View view) {
+            public boolean onLongClick(final View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Notificar o Tio!");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         // Do something with the selection
                         if (item == 0){
-                            Snackbar.make(view, R.string.mensagem_enviada, Snackbar.LENGTH_SHORT)
+                            Snackbar.make(v, R.string.mensagem_enviada, Snackbar.LENGTH_SHORT)
                                     .show();
                             sendNotificationFirst();
                         }else if (item == 1){
-                            Snackbar.make(view, R.string.mensagem_enviada, Snackbar.LENGTH_SHORT)
+                            Snackbar.make(v, R.string.mensagem_enviada, Snackbar.LENGTH_SHORT)
                                     .show();
                             sendNotificationSecond();
                         }
                     }
                 });
                 builder.show();
+                return false;
             }
+
             private void sendNotificationFirst()
             {
                 AsyncTask.execute(new Runnable() {
@@ -237,6 +231,15 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
                 });
             }
 
+        });
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                Intent it = new Intent(TiosAdapter.this.context, InfTioActivity.class);
+                it.putExtra("tios", tios);
+                TiosAdapter.this.context.startActivity(it);
+            }
         });
         holder.itemView.setLongClickable(true);
     }
