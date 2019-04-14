@@ -104,7 +104,12 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
     public static final int MY_PERMISSION_CODE = 1;
 
     String meuTio, tioCPF;
-    Spinner spinnerPeriodo;
+
+    double locationLat = 0;
+    double locationLng = 0;
+    LatLng drLatLng = null;
+    String LoggedIn_User_Email;
+    Tios tios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,10 +122,11 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
 
         mapFragment.getMapAsync(this);
 
-        Tios tios = (Tios) getIntent().getExtras().get("tios");
+        tios = (Tios) getIntent().getExtras().get("tios");
 
         meuTio = tios.getApelido().trim();
         tioCPF = tios.getCpf().trim();
+
         //iniciando a sessão
         sessionManager = new SessionManager(this);
 
@@ -130,240 +136,18 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
         getCpf = user.get(sessionManager.CPF);
         getIDT = user.get(sessionManager.IDT);
 
+        LoggedIn_User_Email = getCpf.trim();
+
         getActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         getActionBar().setHomeButtonEnabled(true);      //Ativar o botão
         getActionBar().setTitle("Mapa");
 
-        spinnerPeriodo = findViewById(R.id.spinnerTios);
-
-        DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child("Tio Tom");
-        current_user_db.setValue(true);
-
 
     }//on create
-
-
-    private int radius = 1;
-    private Boolean driverFound = false;
-    private String driverFoundID = "Tio Tom";
-    GeoQuery geoQuery;
-    private void getClosestDriver() {
-        DatabaseReference zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
-        DatabaseReference zone1Ref = zonesRef.child(meuTio);
-        DatabaseReference zone1NameRef = zone1Ref.child("l");
-
-        GeoFire geoFire = new GeoFire(zone1NameRef);
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(pickupLocation.latitude, pickupLocation.longitude), radius);
-        geoQuery.removeAllListeners();
-
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-            @Override
-            public void onKeyEntered(String key, GeoLocation location) {
-                if (!driverFound && requestBol){
-                    DatabaseReference zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
-                    DatabaseReference zone1Ref = zonesRef.child(meuTio);
-                    DatabaseReference zone1NameRef = zone1Ref.child("l");
-                    zone1NameRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot zoneSnapshot: dataSnapshot.getChildren()) {
-                                    List<Object> driverMap = (List<Object>) dataSnapshot.getValue();
-                                    double locationLat = 0;
-                                    double locationLng = 0;
-
-                                    if(driverMap.get(0) != null){
-                                        locationLat = Double.parseDouble(driverMap.get(0).toString());
-                                    }
-                                    if(driverMap.get(1) != null){
-                                        locationLng = Double.parseDouble(driverMap.get(1).toString());
-                                    }
-                                    //driverLatLng = new LatLng(locationLat,locationLng);
-                                    if(mDriverMarker != null){
-                                        mDriverMarker.remove();
-                                    }
-
-                                }
-
-
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-
-                    });
-                }
-            }
-
-            @Override
-            public void onKeyExited(String key) {
-
-            }
-
-            @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-
-            }
-
-            @Override
-            public void onGeoQueryReady() {
-                if (!driverFound)
-                {
-                    radius++;
-                    getClosestDriver();
-                }
-            }
-
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-
-            }
-        });
-
-
-    }
 
     private Marker mDriverMarker;
     private DatabaseReference driverLocationRef;
     private ValueEventListener driverLocationRefListener;
-    private void getDriverLocation(){
-        DatabaseReference zonesRef = FirebaseDatabase.getInstance().getReference("driversAvailable");
-        DatabaseReference zone1Ref = zonesRef.child(meuTio);
-        DatabaseReference zone1NameRef = zone1Ref.child("l");
-        //driverLocationRef = FirebaseDatabase.getInstance().getReference().child("driversAvailable").child(driverFoundID).child("l");
-        driverLocationRefListener = zone1NameRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                LatLng driverLatLng = null;
-
-                    for (DataSnapshot zoneSnapshot: dataSnapshot.getChildren()) {
-                        List<Object> driverMap = (List<Object>) dataSnapshot.getValue();
-                        double locationLat = 0;
-                        double locationLng = 0;
-
-                        if (driverMap == null){
-                            Toast.makeText(PaisMapsActivity.this, "Null", Toast.LENGTH_SHORT).show();
-                        }
-
-                        if(driverMap.get(0) != null){
-                            locationLat = Double.parseDouble(driverMap.get(0).toString());
-                        }
-                        if(driverMap.get(1) != null){
-                            locationLng = Double.parseDouble(driverMap.get(1).toString());
-                        }
-                        driverLatLng = new LatLng(locationLat,locationLng);
-
-                        if(mDriverMarker != null){
-                            mDriverMarker.remove();
-                        }
-
-                    }
-
-                    Location loc1 = new Location("");
-                    loc1.setLatitude(mLastLocation.getLatitude());
-                    loc1.setLongitude(mLastLocation.getLongitude());
-
-                    Location loc2 = new Location("");
-                    loc2.setLatitude(driverLatLng.latitude);
-                    loc2.setLongitude(driverLatLng.longitude);
-
-                    float distance = loc1.distanceTo(loc2);
-
-                    Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title(meuTio).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
-                    mDriverMarker.setTag(meuTio);
-                    markers.add(mDriverMarker);
-
-                    for(Marker markerIt : markers){
-                        if(markerIt.getTag().equals(meuTio)){
-                            markerIt.setPosition(new LatLng(driverLatLng.latitude, driverLatLng.longitude));
-                        }
-
-                    }
-
-
-                    if (distance>299 && distance<301){
-                        Toast.makeText(PaisMapsActivity.this, "Tamo Chegando", Toast.LENGTH_SHORT).show();
-                    }else if (distance<99 && distance>101){
-                        Toast.makeText(PaisMapsActivity.this, "Chegamos!", Toast.LENGTH_SHORT).show();
-                    }
-
-            }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(PaisMapsActivity.this, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-
-    private void sendNotificationFirst()
-    {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                int SDK_INT = android.os.Build.VERSION.SDK_INT;
-                if (SDK_INT > 8) {
-                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                            .permitAll().build();
-                    StrictMode.setThreadPolicy(policy);
-                    String send_email = getCpf;
-
-                    try {
-                        String jsonResponse;
-
-                        URL url = new URL("https://onesignal.com/api/v1/notifications");
-                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                        con.setUseCaches(false);
-                        con.setDoOutput(true);
-                        con.setDoInput(true);
-
-                        con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                        con.setRequestProperty("Authorization", "Basic MzUzNzMxMjMtOTIxNy00ZTBlLTg2YjktMDRlOTg4YmEwNzFh");
-                        con.setRequestMethod("POST");
-
-                        String strJsonBody = "{"
-                                + "\"app_id\": \"ef54b0b1-d6b0-46e0-ad4f-4e15d9f7dfe6\","
-
-                                + "\"filters\": [{\"field\": \"tag\", \"key\": \"User_ID\", \"relation\": \"=\", \"value\": \"" + send_email + "\"}],"
-
-                                + "\"data\": {\"foo\": \"bar\"},"
-                                + "\"contents\": {\"en\": \" "+ meuTio +" "+"está chegando!"+"\"}"
-                                + "}";
-
-
-                        System.out.println("strJsonBody:\n" + strJsonBody);
-
-                        byte[] sendBytes = strJsonBody.getBytes("UTF-8");
-                        con.setFixedLengthStreamingMode(sendBytes.length);
-
-                        OutputStream outputStream = con.getOutputStream();
-                        outputStream.write(sendBytes);
-
-                        int httpResponse = con.getResponseCode();
-                        System.out.println("httpResponse: " + httpResponse);
-
-                        if (httpResponse >= HttpURLConnection.HTTP_OK
-                                && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
-                            Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
-                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
-                            scanner.close();
-                        } else {
-                            Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
-                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
-                            scanner.close();
-                        }
-                        System.out.println("jsonResponse:\n" + jsonResponse);
-
-                    } catch (Throwable t) {
-                        t.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -454,27 +238,19 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onKeyEntered(String key, GeoLocation location) {
+            public void onKeyEntered(String key, final GeoLocation location) {
                 for(Marker markerIt : markers){
                     if(markerIt.getTag().equals(key))
                         return;
                 }
-
 
                 DatabaseReference zone1Ref = zonesRef.child(meuTio);
                 DatabaseReference zone1NameRef = zone1Ref.child("l");
                 dLocationRefListener = zone1NameRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        LatLng drLatLng = null;
                         for (DataSnapshot zoneSnapshot: dataSnapshot.getChildren()) {
                             List<Object> driverMap = (List<Object>) dataSnapshot.getValue();
-                            double locationLat = 0;
-                            double locationLng = 0;
-
-                            if (driverMap == null){
-                                Toast.makeText(PaisMapsActivity.this, "Null", Toast.LENGTH_SHORT).show();
-                            }
 
                             if(driverMap.get(0) != null){
                                 locationLat = Double.parseDouble(driverMap.get(0).toString());
@@ -489,14 +265,20 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
                             }
                         }//for
 
-                        Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(drLatLng).title(meuTio).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
-                        mDriverMarker.setTag(meuTio);
-                        markers.add(mDriverMarker);
+                        if (drLatLng != null){
+
+                            Marker mDriverMarker = mMap.addMarker(new MarkerOptions().position(drLatLng).title(meuTio).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car_tio)));
+                            mDriverMarker.setTag(meuTio);
+                            markers.add(mDriverMarker);
+                        }else {
+                            Toast.makeText(PaisMapsActivity.this, "O Tio está OFLINE!", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        Toast.makeText(PaisMapsActivity.this, "Opss! Algo deu errado. Tente novamente mais tarde!!!", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -518,6 +300,27 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
                         markerIt.setPosition(new LatLng(location.latitude, location.longitude));
                     }
                 }
+
+                if (drLatLng != null){
+                    Location loc1 = new Location("");
+                    loc1.setLatitude(mLastLocation.getLatitude());
+                    loc1.setLongitude(mLastLocation.getLongitude());
+
+                    Location loc2 = new Location("");
+                    loc2.setLatitude(drLatLng.latitude);
+                    loc2.setLongitude(drLatLng.longitude);
+
+                    float distance = loc1.distanceTo(loc2);
+
+                    if (distance > 95 && distance < 100){
+                        sendNotificationFirst();
+                        Intent intent = new Intent(PaisMapsActivity.this, CountDownActivity.class);
+                        intent.putExtra("tios", tios);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
             }
 
             @Override
@@ -531,11 +334,91 @@ public class PaisMapsActivity extends FragmentActivity implements OnMapReadyCall
         });
     }
 
+    private void sendNotificationFirst()
+    {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                int SDK_INT = android.os.Build.VERSION.SDK_INT;
+                if (SDK_INT > 8) {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                            .permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                    String send_email = getCpf;
+
+//                    //This is a Simple Logic to Send Notification different Device Programmatically....
+//                    if (LoggedIn_User_Email.equals(getCpf)) {
+//                        send_email = tioCPF;
+//                    } else {
+//                        send_email = getCpf;
+//                    }
+
+                    try {
+                        String jsonResponse;
+
+                        URL url = new URL("https://onesignal.com/api/v1/notifications");
+                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                        con.setUseCaches(false);
+                        con.setDoOutput(true);
+                        con.setDoInput(true);
+
+                        con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                        con.setRequestProperty("Authorization", "Basic MzUzNzMxMjMtOTIxNy00ZTBlLTg2YjktMDRlOTg4YmEwNzFh");
+                        con.setRequestMethod("POST");
+
+                        String strJsonBody = "{"
+                                + "\"app_id\": \"ef54b0b1-d6b0-46e0-ad4f-4e15d9f7dfe6\","
+
+                                + "\"filters\": [{\"field\": \"tag\", \"key\": \"User_ID\", \"relation\": \"=\", \"value\": \"" + send_email + "\"}],"
+
+                                + "\"data\": {\"foo\": \"bar\"},"
+                                + "\"contents\": {\"en\": \" "+ meuTio +" "+" está chegando!"+"\"}"
+                                + "}";
+
+
+                        System.out.println("strJsonBody:\n" + strJsonBody);
+
+                        byte[] sendBytes = strJsonBody.getBytes("UTF-8");
+                        con.setFixedLengthStreamingMode(sendBytes.length);
+
+                        OutputStream outputStream = con.getOutputStream();
+                        outputStream.write(sendBytes);
+
+                        int httpResponse = con.getResponseCode();
+                        System.out.println("httpResponse: " + httpResponse);
+
+                        if (httpResponse >= HttpURLConnection.HTTP_OK
+                                && httpResponse < HttpURLConnection.HTTP_BAD_REQUEST) {
+                            Scanner scanner = new Scanner(con.getInputStream(), "UTF-8");
+                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                            scanner.close();
+                        } else {
+                            Scanner scanner = new Scanner(con.getErrorStream(), "UTF-8");
+                            jsonResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                            scanner.close();
+                        }
+                        System.out.println("jsonResponse:\n" + jsonResponse);
+
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
-        //getDriverLocation();
+        getDriversAround();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

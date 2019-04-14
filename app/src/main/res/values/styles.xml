@@ -21,4 +21,8 @@
 
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="NewRoboto">
+        @import url(\'https://fonts.googleapis.com/css?family=Roboto');
+    </style>
+
 </resources>

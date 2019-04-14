@@ -48,7 +48,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />
         </activity>
-        <activity android:name=".Activies.LoginActivity" />
+        <activity android:name=".Activies.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
             android:name=".Activies.FilhosActivity"
             android:parentActivityName=".Activies.FilhosActivity"
@@ -93,6 +95,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activies.HomeActivity" />
@@ -154,6 +157,10 @@
         </activity>
         <activity android:name=".Activies.RecuperarSenhaActivity" />
         <activity android:name=".Activies.ResetSenhaActivity"></activity>
+        <activity android:name=".Activies.CountDownActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

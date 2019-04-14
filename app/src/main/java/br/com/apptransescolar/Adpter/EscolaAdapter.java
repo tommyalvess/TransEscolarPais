@@ -25,7 +25,9 @@ public class EscolaAdapter extends RecyclerView.Adapter<EscolaAdapter.MyViewHold
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.linha_escola_list, parent, false);
+        View view ;
+        LayoutInflater mInflater = LayoutInflater.from(context);
+        view = mInflater.inflate(R.layout.linha_escola_list,parent,false);
         return new MyViewHolder(view);
     }
 
