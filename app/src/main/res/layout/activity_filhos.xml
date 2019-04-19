@@ -31,6 +31,7 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="240dp"
             android:gravity="center"
+            android:fontFamily="fontTitulos"
             android:text="Nenhuma Criança Localizada!"
             android:textAlignment="center"
             android:textSize="25dp"

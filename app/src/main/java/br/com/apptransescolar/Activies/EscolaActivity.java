@@ -57,8 +57,9 @@ public class EscolaActivity extends AppCompatActivity {
     private EscolaAdapter adapter;
     private IEscolas apiInterface;
     ProgressBar progressBar;
-    TextView search;
+    TextView textAviso;
     String[] item;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +75,17 @@ public class EscolaActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progess);
         recyclerView = findViewById(R.id.escolaList);
+        textAviso = findViewById(R.id.textAviso);
+
         //layoutManager = new LinearLayoutManager(this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
         //layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         fetchEscolas("users", "");
+
+        textAviso.setVisibility(View.GONE);
+
     }
 
     private void fetchEscolas(String type, String key) {
@@ -90,16 +96,24 @@ public class EscolaActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Escolas>>() {
             @Override
             public void onResponse(Call<List<Escolas>> call, Response<List<Escolas>> response) {
-                progressBar.setVisibility(View.GONE);
-                contacts = response.body();
-                adapter = new EscolaAdapter(contacts, EscolaActivity.this);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+                if (!response.body().isEmpty()){
+                    progressBar.setVisibility(View.GONE);
+                    textAviso.setVisibility(View.GONE);
+                    contacts = response.body();
+                    adapter = new EscolaAdapter(contacts, EscolaActivity.this);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }else {
+                    progressBar.setVisibility(View.GONE);
+                    textAviso.setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override
             public void onFailure(Call<List<Escolas>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
+                textAviso.setVisibility(View.VISIBLE);
                 Toast.makeText(EscolaActivity.this, "Error\n"+t.toString(), Toast.LENGTH_LONG).show();
                 Log.e("Chamada", "Erro", t);
             }

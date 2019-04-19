@@ -53,8 +53,8 @@ public class FilhosAdapter extends BaseAdapter {
 
         CardView cardView = view.findViewById(R.id.cardView);
         TextView nome =   view.findViewById(R.id.textNome);
-        TextView escola = view.findViewById(R.id.textEscola);
-        TextView periodo = view.findViewById(R.id.textPeriodo);
+        TextView escola = view.findViewById(R.id.textNumero);
+        TextView periodo = view.findViewById(R.id.textEmail);
         //TextView endereco = view.findViewById(R.id.textEnd);
         //TextView aniver = view.findViewById(R.id.textDtnas);
 

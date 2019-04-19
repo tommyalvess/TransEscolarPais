@@ -3,4 +3,6 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="item_width">200dp</dimen>
+    <dimen name="sizeSubText">20sp</dimen>
+    <dimen name="subTitulo_15">15dp</dimen>
 </resources>

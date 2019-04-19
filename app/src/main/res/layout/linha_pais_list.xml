@@ -15,9 +15,9 @@
     android:layout_height="wrap_content">
 
 
-    <AbsoluteLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="82dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="5dp"
@@ -25,56 +25,97 @@
         android:orientation="vertical">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/imgPass"
+            android:id="@+id/imgTios"
             android:layout_width="58dp"
             android:layout_height="63dp"
-            android:layout_x="6dp"
-            android:layout_y="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_x="7dp"
+            android:layout_y="3dp"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/user"
             app:civ_border_color="#000"
-            app:civ_border_width="2dp" />
+            app:civ_border_width="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/textNome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textEscola"
+            android:layout_alignStart="@+id/textNumero"
             android:layout_alignTop="@+id/imageView2"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="250dp"
             android:layout_x="73dp"
             android:layout_y="11dp"
+            android:fontFamily="@font/roboto_regular"
             android:text="Nome"
             android:textColor="#000"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="13dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline10"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textEscola"
+            android:id="@+id/textNumero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="79dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="250dp"
             android:layout_x="73dp"
             android:layout_y="30dp"
-            android:text="Tell"
-            android:autoLink="phone"
+            android:fontFamily="@font/roboto_light"
+            android:text="numero"
             android:textColor="#000"
-            android:textSize="@dimen/fab_margin" />
+            android:textSize="@dimen/fab_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline10"
+            app:layout_constraintTop_toBottomOf="@+id/textNome" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/textEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="230dp"
+            android:layout_marginBottom="10dp"
             android:layout_x="74dp"
             android:layout_y="54dp"
-            android:text="Email"
-            android:autoLink="email"
+            android:fontFamily="@font/roboto_light"
+            android:text="email"
             android:textAllCaps="true"
-            android:textColor="#000" />
+            android:textColor="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline10"
+            app:layout_constraintTop_toBottomOf="@+id/textNumero"
+            app:layout_constraintVertical_bias="0.0" />
 
-    </AbsoluteLayout>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="77dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
 
 
 </android.support.v7.widget.CardView>

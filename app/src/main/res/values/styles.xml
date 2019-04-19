@@ -21,8 +21,19 @@
 
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="NewRoboto">
-        @import url(\'https://fonts.googleapis.com/css?family=Roboto');
+    <style name="fontsubTitulos"
+        parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/roboto_thin</item>
+    </style>
+
+    <style name="fontTitulos"
+        parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+
+    <style name="fontTexto"
+        parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/roboto_light</item>
     </style>
 
 </resources>

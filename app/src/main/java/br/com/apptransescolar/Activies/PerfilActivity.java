@@ -9,17 +9,20 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +48,8 @@ import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static br.com.apptransescolar.API.URLs.URL_COUNTPAIS;
+import static br.com.apptransescolar.API.URLs.URL_COUNTTIOS;
 import static br.com.apptransescolar.API.URLs.URL_EDIT;
 import static br.com.apptransescolar.API.URLs.URL_READ;
 import static br.com.apptransescolar.API.URLs.URL_UPLOAD;
@@ -52,75 +57,169 @@ import static br.com.apptransescolar.API.URLs.URL_UPLOAD;
 public class PerfilActivity extends AppCompatActivity {
 
     private static final String TAG = PerfilActivity.class.getSimpleName();
-    TextView textNomeU, textEmailU, textCpfU, textTellU;
+    TextView txtNomeU, txtNome, txtEmailU, txtCpfU, txtTellU, txtCountKids, txtCountTios;
     EditText periodo, editSenha, editSenhaConfirme;
-    CircleImageView imgPerfilT;
+    ImageView imgSetting;
+    CircleImageView imgPerfilP;
     Button btnSalvar;
-    //private static String URL_READ = "http://apptransescolar.com.br/apiapptransescolar/read_pais.php?apicall=findAll";
-    //private static String URL_UPLOAD = "http://apptransescolar.com.br/apiapptransescolar/pai/uploadpais.php";
     String getId;
     String getCpf;
     private Bitmap bitmap;
 
+    String nNome,nEmail,nCpf, nTell, nIMG;
+
     SessionManager sessionManager;
+
+    ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
+        getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
+        getSupportActionBar().setTitle("");
 
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
-        getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
-
-        textNomeU =  findViewById(R.id.textNomeU);
-        textEmailU =  findViewById(R.id.textEmailU);
-        textCpfU =  findViewById(R.id.textCpfU);
-        textTellU =  findViewById(R.id.textTellU);
-        imgPerfilT = findViewById(R.id.imgPerfilT);
+        txtNomeU =  findViewById(R.id.tv_name);
+        txtNome = findViewById(R.id.txtNome);
+        txtEmailU =  findViewById(R.id.txtEmailP);
+        txtCpfU =  findViewById(R.id.txtCPFP);
+        txtTellU =  findViewById(R.id.txtTellP);
+        imgPerfilP = findViewById(R.id.imgPerfilP);
         periodo =  findViewById(R.id.periodoD);
-
+        txtCountKids = findViewById(R.id.txtCountKids);
+        txtCountTios = findViewById(R.id.txtCountTios);
 
         HashMap<String, String> user = sessionManager.getUserDetail();
         getId = user.get(sessionManager.ID);
         getCpf = user.get(sessionManager.CPF);
+        nNome = user.get(sessionManager.NAME);
+        nEmail = user.get(sessionManager.EMAIL);
+        nCpf = user.get(sessionManager.CPF);
+        nTell = user.get(sessionManager.TELL);
+        nIMG = user.get(sessionManager.IMG);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogExit();
-            }
-        });
-
-        imgPerfilT.setOnClickListener(new View.OnClickListener() {
+        imgPerfilP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chosseFile();
             }
         });
 
+        if (verificaConexao() == true){
+            getUserDetail();
+            countKids();
+            countTios();
+        }else {
+            getUserDetailSessão();
+            txtCountKids.setText("0");
+            txtCountTios.setText("0");
+            Toast.makeText(this, "Sem conexão a internet!", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    //Contar pais
+    private void countTios(){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_COUNTTIOS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Mensagem GetUserDetail", response.toString());
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            JSONArray nameArray = json.names();
+                            JSONArray valArray = json.toJSONArray( nameArray );
+                            if (!json.equals("0")){
+                                for (int i = 0; i < valArray.length(); i++) {
+                                    JSONObject object = valArray.getJSONObject(i);
+                                    String nome = object.getString("nome").trim();
+
+                                    txtCountTios.setText(nome);
+                                }
+                            }
+                        }catch ( JSONException e ) {
+                            Log.e("JSON", "Error parsing JSON", e);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(PerfilActivity.this, "Opss!!! Sem Conexão a internet.", Toast.LENGTH_SHORT).show();
+                        Log.e("VolleyError", "Error", error);
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<>();
+                param.put("idPais", getId);
+                return param;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    //Contar tios
+    private void countKids(){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_COUNTPAIS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Mensagem GetUserDetail", response.toString());
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            JSONArray nameArray = json.names();
+                            JSONArray valArray = json.toJSONArray( nameArray );
+                            if (!json.equals("0")){
+                                for (int i = 0; i < valArray.length(); i++) {
+                                    JSONObject object = valArray.getJSONObject(i);
+                                    String nome = object.getString("nome").trim();
+
+                                    txtCountKids.setText(nome);
+                                }
+                            }
+                        }catch ( JSONException e ) {
+                            Log.e("JSON", "Error parsing JSON", e);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(PerfilActivity.this, "Opss!!! Sem Conexão a internet.", Toast.LENGTH_SHORT).show();
+                        Log.e("VolleyError", "Error", error);
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<>();
+                param.put("idPais", getId);
+                return param;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
     //Pegar inf da sessão
     private void getUserDetailSessão(){
-        HashMap<String, String> user = sessionManager.getUserDetail();
-        String nNome = user.get(sessionManager.NAME);
-        String nEmail = user.get(sessionManager.EMAIL);
-        String nCpf = user.get(sessionManager.CPF);
-        String nTell = user.get(sessionManager.TELL);
-        String nIMG = user.get(sessionManager.IMG);
-
-        getSupportActionBar().setTitle(nNome);
-        textNomeU.setText(nNome);
-        textEmailU.setText(nEmail);
-        textCpfU.setText(nCpf);
-        textTellU.setText(nTell);
-        Picasso.get().load(nIMG).into(imgPerfilT);
+        txtNomeU.setText(nNome);
+        txtNome.setText(nNome);
+        txtEmailU.setText(nEmail);
+        txtCpfU.setText(nCpf);
+        txtTellU.setText(nTell);
+        Picasso.get().load(nIMG).into(imgPerfilP);
 
     }
 
@@ -145,13 +244,12 @@ public class PerfilActivity extends AppCompatActivity {
                                     String tell = object.getString("tell").trim();
                                     String strImage = object.getString("img").trim();
 
-                                    textNomeU.setText(nome);
-                                    textEmailU.setText(email);
-                                    textCpfU.setText(cpf);
-                                    textTellU.setText(tell);
-                                    Picasso.get().load(strImage).into(imgPerfilT);
-                                    getSupportActionBar().setTitle(nome);
-
+                                    txtNomeU.setText(nome);
+                                    txtNome.setText(nome);
+                                    txtEmailU.setText(email);
+                                    txtCpfU.setText(cpf);
+                                    txtTellU.setText(tell);
+                                    Picasso.get().load(strImage).into(imgPerfilP);
                                 }
                             }else {
                                 Toast.makeText(PerfilActivity.this,json.getString("message"),Toast.LENGTH_LONG).show();
@@ -179,17 +277,6 @@ public class PerfilActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public  boolean verificaConexao() {
         boolean conectado;
         ConnectivityManager conectivtyManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -212,7 +299,17 @@ public class PerfilActivity extends AppCompatActivity {
             getUserDetailSessão();
             Toast.makeText(this, "Você está sem internet!", Toast.LENGTH_SHORT).show();
         }
+    }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (verificaConexao() == true){
+            getUserDetail();
+        }else {
+            getUserDetailSessão();
+            Toast.makeText(this, "Você está sem internet!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void chosseFile() {
@@ -229,7 +326,7 @@ public class PerfilActivity extends AppCompatActivity {
             Uri filePath = data.getData();
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                imgPerfilT.setImageBitmap(bitmap);
+                imgPerfilP.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e("Erro", "Upload", e);
@@ -297,7 +394,6 @@ public class PerfilActivity extends AppCompatActivity {
         return encodedImage;
     }
 
-
     //Dialo para sair da tele
     private void dialogExit(){
         // Use the Builder class for convenient dialog construction
@@ -320,12 +416,13 @@ public class PerfilActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_perfil, menu);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_perfil, menu);
         return true;
+    }
 
-    };
 
     //Editar Perfil
     public void EditarNome(View view) {
@@ -703,9 +800,14 @@ public class PerfilActivity extends AppCompatActivity {
         //alertDialog.show();
     }
 
+    
     public void alterarSenha(MenuItem item) {
         Intent intent = new Intent(PerfilActivity.this, AlterarSenhaActivity.class);
         startActivity(intent);
     }
 
+    public void Sair(MenuItem item) {
+         dialogExit();
+
+    }
 }

@@ -124,7 +124,7 @@
 
 
         <TextView
-            android:id="@+id/textPeriodo"
+            android:id="@+id/textEmail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -159,11 +159,11 @@
             android:textAlignment="center"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/textPeriodo"
+            app:layout_constraintTop_toBottomOf="@+id/textEmail"
             tools:ignore="MissingConstraints" />
 
         <TextView
-            android:id="@+id/textEscola"
+            android:id="@+id/textNumero"
             android:layout_width="0dp"
             android:layout_height="22dp"
             android:layout_marginStart="8dp"
@@ -186,7 +186,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/textEscola" />
+            app:layout_constraintTop_toBottomOf="@+id/textNumero" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline8"

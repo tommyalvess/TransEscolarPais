@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -264,10 +263,10 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
             //contextT = itemView.getContext();
 
             cardView = (CardView) itemView;
-            nome = itemView.findViewById(R.id.textView14);
-            tell = itemView.findViewById(R.id.textEscola);
-            email = itemView.findViewById(R.id.textView16);
-            img = itemView.findViewById(R.id.imgPass);
+            nome = itemView.findViewById(R.id.textNome);
+            tell = itemView.findViewById(R.id.textNumero);
+            email = itemView.findViewById(R.id.textEmail);
+            img = itemView.findViewById(R.id.imgTios);
 
 //            itemView.setOnClickListener(new View.OnClickListener() {
 //                @Override

@@ -102,7 +102,6 @@ public class FilhosActivity extends AppCompatActivity {
                 }else {
                     progressBar.setVisibility(View.GONE);
                     textAviso.setVisibility(View.VISIBLE);
-                    Toast.makeText(FilhosActivity.this, "Opss! Você não tem filhos cadastratos!", Toast.LENGTH_SHORT).show();
                 }
             }
 

@@ -1,8 +1,10 @@
 package br.com.apptransescolar.Activies;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -18,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.squareup.picasso.Picasso;
 
 import java.io.OutputStream;
@@ -26,7 +30,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import br.com.apptransescolar.Adpter.TiosAdapter;
 import br.com.apptransescolar.Classes.Tios;
 import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
@@ -34,11 +37,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class InfTioActivity extends AppCompatActivity {
 
-    TextView nomeT, emailT, tellT, apelidoT;
+    TextView nomeT, emailT, placaT, tellT, apelidoT, mapOn;
+    ImageView mapOnn, imgPhone;
     String cpf;
     CircleImageView imgPerfilT;
 
-    String getCpf, getNome;
+    String getCpf, getNome, novoTell;
     String msg;
     static String LoggedIn_User_Email;
 
@@ -50,17 +54,30 @@ public class InfTioActivity extends AppCompatActivity {
 
     final String[] items = {"Desculpe, ele não irá hoje!", "Desculpe, estamos atrasados!"};
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inf_tio);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         contextView = findViewById(R.id.contextView);
+        apelidoT = findViewById(R.id.txtApelido);
+        imgPerfilT = findViewById(R.id.imgPerfilT);
+        nomeT = findViewById(R.id.nomeT);
+        tellT = findViewById(R.id.tellT);
+        placaT = findViewById(R.id.placaT);
+        emailT = findViewById(R.id.emailT);
+        mapOnn = findViewById(R.id.mapOnn);
+        mapOn = findViewById(R.id.mapOn);
+        imgPhone = findViewById(R.id.imgPhone);
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
+        getSupportActionBar().setTitle("");
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -71,33 +88,52 @@ public class InfTioActivity extends AppCompatActivity {
         getNome = user.get(sessionManager.NAME);
 
         tios = (Tios) getIntent().getExtras().get("tios");
-        getSupportActionBar().setTitle("");
-        nomeT = findViewById(R.id.nomeK);
-        emailT = findViewById(R.id.periodoK);
-        tellT = findViewById(R.id.endK);
-        apelidoT = findViewById(R.id.apelidoK);
-        imgPerfilT = findViewById(R.id.imgPerfilT);
 
         nomeT.setText(tios.getNome());
-        emailT.setText(tios.getEmail().toUpperCase());
         tellT.setText(tios.getTell());
-        cpf = tios.getCpf();
+        placaT.setText(tios.getPlaca());
         apelidoT.setText(tios.getApelido());
-        Picasso.get().load(tios.getImg()).into(imgPerfilT);
+        emailT.setText(tios.getEmail());
+
+        novoTell = tios.getTell();
+
+        String   tellAString = novoTell.replace("-", "" );
+        String   tellBString = tellAString.replace("(", "" );
+        final String   tellCString = tellBString.replace(")", "" );
+
+        RequestOptions cropOptions = new RequestOptions().centerCrop().placeholder(R.drawable.kids).error(R.drawable.kids);
+        Glide.with(this).load(tios.getImg()).apply(cropOptions).into(imgPerfilT);
 
 
         LoggedIn_User_Email = tios.getCpf();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mapOnn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 Intent it = new Intent(InfTioActivity.this, PaisMapsActivity.class);
                 it.putExtra("tios", tios);
                 InfTioActivity.this.startActivity(it);
-
             }
         });
+
+        mapOn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(InfTioActivity.this, PaisMapsActivity.class);
+                it.putExtra("tios", tios);
+                InfTioActivity.this.startActivity(it);
+            }
+        });
+
+        imgPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + tellCString));
+                startActivity(callIntent);
+            }
+        });
+
     }
 
     private void notificationMesage(){

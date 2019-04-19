@@ -98,11 +98,14 @@
 
     <TextView
         android:id="@+id/textForgotP"
-        android:layout_width="122dp"
+        android:layout_width="0dp"
         android:layout_height="19dp"
         android:layout_marginTop="35dp"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/roboto_thin"
         android:text="Esqueceu a Senha?"
+        android:textSize="14dp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

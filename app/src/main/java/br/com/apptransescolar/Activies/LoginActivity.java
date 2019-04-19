@@ -174,6 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                         }catch ( JSONException e ) {
                             loginProgress.setVisibility(View.GONE);
                             btnLogin.setVisibility(View.VISIBLE);
+                            Toast.makeText(LoginActivity.this,"Opss! Algo deu errado!",Toast.LENGTH_LONG).show();
                             Log.e("JSON", "Error parsing JSON", e);
                         }
 

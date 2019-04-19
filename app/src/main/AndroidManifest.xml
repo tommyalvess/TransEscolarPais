@@ -16,6 +16,8 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_GPS" />
+    <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
+
 
     <application
         android:allowBackup="true"
@@ -72,7 +74,6 @@
         </activity>
         <activity
             android:name=".Activies.InfFilhosActivity"
-            android:label="@string/title_activity_inf_filhos"
             android:parentActivityName=".Activies.InfFilhosActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -119,7 +120,7 @@
         <activity
             android:name=".Activies.PerfilActivity"
             android:label="@string/title_activity_perfil"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />

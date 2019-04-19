@@ -4,18 +4,14 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import br.com.apptransescolar.Classes.Kids;
@@ -24,7 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class InfFilhosActivity extends AppCompatActivity {
 
-    TextView nomeK, periodoK, escolaK, endK, dt_nasc;
+    TextView nomeK, periodoK, escolaK, endK, dt_nasc, toolbartext;
     String id;
     CircleImageView imgInfKids;
     Spinner spinnerPeriodo, spinnerTios, spinnerEscola;
@@ -44,15 +40,15 @@ public class InfFilhosActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         kids = (Kids) getIntent().getExtras().get("kids");
-        //getSupportActionBar().setTitle(kids.getNome());
         nomeK = findViewById(R.id.nomeK);
-        periodoK = findViewById(R.id.periodoK);
+        periodoK = findViewById(R.id.emailT);
         escolaK = findViewById(R.id.escolaK);
-        endK = findViewById(R.id.endK);
+        endK = findViewById(R.id.tellT);
         dt_nasc = findViewById(R.id.dt_nasc);
         imgInfKids = findViewById(R.id.imgInfKids);
+        toolbartext = findViewById(R.id.toolbartext);
 
-
+        toolbartext.setText(kids.getNome());
         nomeK.setText(kids.getNome());
         escolaK.setText(kids.getNm_escola());
         periodoK.setText(kids.getPeriodo().toUpperCase());

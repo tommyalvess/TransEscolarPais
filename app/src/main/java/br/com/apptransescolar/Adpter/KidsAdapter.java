@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.List;
 import br.com.apptransescolar.Activies.InfFilhosActivity;
 import br.com.apptransescolar.Classes.Kids;
 import br.com.apptransescolar.R;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class KidsAdapter  extends RecyclerView.Adapter<KidsAdapter.MyViewHolder>{
 
@@ -87,8 +85,8 @@ public class KidsAdapter  extends RecyclerView.Adapter<KidsAdapter.MyViewHolder>
 
             cardView = (CardView) itemView;
             nome = itemView.findViewById(R.id.textNome);
-            escola = itemView.findViewById(R.id.textEscola);
-            periodo = itemView.findViewById(R.id.textPeriodo);
+            escola = itemView.findViewById(R.id.textNumero);
+            periodo = itemView.findViewById(R.id.textEmail);
             //img = itemView.findViewById(R.id.imgPass);
             final Kids kids = new Kids();
 

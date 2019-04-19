@@ -26,6 +26,32 @@
                 android:layout_x="14dp"
                 android:layout_y="11dp"
                 android:text="Nome:"
+                android:textSize="13dp"
+                android:fontFamily="@font/roboto_bold"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/nomeText"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="121dp"
+                android:layout_x="14dp"
+                android:layout_y="43dp"
+                android:textSize="13dp"
+                android:text="Telefone:"
+                android:fontFamily="@font/roboto_bold"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_x="14dp"
+                android:layout_y="72dp"
+                android:text="Endereço:"
+                android:textSize="13dp"
+                android:fontFamily="@font/roboto_bold"
                 android:textStyle="bold" />
 
             <TextView
@@ -36,17 +62,10 @@
                 android:layout_x="93dp"
                 android:layout_y="8dp"
                 android:text="Nome"
+                android:textSize="14dp"
+                android:fontFamily="@font/roboto_thin"
                 android:textStyle="bold" />
 
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_x="14dp"
-                android:layout_y="72dp"
-                android:text="Endereço:"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/endeText"
@@ -57,18 +76,9 @@
                 android:layout_x="93dp"
                 android:layout_y="71dp"
                 android:autoLink="map"
+                android:textSize="13dp"
+                android:fontFamily="@font/roboto_thin"
                 android:text="Endereço" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/nomeText"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="121dp"
-                android:layout_x="14dp"
-                android:layout_y="43dp"
-                android:text="Telefone:"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tellText"
@@ -80,6 +90,8 @@
                 android:layout_x="93dp"
                 android:layout_y="43dp"
                 android:autoLink="phone"
+                android:textSize="15dp"
+                android:fontFamily="@font/roboto_thin"
                 android:text="Telefone" />
 
         </AbsoluteLayout>
