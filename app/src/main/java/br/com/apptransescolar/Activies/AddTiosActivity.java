@@ -2,59 +2,52 @@ package br.com.apptransescolar.Activies;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.util.HashMap;
 import java.util.List;
 
 import br.com.apptransescolar.API.ApiClient;
+import br.com.apptransescolar.API.IEscolas;
 import br.com.apptransescolar.API.ITios;
+import br.com.apptransescolar.Adpter.AddTiosAdapter;
+import br.com.apptransescolar.Adpter.EscolaAdapter;
 import br.com.apptransescolar.Adpter.TiosAdapter;
+import br.com.apptransescolar.Classes.Escolas;
+import br.com.apptransescolar.Classes.Tio;
 import br.com.apptransescolar.Classes.Tios;
-import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TiosActivity extends AppCompatActivity {
+public class AddTiosActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private List<Tios> tios;
-    private TiosAdapter tiosAdapter;
-    private ITios iPai;
+    private List<Tio> tios;
+    private AddTiosAdapter tiosAdapter;
+    private ITios iTios;
     ProgressBar progressBar;
-    SessionManager sessionManager;
-    String getId;
-    private int id;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tios2);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_add_tios);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
-        getSupportActionBar().setTitle("Tios Cadastrados");     //Titulo para ser exibido na sua Action Bar em frente à seta
+        getSupportActionBar().setTitle("Tios");     //Titulo para ser exibido na sua Action Bar em frente à seta
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -64,55 +57,64 @@ public class TiosActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        fetchTios();
-
+        fetchTios("users", "");
     }
 
-    private void fetchTios() {
+    private void fetchTios(String type, String key) {
 
-        sessionManager = new SessionManager(this);
+        iTios = ApiClient.getApiClient().create(ITios.class);
 
-        HashMap<String, String> user = sessionManager.getUserDetail();
-        getId = user.get(sessionManager.ID);
-        id = Integer.parseInt(getId);
-        iPai = ITios.retrofit.create(ITios.class);
+        Call<List<Tio>> call = iTios.getAllTios(type, key);
 
-        final Call<List<Tios>> call = iPai.getTios(id);
-
-        call.enqueue(new Callback<List<Tios>>() {
+        call.enqueue(new Callback<List<Tio>>() {
             @Override
-            public void onResponse(Call<List<Tios>> call, Response<List<Tios>> response) {
+            public void onResponse(Call<List<Tio>> call, Response<List<Tio>> response) {
                 if (!response.body().isEmpty()){
                     progressBar.setVisibility(View.GONE);
                     tios = response.body();
-                    tiosAdapter = new TiosAdapter(tios, TiosActivity.this);
+                    tiosAdapter = new AddTiosAdapter(tios, AddTiosActivity.this);
                     recyclerView.setAdapter(tiosAdapter);
                     tiosAdapter.notifyDataSetChanged();
                 }else {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(TiosActivity.this, "Opss! Você não tem tio vinculado!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Tios>> call, Throwable t) {
+            public void onFailure(Call<List<Tio>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(TiosActivity.this, "Opss! Nada foi encontrado!", Toast.LENGTH_SHORT).show();
-                Log.e("Call", "carregar dados", t);
+                Toast.makeText(AddTiosActivity.this, "Algo deu errado!", Toast.LENGTH_LONG).show();
+                Log.e("Chamada", "Erro", t);
             }
         });
+
     }
 
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_add_tio, menu);
+        inflater.inflate(R.menu.menu_escola, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                fetchTios("users", query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                fetchTios("users", newText);
+                return false;
+            }
+        });
         return true;
-
-    };
-
-    public void add(MenuItem item) {
-        Intent intent = new Intent(TiosActivity.this, AddTiosActivity.class);
-        startActivity(intent);
     }
+
 
 }

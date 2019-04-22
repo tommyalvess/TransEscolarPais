@@ -19,7 +19,7 @@
             android:layout_height="38dp"
             android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
-            android:src="@drawable/user_perfil"
+            android:src="@drawable/usericon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,11 +31,11 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="28dp"
             android:layout_marginEnd="8dp"
+            android:fontFamily="@font/roboto_light"
             android:paddingLeft="20dp"
             android:text="Rafael Andrade"
-            android:fontFamily="@font/roboto_light"
-            android:textSize="15dp"
             android:textIsSelectable="true"
+            android:textSize="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
@@ -61,12 +61,13 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="36dp"
             android:layout_marginEnd="8dp"
+            android:autoLink="phone"
+            android:fontFamily="@font/roboto_thin"
             android:paddingLeft="20dp"
             android:text="+266 225 225"
             android:textIsSelectable="true"
-            android:textStyle="bold"
-            android:fontFamily="@font/roboto_thin"
             android:textSize="15dp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
@@ -84,19 +85,19 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView8" />
 
         <TextView
-            android:id="@+id/placaT"
+            android:id="@+id/txtPlaca"
             android:layout_width="wrap_content"
             android:layout_height="23dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="24dp"
             android:layout_marginTop="44dp"
             android:layout_marginEnd="8dp"
+            android:fontFamily="@font/roboto_thin"
             android:paddingLeft="20dp"
             android:text="sd4654"
-            android:textStyle="bold"
-            android:fontFamily="@font/roboto_thin"
-            android:textSize="15dp"
             android:textIsSelectable="true"
+            android:textSize="15dp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView9"
@@ -115,7 +116,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView9" />
 
         <TextView
-            android:id="@+id/emailT"
+            android:id="@+id/txtEmail"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
@@ -123,6 +124,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="17dp"
+            android:autoLink="email"
             android:fontFamily="@font/roboto_thin"
             android:paddingLeft="20dp"
             android:text="Wiliam@gmail.com"
@@ -133,7 +135,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView11"
-            app:layout_constraintTop_toBottomOf="@+id/placaT"
+            app:layout_constraintTop_toBottomOf="@+id/txtEnderecoK"
             app:layout_constraintVertical_bias="0.0" />
 
     </android.support.constraint.ConstraintLayout>

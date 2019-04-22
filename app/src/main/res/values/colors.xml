@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#303F9F</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#007fff</color>
+    <color name="colorPrimaryDark">#007fff</color>
     <color name="colorAccent">#FF4081</color>
     <color name="AzulTema">#007fff</color>
     <color name="holo_light_primary">#007fff</color>
@@ -27,4 +27,5 @@
     <color name="grey">#E5E5E5</color>
 
     <color name="white">#FFFFFF</color>
+    <color name="red">#ff0000</color>
 </resources>

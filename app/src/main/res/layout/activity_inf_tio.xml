@@ -59,7 +59,7 @@
             app:cardCornerRadius="@dimen/screen_percentage_15"
             android:layout_marginRight="25dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="215dp">
+            android:layout_marginTop="220dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,14 +77,19 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mensagem"
+                        android:text="Pais"
                         android:textSize="15sp" />
 
-                    <ImageView
-                        android:layout_width="45dp"
-                        android:layout_height="25dp"
+                    <TextView
+                        android:id="@+id/countPais"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:src="@drawable/mail"/>
+                        android:textAlignment="center"
+                        android:fontFamily="@font/roboto_light"
+                        android:textSize="20dp"
+                        android:textColor="@color/AzulTema"
+                        android:text="0"/>
 
                 </LinearLayout>
 
@@ -121,15 +126,19 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Telefone"
+                        android:text="Crianças"
                         android:textSize="15sp" />
 
-                    <ImageView
-                        android:id="@+id/imgPhone"
-                        android:layout_width="45dp"
-                        android:layout_height="25dp"
+                    <TextView
+                        android:id="@+id/countKids"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:src="@drawable/tell_perfil"/>
+                        android:textAlignment="center"
+                        android:fontFamily="@font/roboto_light"
+                        android:textSize="20dp"
+                        android:textColor="@color/AzulTema"
+                        android:text="0"/>
 
                 </LinearLayout>
             </LinearLayout>

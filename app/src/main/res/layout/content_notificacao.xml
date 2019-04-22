@@ -149,7 +149,7 @@
                 android:src="@drawable/ic_email_black_24dp" />
 
             <TextView
-                android:id="@+id/nomeT"
+                android:id="@+id/txtNomeK"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -170,7 +170,7 @@
                 android:src="@drawable/ic_email_black_24dp" />
 
             <TextView
-                android:id="@+id/emailT"
+                android:id="@+id/txtxDtaK"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -192,7 +192,7 @@
                 android:src="@drawable/ic_phone_android_black_24dp" />
 
             <TextView
-                android:id="@+id/tellT"
+                android:id="@+id/txtEscolaK"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

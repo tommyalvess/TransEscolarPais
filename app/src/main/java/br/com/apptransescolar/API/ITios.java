@@ -3,6 +3,7 @@ package br.com.apptransescolar.API;
 import java.util.List;
 
 import br.com.apptransescolar.Classes.Kids;
+import br.com.apptransescolar.Classes.Tio;
 import br.com.apptransescolar.Classes.Tios;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -17,8 +18,9 @@ public interface ITios {
     @GET("tio")
     Call<List<Tios>> getTios(@Query("id") int idPai);
 
+
     @GET("getTios.php")
-    Call<List<Tios>> getTios(
+    Call<List<Tio>> getAllTios(
             @Query("item_type") String item_type,
             @Query("key") String keyword
     );
@@ -27,4 +29,5 @@ public interface ITios {
             .baseUrl(URL_ASP)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
+
 }

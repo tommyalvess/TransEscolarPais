@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/cardView"
-        android:layout_width="match_parent"
-        app:cardBackgroundColor="#b0c4de"
-        app:cardCornerRadius="@dimen/screen_percentage_05"
-        app:cardElevation="@dimen/screen_percentage_10"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_height="wrap_content">
+    android:id="@+id/cardViewList"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    app:cardBackgroundColor="#b0c4de"
+    app:cardCornerRadius="@dimen/screen_percentage_05"
+    app:cardElevation="@dimen/screen_percentage_15"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -23,7 +25,7 @@
         android:orientation="vertical">
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/imgK"
+            android:id="@+id/imgTios"
             android:layout_width="58dp"
             android:layout_height="63dp"
             android:layout_marginStart="8dp"
@@ -44,16 +46,16 @@
 
         <TextView
             android:id="@+id/textNome"
-            android:layout_width="195dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textApelido"
             android:layout_alignTop="@+id/imageView2"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="250dp"
             android:layout_x="73dp"
             android:layout_y="11dp"
-            android:fontFamily="@font/roboto_black"
+            android:fontFamily="@font/roboto_regular"
             android:text="Nome"
             android:textColor="#000"
             android:textSize="13dp"
@@ -65,44 +67,25 @@
 
         <TextView
             android:id="@+id/textApelido"
-            android:layout_width="195dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="250dp"
+            android:layout_marginBottom="8dp"
             android:layout_x="73dp"
             android:layout_y="30dp"
+            android:autoLink="phone"
             android:fontFamily="@font/roboto_light"
-            android:text="Escola"
+            android:text="numero"
             android:textColor="#000"
             android:textSize="@dimen/fab_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline10"
-            app:layout_constraintTop_toBottomOf="@+id/textNome" />
-
-        <TextView
-            android:id="@+id/textEmail"
-            android:layout_width="195dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="230dp"
-            android:layout_marginBottom="10dp"
-            android:layout_x="74dp"
-            android:layout_y="54dp"
-            android:fontFamily="@font/roboto_light"
-            android:text="Periodo"
-            android:textAllCaps="true"
-            android:textColor="#000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline10"
-            app:layout_constraintTop_toBottomOf="@+id/textApelido"
+            app:layout_constraintTop_toBottomOf="@+id/textNome"
             app:layout_constraintVertical_bias="0.0" />
 
         <android.support.constraint.Guideline
@@ -114,5 +97,6 @@
 
     </android.support.constraint.ConstraintLayout>
 
-</android.support.v7.widget.CardView>
 
+
+</android.support.v7.widget.CardView>

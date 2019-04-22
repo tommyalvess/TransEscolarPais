@@ -7,8 +7,13 @@ public class URLs {
     //Perfil
     public static String URL_READ = "http://apptransescolar.com.br/apiapptransescolar/read_pais.php?apicall=findPaisAll";
     public static String URL_UPLOAD = "http://apptransescolar.com.br/apiapptransescolar/pai/uploadpais.php";
-    public static String URL_COUNTPAIS = "http://192.168.1.107/apiapptransescolar/count_kids.php?apicall=countAll";
-    public static String URL_COUNTTIOS = "http://192.168.1.107/apiapptransescolar/count_tios.php?apicall=countAll";
+    public static String URL_UPLOAD_KIDS = "http://apptransescolar.com.br/apiapptransescolar/kids/uploadkids.php";
+    public static String URL_COUNTPAIS = "http://apptransescolar.com.br/apiapptransescolar/count_kids.php?apicall=countAll";
+    public static String URL_COUNTTIOS = "http://apptransescolar.com.br/apiapptransescolar/count_tios.php?apicall=countAll";
+
+    //Perfil Tios
+    public static String URL_COUNTTIOSKIDS = "http://apptransescolar.com.br/apiapptransescolar/count_kids_tios.php?apicall=countAll";
+    public static String URL_COUNTTIOSPAIS = "http://apptransescolar.com.br/apiapptransescolar/count_pais_tios.php?apicall=countAll";
 
 
     //Escola Search
@@ -31,6 +36,16 @@ public class URLs {
 
     //Recuperar Senha
     public static String URL_READ_FORGOT = "http://apptransescolar.com.br/apiapptransescolar/read_forgot.php?apicall=findPaisAll";
+
+    //Deletar Kids
+    public static String URL_DELETE_KIDS = "http://apptransescolar.com.br/apiapptransescolar/delete_kids.php";
+    public static String URL_DELETE_TIOS = "http://apptransescolar.com.br/apiapptransescolar/delete_tio.php";
+
+    //Cadastrar Tio
+    public static String INSERIR_TIO = "http://apptransescolar.com.br/apiapptransescolar/inserir_tio.php";
+
+
+
 
 
 

@@ -8,10 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import java.util.List;
 
-import br.com.apptransescolar.Activies.CadastroFilhoActivity;
-import br.com.apptransescolar.Activies.PaisActivity;
 import br.com.apptransescolar.Classes.Tio;
-import br.com.apptransescolar.Classes.Tios;
 import br.com.apptransescolar.R;
 
 public class SpinnerTiosAdapter extends BaseAdapter {

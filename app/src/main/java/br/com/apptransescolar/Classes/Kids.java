@@ -6,24 +6,26 @@ import java.io.Serializable;
 
 public class Kids implements Serializable {
 
-    @SerializedName("idKids") private int idKids;
+    @SerializedName("IdK") private int idKids;
     @SerializedName("Nome") private String nome;
     @SerializedName("Periodo") private String periodo;
     @SerializedName("Img") private String img;
     @SerializedName("Escola") private String nm_escola;
     @SerializedName("DtNas") private String dt_nas;
     @SerializedName("End") private String end_principal;
+    @SerializedName("Tio") private String tio;
 
 
-    public Kids(String nome, String escola, String periodo, String endereco, String dtNas) {
+    public Kids(int idKids, String nome, String periodo, String img, String nm_escola, String dt_nas, String end_principal, String tio) {
+        this.idKids = idKids;
         this.nome = nome;
-        this.nm_escola = escola;
         this.periodo = periodo;
-        this.end_principal = endereco;
-        this.dt_nas = dtNas;
-
+        this.img = img;
+        this.nm_escola = nm_escola;
+        this.dt_nas = dt_nas;
+        this.end_principal = end_principal;
+        this.tio = tio;
     }
-
 
     public Kids(int id, String nome, String escola, String periodo, String endereco, String dtNas) {
         this.idKids = id;
@@ -96,5 +98,13 @@ public class Kids implements Serializable {
 
     public String toString(){
         return this.nome;
+    }
+
+    public String getTio() {
+        return tio;
+    }
+
+    public void setTio(String tio) {
+        this.tio = tio;
     }
 }

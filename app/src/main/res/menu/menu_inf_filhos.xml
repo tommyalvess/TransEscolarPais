@@ -2,9 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="br.com.apptransescolar.Activies.InfFilhosActivity">
+
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_alterar"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Alterar"
+        android:onClick="alterarKids"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_deletar"
+        android:orderInCategory="100"
+        android:title="Deletar"
+        android:onClick="deletarKids"
         app:showAsAction="never" />
 </menu>

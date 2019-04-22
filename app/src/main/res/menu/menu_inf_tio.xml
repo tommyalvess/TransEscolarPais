@@ -3,9 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="br.com.apptransescolar.Activies.InfTioActivity">
+
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_deletar"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Deletar"
+        android:onClick="deletarPais"
         app:showAsAction="never" />
+
 </menu>

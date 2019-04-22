@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -69,6 +71,11 @@ public class LoginActivity extends AppCompatActivity {
         OneSignal.startInit(this).init();
 
         sessionManager = new SessionManager(this);
+
+        Window window = LoginActivity.this.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(LoginActivity.this,R.color.ColorTheme));
 
         editCpf = findViewById(R.id.login_main);
         editSenha = findViewById(R.id.login_password);
@@ -174,7 +181,6 @@ public class LoginActivity extends AppCompatActivity {
                         }catch ( JSONException e ) {
                             loginProgress.setVisibility(View.GONE);
                             btnLogin.setVisibility(View.VISIBLE);
-                            Toast.makeText(LoginActivity.this,"Opss! Algo deu errado!",Toast.LENGTH_LONG).show();
                             Log.e("JSON", "Error parsing JSON", e);
                         }
 
@@ -186,7 +192,6 @@ public class LoginActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         loginProgress.setVisibility(View.GONE);
                         btnLogin.setVisibility(View.VISIBLE);
-                        //Toast.makeText(LoginActivity.this, "Opss!! Sem Conexão a internet", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "response: " + error);
                     }
                 }){
@@ -235,5 +240,10 @@ public class LoginActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(LoginActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
         }
+    }
+
+    public void Cadastrar(View view) {
+        Intent intent = new Intent(LoginActivity.this, CadastroActivity.class);
+        startActivity(intent);
     }
 }

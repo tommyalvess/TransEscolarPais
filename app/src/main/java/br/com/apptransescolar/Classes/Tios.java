@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Tios implements Serializable {
+    @SerializedName("IdT") private int id;
     @SerializedName("Nome") private String nome;
     @SerializedName("Email")private String email;
     @SerializedName("Cpf")private String cpf;
@@ -13,7 +14,6 @@ public class Tios implements Serializable {
     @SerializedName("Tell")private String tell;
     @SerializedName("Senha")private String senha;
     @SerializedName("Img")private String img;
-    private int id;
 
     public Tios(String nome, String email, String cpf, String apelido, String placa, String tell, String senha, String img, int id) {
         this.nome = nome;

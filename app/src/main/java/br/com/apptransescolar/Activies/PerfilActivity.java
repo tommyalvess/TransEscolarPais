@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NavUtils;
@@ -33,6 +34,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -72,6 +76,10 @@ public class PerfilActivity extends AppCompatActivity {
 
     ConstraintLayout constraintLayout;
 
+    RequestOptions cropOptions;
+
+    private final Handler handler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +116,9 @@ public class PerfilActivity extends AppCompatActivity {
         nTell = user.get(sessionManager.TELL);
         nIMG = user.get(sessionManager.IMG);
 
+        cropOptions = new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true).error(R.drawable.kids);
+
         imgPerfilP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,9 +134,21 @@ public class PerfilActivity extends AppCompatActivity {
             getUserDetailSessão();
             txtCountKids.setText("0");
             txtCountTios.setText("0");
-            Toast.makeText(this, "Sem conexão a internet!", Toast.LENGTH_SHORT).show();
         }
 
+        doTheAutoRefresh();
+
+    }
+
+    //Refresh
+    private void doTheAutoRefresh() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                verificaConexao();
+                doTheAutoRefresh();
+            }
+        }, 100);
     }
 
     //Contar pais
@@ -219,8 +242,7 @@ public class PerfilActivity extends AppCompatActivity {
         txtEmailU.setText(nEmail);
         txtCpfU.setText(nCpf);
         txtTellU.setText(nTell);
-        Picasso.get().load(nIMG).into(imgPerfilP);
-
+        Glide.with(this).load(nIMG).apply(cropOptions).into(imgPerfilP);
     }
 
     //Pegar as infs do BD
@@ -249,7 +271,8 @@ public class PerfilActivity extends AppCompatActivity {
                                     txtEmailU.setText(email);
                                     txtCpfU.setText(cpf);
                                     txtTellU.setText(tell);
-                                    Picasso.get().load(strImage).into(imgPerfilP);
+
+                                    Glide.with(PerfilActivity.this).load(strImage).apply(cropOptions).into(imgPerfilP);
                                 }
                             }else {
                                 Toast.makeText(PerfilActivity.this,json.getString("message"),Toast.LENGTH_LONG).show();
@@ -295,17 +318,22 @@ public class PerfilActivity extends AppCompatActivity {
         super.onResume();
         if (verificaConexao() == true){
             getUserDetail();
+            countKids();
+            countTios();
         }else {
             getUserDetailSessão();
             Toast.makeText(this, "Você está sem internet!", Toast.LENGTH_SHORT).show();
         }
     }
 
+
     @Override
     protected void onRestart() {
         super.onRestart();
         if (verificaConexao() == true){
             getUserDetail();
+            countKids();
+            countTios();
         }else {
             getUserDetailSessão();
             Toast.makeText(this, "Você está sem internet!", Toast.LENGTH_SHORT).show();
@@ -350,7 +378,6 @@ public class PerfilActivity extends AppCompatActivity {
 
                             if (success.equals("1")){
                                 Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -800,7 +827,7 @@ public class PerfilActivity extends AppCompatActivity {
         //alertDialog.show();
     }
 
-    
+
     public void alterarSenha(MenuItem item) {
         Intent intent = new Intent(PerfilActivity.this, AlterarSenhaActivity.class);
         startActivity(intent);

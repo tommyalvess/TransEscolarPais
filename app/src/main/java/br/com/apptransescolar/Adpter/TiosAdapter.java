@@ -37,7 +37,7 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
     private final List<Tios> nData;
     RequestOptions options;
 
-    final String[] items = {"Desculpe, ele não irá hoje!", "Desculpe, estamos atrasados!"};
+    final String[] items = {"Desculpe, ele não irá hoje!", "Está chegando?"};
 
     SessionManager sessionManager;
     String getNome;
@@ -57,7 +57,7 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
     public TiosAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view ;
         LayoutInflater mInflater = LayoutInflater.from(context);
-        view = mInflater.inflate(R.layout.linha_pais_list,parent,false);
+        view = mInflater.inflate(R.layout.linha_tios_list,parent,false);
         sessionManager = new SessionManager(context);
 
         HashMap<String, String> user = sessionManager.getUserDetail();
@@ -70,9 +70,8 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull TiosAdapter.MyViewHolder holder, final int position) {
         final Tios tios = this.nData.get(position);
-        holder.nome.setText(nData.get(position).getNome());
-        holder.tell.setText(nData.get(position).getTell());
-        holder.email.setText(nData.get(position).getEmail());
+        holder.nome.setText(nData.get(position).getApelido());
+        holder.apelido.setText(nData.get(position).getTell());
         Glide.with(context).load(nData.get(position).getImg()).apply(options).into(holder.img);
 
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -84,11 +83,11 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
                     public void onClick(DialogInterface dialog, int item) {
                         // Do something with the selection
                         if (item == 0){
-                            Snackbar.make(v, R.string.mensagem_enviada, Snackbar.LENGTH_SHORT)
+                            Snackbar.make(v, R.string.mensagem_enviada, Snackbar.LENGTH_LONG)
                                     .show();
                             sendNotificationFirst();
                         }else if (item == 1){
-                            Snackbar.make(v, R.string.mensagem_enviada, Snackbar.LENGTH_SHORT)
+                            Snackbar.make(v, R.string.mensagem_enviada, Snackbar.LENGTH_LONG)
                                     .show();
                             sendNotificationSecond();
                         }
@@ -195,7 +194,7 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
                                         + "\"filters\": [{\"field\": \"tag\", \"key\": \"User_ID\", \"relation\": \"=\", \"value\": \"" + send_email + "\"}],"
 
                                         + "\"data\": {\"foo\": \"bar\"},"
-                                        + "\"contents\": {\"en\": \" "+ getNome +":"+"Desculpe, estamos atrasados!"+"\"}"
+                                        + "\"contents\": {\"en\": \" "+ getNome +":"+"Está chegando?!"+"\"}"
                                         + "}";
 
 
@@ -251,7 +250,7 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         CardView cardView;
-        TextView nome, tell, email, cpf;
+        TextView nome, apelido;
         CircleImageView img;
 
         //private Context contextT;
@@ -264,8 +263,7 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
 
             cardView = (CardView) itemView;
             nome = itemView.findViewById(R.id.textNome);
-            tell = itemView.findViewById(R.id.textNumero);
-            email = itemView.findViewById(R.id.textEmail);
+            apelido = itemView.findViewById(R.id.textApelido);
             img = itemView.findViewById(R.id.imgTios);
 
 //            itemView.setOnClickListener(new View.OnClickListener() {

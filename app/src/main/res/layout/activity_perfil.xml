@@ -170,7 +170,7 @@
                         android:layout_height="wrap_content"
                         android:text="Nome"
                         android:fontFamily="@font/roboto_regular"
-                        android:textColor="@color/headings"
+                        android:textColor="@color/AzulTema"
                         android:textSize="13sp" />
 
                     <TextView
@@ -202,7 +202,7 @@
                         android:layout_height="wrap_content"
                         android:text="Telefone"
                         android:fontFamily="@font/roboto_regular"
-                        android:textColor="@color/headings"
+                        android:textColor="@color/AzulTema"
                         android:textSize="13sp" />
 
                     <TextView
@@ -235,7 +235,7 @@
                         android:layout_height="wrap_content"
                         android:text="Email"
                         android:fontFamily="@font/roboto_regular"
-                        android:textColor="@color/headings"
+                        android:textColor="@color/AzulTema"
                         android:textSize="13sp" />
 
                     <TextView
@@ -268,7 +268,7 @@
                         android:layout_height="wrap_content"
                         android:text="CPF"
                         android:fontFamily="@font/roboto_regular"
-                        android:textColor="@color/headings"
+                        android:textColor="@color/AzulTema"
                         android:textSize="13sp" />
 
                     <TextView

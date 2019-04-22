@@ -60,7 +60,7 @@ public class FilhosActivity extends AppCompatActivity {
 
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         //getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
-        getSupportActionBar().setTitle("Filhos Cadastrados");     //Titulo para ser exibido na sua Action Bar em frente à seta
+        getSupportActionBar().setTitle("Filhos");     //Titulo para ser exibido na sua Action Bar em frente à seta
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 

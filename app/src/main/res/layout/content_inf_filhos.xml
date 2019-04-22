@@ -1,196 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Activies.InfFilhosActivity"
+    android:layout_marginTop="325dp"
+    tools:context=".Activies.InfTioActivity"
     tools:showIn="@layout/activity_inf_filhos">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textNomeK"
-            android:layout_width="40dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="67dp"
-            android:text="Nome:"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/guideline11"
-            app:layout_constraintHorizontal_bias="0.0"
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="25dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/usericon"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline12" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/nomeK"
-            android:layout_width="0dp"
-            android:layout_height="15dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="6dp"
-            android:text="Nome"
-            android:onClick="EditarNomeK"
+            android:id="@+id/txtNomeK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="8dp"
+            android:paddingLeft="20dp"
+            android:text="Rafael Andrade"
+            android:fontFamily="@font/roboto_light"
+            android:textSize="15dp"
+            android:textIsSelectable="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/guideline11"
-            app:layout_constraintTop_toTopOf="@+id/guideline12" />
-
-        <TextView
-            android:id="@+id/textPeriodoK"
-            android:layout_width="53dp"
-            android:layout_height="19dp"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="54dp"
-            android:text="Escola:"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/guideline11"
             app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageView6"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="25dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/schoolhat"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textEscolaK" />
-
-        <TextView
-            android:id="@+id/emailT"
-            android:layout_width="0dp"
-            android:layout_height="19dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="6dp"
-            android:text="Periodo"
-            android:onClick="EditarPeriodoK"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/guideline11"
-            app:layout_constraintTop_toBottomOf="@+id/nomeK" />
-
-
-        <TextView
-            android:id="@+id/textEscolaK"
-            android:layout_width="46dp"
-            android:layout_height="19dp"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="61dp"
-            android:text="Período:"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/guideline11"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textNomeK" />
-
-        <TextView
-            android:id="@+id/escolaK"
-            android:layout_width="0dp"
-            android:layout_height="19dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="6dp"
-            android:text="Escola"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/guideline11"
-            app:layout_constraintTop_toBottomOf="@+id/emailT" />
-
-        <TextView
-            android:id="@+id/textEndK"
-            android:layout_width="67dp"
-            android:layout_height="19dp"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="40dp"
-            android:text="Endereço: "
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/guideline11"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textPeriodoK" />
-
-        <TextView
-            android:id="@+id/tellT"
-            android:layout_width="0dp"
-            android:layout_height="19dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="6dp"
-            android:text="Endereço"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/guideline11"
-            app:layout_constraintTop_toBottomOf="@+id/escolaK" />
-
-        <TextView
-            android:id="@+id/txtDt"
-            android:layout_width="97dp"
-            android:layout_height="19dp"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="168dp"
-            android:text="Dt Nascimento:"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/guideline13"
-            app:layout_constraintEnd_toStartOf="@+id/guideline11"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textEndK"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/dt_nasc"
-            android:layout_width="0dp"
-            android:layout_height="19dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginEnd="6dp"
-            android:layout_marginBottom="8dp"
-            android:text="data"
-            app:layout_constraintBottom_toTopOf="@+id/guideline13"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/guideline11"
-            app:layout_constraintTop_toBottomOf="@+id/tellT"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@+id/imageView6"
             tools:ignore="MissingConstraints" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline11"
+        <TextView
+            android:id="@+id/txtEscolaK"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="128dp" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="8dp"
+            android:paddingLeft="20dp"
+            android:text="Escola"
+            android:textIsSelectable="true"
+            android:autoLink="phone"
+            android:textStyle="bold"
+            android:fontFamily="@font/roboto_thin"
+            android:textSize="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageView8"
+            app:layout_constraintTop_toBottomOf="@+id/txtNomeK" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline12"
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="25dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/houselocation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+
+        <TextView
+            android:id="@+id/txtEnderecoK"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="16dp" />
+            android:layout_height="23dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="44dp"
+            android:layout_marginEnd="8dp"
+            android:paddingLeft="20dp"
+            android:text="endereço"
+            android:textStyle="bold"
+            android:fontFamily="@font/roboto_thin"
+            android:textSize="15dp"
+            android:textIsSelectable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageView9"
+            app:layout_constraintTop_toBottomOf="@+id/txtEscolaK" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline13"
+        <ImageView
+            android:id="@+id/imageView11"
+            android:layout_width="25dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="13dp"
+            android:src="@drawable/calendar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+
+        <TextView
+            android:id="@+id/txtData"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="339dp" />
-
-        <View
-            android:id="@+id/secondDivider"
-            android:layout_width="0dp"
-            android:layout_height="2dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="6dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/AzulTema"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="17dp"
+            android:fontFamily="@font/roboto_thin"
+            android:paddingLeft="20dp"
+            android:text="data nas"
+            android:autoLink="email"
+            android:textIsSelectable="true"
+            android:textSize="15dp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline12"
-            app:layout_constraintVertical_bias="0.603" />
+            app:layout_constraintStart_toEndOf="@+id/imageView11"
+            app:layout_constraintTop_toBottomOf="@+id/txtEnderecoK"
+            app:layout_constraintVertical_bias="0.0" />
 
     </android.support.constraint.ConstraintLayout>
 

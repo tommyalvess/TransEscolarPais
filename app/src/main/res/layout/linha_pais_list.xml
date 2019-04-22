@@ -48,7 +48,7 @@
             android:id="@+id/textNome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textNumero"
+            android:layout_alignStart="@+id/textApelido"
             android:layout_alignTop="@+id/imageView2"
             android:layout_marginStart="8dp"
             android:layout_marginTop="10dp"
@@ -66,7 +66,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textNumero"
+            android:id="@+id/textApelido"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -104,7 +104,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline10"
-            app:layout_constraintTop_toBottomOf="@+id/textNumero"
+            app:layout_constraintTop_toBottomOf="@+id/textApelido"
             app:layout_constraintVertical_bias="0.0" />
 
         <android.support.constraint.Guideline

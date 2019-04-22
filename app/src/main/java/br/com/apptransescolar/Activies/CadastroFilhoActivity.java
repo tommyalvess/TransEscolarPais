@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -129,6 +130,9 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
         endT = findViewById(R.id.end);
         btnSaveCadastro = findViewById(R.id.btnSaveCadastro);
 
+        editNomeT.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        endT.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
 
         // Spinner periodo
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, name);
@@ -159,7 +163,7 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
         btnSaveCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nome  = editNomeT.getText().toString().toUpperCase().trim();
+                nome  = editNomeT.getText().toString().trim();
                 dtNas  = dtNasc.getText().toString().trim();
                 end = endT.getText().toString().trim();
                 periodo = record.trim();
@@ -388,9 +392,8 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
 
                 try {
                     if (response.code() == 201) {
-
+                        finish();
                         s = response.body().string();
-                        Toast.makeText(CadastroFilhoActivity.this, "Usuário criado com sucesso!", Toast.LENGTH_SHORT).show();
                         Intent it = new Intent(CadastroFilhoActivity.this, FilhosActivity.class);
                         CadastroFilhoActivity.this.startActivity(it);
                     }else {

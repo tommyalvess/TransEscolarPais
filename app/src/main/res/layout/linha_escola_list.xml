@@ -7,10 +7,10 @@
         android:layout_height="wrap_content"
         app:cardBackgroundColor="#b0c4de"
         app:cardElevation="@dimen/screen_percentage_10"
+        app:cardCornerRadius="@dimen/screen_percentage_05"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        app:cardCornerRadius="@dimen/screen_percentage_05"
         android:orientation="vertical">
 
         <AbsoluteLayout
@@ -63,7 +63,7 @@
                 android:layout_y="8dp"
                 android:text="Nome"
                 android:textSize="14dp"
-                android:fontFamily="@font/roboto_thin"
+                android:fontFamily="@font/roboto_black"
                 android:textStyle="bold" />
 
 

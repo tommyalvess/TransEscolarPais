@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/ColorTheme"
     tools:context=".Activies.LoginActivity">
 
     <android.support.constraint.Guideline
@@ -50,6 +50,24 @@
 
     <Button
         android:id="@+id/btn_login"
+        android:layout_width="215dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_style"
+        android:onClick="Cadastrar"
+        android:text="Cadastrar"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_cadastrar"
+        tools:ignore="OnClick" />
+
+    <Button
+        android:id="@+id/btn_cadastrar"
         android:layout_width="215dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -100,17 +118,16 @@
         android:id="@+id/textForgotP"
         android:layout_width="0dp"
         android:layout_height="19dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:fontFamily="@font/roboto_thin"
         android:text="Esqueceu a Senha?"
-        android:textSize="14dp"
         android:textAlignment="center"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_progress"
-        app:layout_constraintVertical_bias="0.014" />
+        app:layout_constraintTop_toBottomOf="@+id/login_progress" />
 
 </android.support.constraint.ConstraintLayout>

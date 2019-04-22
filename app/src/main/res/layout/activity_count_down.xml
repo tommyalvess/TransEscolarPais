@@ -26,11 +26,11 @@
         android:id="@+id/circleImageView"
         android:layout_width="334dp"
         android:layout_height="215dp"
-        android:layout_marginBottom="84dp"
+        android:layout_marginBottom="16dp"
         android:src="@drawable/maps"
         app:layout_constraintBottom_toTopOf="@+id/btnOK"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView

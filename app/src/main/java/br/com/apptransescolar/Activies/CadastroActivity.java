@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -55,6 +56,9 @@ public class CadastroActivity extends AppCompatActivity {
         editTell =  findViewById(R.id.periodo);
         editSenha = findViewById(R.id.editSenhaT);
         editEmail = findViewById(R.id.dtNasc);
+
+        editNome.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
 
         findViewById(R.id.btnSaveCadastro).setOnClickListener(new View.OnClickListener() {
             @Override

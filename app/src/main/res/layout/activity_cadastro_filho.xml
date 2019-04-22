@@ -25,7 +25,8 @@
             android:background="@drawable/rounded_edittext"
             android:ems="10"
             android:hint=" Nome:"
-            android:inputType="text"
+            android:inputType="textCapWords"
+            android:imeOptions="actionNext"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent"
@@ -42,6 +43,7 @@
             android:ems="10"
             android:hint=" Aniversario:"
             android:inputType="date"
+            android:imeOptions="actionNext"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/editNomeT"
@@ -56,7 +58,8 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/rounded_edittext"
             android:hint=" Endereço:"
-            android:inputType="text"
+            android:inputType="textCapWords"
+            android:imeOptions="actionDone"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/dtNasc"
@@ -149,20 +152,21 @@
 
         <Spinner
             android:id="@+id/spinnerP"
-            android:layout_width="336dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:spinnerMode="dialog"
             android:textAlignment="center"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/textEmail"
             tools:ignore="MissingConstraints" />
 
         <TextView
-            android:id="@+id/textNumero"
+            android:id="@+id/textApelido"
             android:layout_width="0dp"
             android:layout_height="22dp"
             android:layout_marginStart="8dp"
@@ -176,15 +180,16 @@
 
         <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/spinnerE"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:spinnerMode="dialog"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/textNumero" />
+            app:layout_constraintTop_toBottomOf="@+id/textApelido" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline8"
@@ -195,14 +200,15 @@
 
         <com.toptoche.searchablespinnerlibrary.SearchableSpinner
             android:id="@+id/spinnerT"
-            android:layout_width="336dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:spinnerMode="dialog"
             android:textAlignment="center"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/textTios" />
 

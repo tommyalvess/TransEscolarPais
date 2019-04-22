@@ -4,30 +4,42 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import br.com.apptransescolar.Classes.Tios;
@@ -35,14 +47,19 @@ import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static br.com.apptransescolar.API.URLs.URL_COUNTTIOSKIDS;
+import static br.com.apptransescolar.API.URLs.URL_COUNTTIOSPAIS;
+import static br.com.apptransescolar.API.URLs.URL_DELETE_KIDS;
+import static br.com.apptransescolar.API.URLs.URL_DELETE_TIOS;
+
 public class InfTioActivity extends AppCompatActivity {
 
-    TextView nomeT, emailT, placaT, tellT, apelidoT, mapOn;
-    ImageView mapOnn, imgPhone;
-    String cpf;
+    TextView nomeT, emailT, placaT, tellT, apelidoT, mapOn, countKids,countPais;
+    ImageView mapOnn;
+    String cpf, getId;
     CircleImageView imgPerfilT;
 
-    String getCpf, getNome, novoTell;
+    String getCpf, getNome, novoTell, idPais, idTios, getID;
     String msg;
     static String LoggedIn_User_Email;
 
@@ -51,6 +68,7 @@ public class InfTioActivity extends AppCompatActivity {
     View contextView;
 
     Tios tios;
+
 
     final String[] items = {"Desculpe, ele não irá hoje!", "Desculpe, estamos atrasados!"};
 
@@ -68,12 +86,12 @@ public class InfTioActivity extends AppCompatActivity {
         imgPerfilT = findViewById(R.id.imgPerfilT);
         nomeT = findViewById(R.id.nomeT);
         tellT = findViewById(R.id.tellT);
-        placaT = findViewById(R.id.placaT);
-        emailT = findViewById(R.id.emailT);
+        placaT = findViewById(R.id.txtPlaca);
+        emailT = findViewById(R.id.txtEmail);
         mapOnn = findViewById(R.id.mapOnn);
         mapOn = findViewById(R.id.mapOn);
-        imgPhone = findViewById(R.id.imgPhone);
-
+        countKids = findViewById(R.id.countKids);
+        countPais = findViewById(R.id.countPais);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
@@ -86,9 +104,11 @@ public class InfTioActivity extends AppCompatActivity {
         HashMap<String, String> user = sessionManager.getUserDetail();
         getCpf = user.get(sessionManager.CPF);
         getNome = user.get(sessionManager.NAME);
+        getID = user.get(sessionManager.ID);
 
         tios = (Tios) getIntent().getExtras().get("tios");
 
+        getId = String.valueOf(tios.getId());
         nomeT.setText(tios.getNome());
         tellT.setText(tios.getTell());
         placaT.setText(tios.getPlaca());
@@ -97,11 +117,15 @@ public class InfTioActivity extends AppCompatActivity {
 
         novoTell = tios.getTell();
 
+        idPais = getID;
+        idTios = String.valueOf(tios.getId());
+
         String   tellAString = novoTell.replace("-", "" );
         String   tellBString = tellAString.replace("(", "" );
         final String   tellCString = tellBString.replace(")", "" );
 
-        RequestOptions cropOptions = new RequestOptions().centerCrop().placeholder(R.drawable.kids).error(R.drawable.kids);
+        RequestOptions cropOptions = new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true).error(R.drawable.kids);
         Glide.with(this).load(tios.getImg()).apply(cropOptions).into(imgPerfilT);
 
 
@@ -125,14 +149,8 @@ public class InfTioActivity extends AppCompatActivity {
             }
         });
 
-        imgPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                callIntent.setData(Uri.parse("tel:" + tellCString));
-                startActivity(callIntent);
-            }
-        });
+        countKids();
+        countPais();
 
     }
 
@@ -366,6 +384,97 @@ public class InfTioActivity extends AppCompatActivity {
         });
     }
 
+    //Count Kids e Pais
+
+    private void countKids(){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_COUNTTIOSKIDS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Mensagem GetUserDetail", response.toString());
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            JSONArray nameArray = json.names();
+                            JSONArray valArray = json.toJSONArray( nameArray );
+                            if (!json.equals("0")){
+                                for (int i = 0; i < valArray.length(); i++) {
+                                    JSONObject object = valArray.getJSONObject(i);
+                                    String nome = object.getString("nome").trim();
+
+                                    countKids.setText(nome);
+                                }
+                            }
+                        }catch ( JSONException e ) {
+                            Log.e("JSON", "Error parsing JSON", e);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(InfTioActivity.this, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
+                        Log.e("VolleyError", "Error", error);
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<>();
+                param.put("idTios", getId);
+                return param;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void countPais(){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_COUNTTIOSPAIS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Mensagem GetUserDetail", response.toString());
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            JSONArray nameArray = json.names();
+                            JSONArray valArray = json.toJSONArray( nameArray );
+                            if (!json.equals("0")){
+                                for (int i = 0; i < valArray.length(); i++) {
+                                    JSONObject object = valArray.getJSONObject(i);
+                                    String nome = object.getString("nome").trim();
+
+                                    countPais.setText(nome);
+                                }
+                            }
+                        }catch ( JSONException e ) {
+                            Log.e("JSON", "Error parsing JSON", e);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(InfTioActivity.this, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
+                        Log.e("VolleyError", "Error", error);
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<>();
+                param.put("idTios", getId);
+                return param;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_inf_tio, menu);
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -377,4 +486,67 @@ public class InfTioActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void deletarTiosDialog() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_DELETE_TIOS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //progess.setVisibility(View.GONE);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            //boolean success = jsonObject.getBoolean("success");
+                            String success = jsonObject.getString("success");
+
+                            if (success.equals("1")){
+                                Toast.makeText(InfTioActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                            }else {
+                                Toast.makeText(InfTioActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                            }
+
+                        } catch (JSONException e1) {
+                            Log.e("JSON", "Error parsing JSON", e1);
+                        }
+                        Log.e("Chamada:", "response: " + response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("JSON", "Error Response", error);
+                    }
+                }){
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("idTios", idTios);
+                params.put("idPais", idPais);
+                return params;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(InfTioActivity.this);
+        requestQueue.add(stringRequest);
+    }
+
+
+    public void deletarPais(MenuItem item) {
+        // Use the Builder class for convenient dialog construction
+        AlertDialog.Builder builder = new AlertDialog.Builder(InfTioActivity.this);
+        builder.setMessage("VOCÊ DESEJA DELETAR?")
+                .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        deletarTiosDialog();
+                        finish();
+                        Intent intent = new Intent(InfTioActivity.this, TiosActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        // Create the AlertDialog object and return it
+        builder.show();
+    }
 }
