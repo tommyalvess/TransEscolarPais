@@ -29,14 +29,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
             android:fontFamily="@font/roboto_light"
             android:maxLength="25"
             android:onClick="EditarNomeK"
             android:paddingLeft="20dp"
-            android:text="Rafael Andrade"
             android:textIsSelectable="true"
             android:textSize="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline9"
+            app:layout_constraintEnd_toStartOf="@+id/imgNome"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imageView6"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,7 +69,6 @@
             android:maxLength="30"
             android:onClick="EditarEscola"
             android:paddingLeft="20dp"
-            android:text="Escola"
             android:textIsSelectable="true"
             android:textSize="15dp"
             android:textStyle="bold"
@@ -99,7 +101,6 @@
             android:maxLength="30"
             android:onClick="EditarEnd"
             android:paddingLeft="20dp"
-            android:text="endereço"
             android:textIsSelectable="true"
             android:textSize="15dp"
             android:textStyle="bold"
@@ -152,10 +153,10 @@
             android:fontFamily="@font/roboto_thin"
             android:onClick="EditarBday"
             android:paddingLeft="20dp"
-            android:text="data nas"
             android:textIsSelectable="true"
             android:textSize="15dp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/guideline13"
             app:layout_constraintEnd_toStartOf="@+id/imageView10"
             app:layout_constraintStart_toEndOf="@+id/imageView11"
             app:layout_constraintTop_toBottomOf="@+id/txtEnderecoK" />
@@ -206,10 +207,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_edit_black_24dp"
+            android:onClick="editarEmbarque"
             app:layout_constraintBottom_toTopOf="@+id/guideline15"
             app:layout_constraintStart_toEndOf="@+id/txtEmbarque"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="OnClick" />
 
         <ImageView
             android:id="@+id/imageView16"
@@ -218,10 +221,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_edit_black_24dp"
+            android:onClick="editarDesembarque"
             app:layout_constraintBottom_toTopOf="@+id/guideline18"
             app:layout_constraintStart_toEndOf="@+id/txtDesembarque"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="OnClick" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline11"
@@ -237,13 +242,14 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="28dp"
             android:fontFamily="@font/roboto_thin"
+            android:onClick="editarEmbarque"
             android:paddingLeft="20dp"
-            android:text="Embarque"
             android:textSize="15dp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/guideline15"
             app:layout_constraintStart_toEndOf="@+id/imageView12"
             app:layout_constraintTop_toBottomOf="@+id/txtData"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints,OnClick" />
 
         <TextView
             android:id="@+id/txtDesembarque"
@@ -251,16 +257,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="25dp"
             android:fontFamily="@font/roboto_thin"
+            android:onClick="editarDesembarque"
             android:paddingLeft="20dp"
-            android:text="Desembarque"
             android:textSize="15dp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/guideline18"
             app:layout_constraintStart_toEndOf="@+id/imageView14"
             app:layout_constraintTop_toBottomOf="@+id/txtEmbarque"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="OnClick" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline9"

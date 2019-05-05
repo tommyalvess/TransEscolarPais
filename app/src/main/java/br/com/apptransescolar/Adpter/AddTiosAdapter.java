@@ -131,7 +131,7 @@ public class AddTiosAdapter  extends RecyclerView.Adapter<AddTiosAdapter.MyViewH
                                             //boolean success = jsonObject.getBoolean("success");
                                             String success = jsonObject.getString("success");
 
-                                            if (success.equals("1")){
+                                            if (success.equals("OK")){
                                                 Toast.makeText(context,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                                 Intent intent = new Intent(context, TiosActivity.class);
                                                 context.startActivity(intent);

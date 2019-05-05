@@ -21,6 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.swipe.util.Attributes;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +66,11 @@ public class FilhosActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        sessionManager = new SessionManager(this);
+
+        HashMap<String, String> user = sessionManager.getUserDetail();
+        getId = user.get(sessionManager.ID);
+
         progressBar = findViewById(R.id.progess);
         recyclerView = findViewById(R.id.paisList);
         textAviso = findViewById(R.id.textAviso);
@@ -74,46 +81,71 @@ public class FilhosActivity extends AppCompatActivity {
         textAviso.setVisibility(View.GONE);
 
 
-        fetchKids();
+        //fetchKids();
+        fetchKid("users", "", getId);
+
 
     }
 
-    private void fetchKids() {
+    private void fetchKid(String type, String key, String id) {
+        iKids = ApiClient.getApiClient().create(IKids.class);
 
-        sessionManager = new SessionManager(this);
-
-        HashMap<String, String> user = sessionManager.getUserDetail();
-        getId = user.get(sessionManager.ID);
-        id = Integer.parseInt(getId);
-        iKids = IKids.retrofit.create(IKids.class);
-
-        final Call<List<Kids>> call = iKids.getKids(id);
-
+        Call<List<Kids>> call = iKids.getKids(type, key, id);
         call.enqueue(new Callback<List<Kids>>() {
             @Override
             public void onResponse(Call<List<Kids>> call, Response<List<Kids>> response) {
-                if (!response.body().isEmpty()){
-                    progressBar.setVisibility(View.GONE);
-                    textAviso.setVisibility(View.GONE);
-                    kids = response.body();
-                    kidsAdapter = new KidsAdapter(kids, FilhosActivity.this);
-                    recyclerView.setAdapter(kidsAdapter);
-                    kidsAdapter.notifyDataSetChanged();
-                }else {
-                    progressBar.setVisibility(View.GONE);
-                    textAviso.setVisibility(View.VISIBLE);
-                }
+                progressBar.setVisibility(View.GONE);
+                kids = response.body();
+                kidsAdapter = new KidsAdapter(kids, FilhosActivity.this);
+                recyclerView.setAdapter(kidsAdapter);
+                kidsAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(Call<List<Kids>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                textAviso.setVisibility(View.VISIBLE);
-                Toast.makeText(FilhosActivity.this, "Opss! Nada foi encontrado!", Toast.LENGTH_SHORT).show();
-                Log.e("Call", "carregar dados", t);
+                Toast.makeText(FilhosActivity.this, "Error\n"+t.toString(), Toast.LENGTH_LONG).show();
+                Log.e("Chamada", "Erro", t);
             }
         });
     }
+
+//    private void fetchKids() {
+//
+//        sessionManager = new SessionManager(this);
+//
+//        HashMap<String, String> user = sessionManager.getUserDetail();
+//        getId = user.get(sessionManager.ID);
+//        id = Integer.parseInt(getId);
+//        iKids = IKids.retrofit.create(IKids.class);
+//
+//        final Call<List<Kids>> call = iKids.getKids(id);
+//
+//        call.enqueue(new Callback<List<Kids>>() {
+//            @Override
+//            public void onResponse(Call<List<Kids>> call, Response<List<Kids>> response) {
+//                if (!response.body().isEmpty()){
+//                    progressBar.setVisibility(View.GONE);
+//                    textAviso.setVisibility(View.GONE);
+//                    kids = response.body();
+//                    kidsAdapter = new KidsAdapter(kids, FilhosActivity.this);
+//                    recyclerView.setAdapter(kidsAdapter);
+//                    kidsAdapter.notifyDataSetChanged();
+//                }else {
+//                    progressBar.setVisibility(View.GONE);
+//                    textAviso.setVisibility(View.VISIBLE);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Kids>> call, Throwable t) {
+//                progressBar.setVisibility(View.GONE);
+//                textAviso.setVisibility(View.VISIBLE);
+//                Toast.makeText(FilhosActivity.this, "Opss! Nada foi encontrado!", Toast.LENGTH_SHORT).show();
+//                Log.e("Call", "carregar dados", t);
+//            }
+//        });
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

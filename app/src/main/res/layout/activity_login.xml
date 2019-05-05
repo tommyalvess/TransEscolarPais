@@ -49,39 +49,41 @@
         app:layout_constraintTop_toBottomOf="@+id/login_main" />
 
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_cadastrar"
         android:layout_width="215dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/button_style"
         android:onClick="Cadastrar"
         android:text="Cadastrar"
         android:textColor="#fff"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_cadastrar"
+        app:layout_constraintTop_toTopOf="@+id/guideline19"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="OnClick" />
 
     <Button
-        android:id="@+id/btn_cadastrar"
+        android:id="@+id/btn_login"
         android:layout_width="215dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/button_style"
         android:onClick="Entrar"
         android:text="ENTRAR"
         android:textColor="#fff"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline19"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_password"
+        app:layout_constraintVertical_bias="0.428"
         tools:ignore="OnClick" />
 
 
@@ -109,10 +111,8 @@
         android:layout_height="48dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_login"
         app:layout_constraintEnd_toEndOf="@+id/btn_login"
-        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="@+id/btn_login"
-        app:layout_constraintTop_toTopOf="@+id/btn_login"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/btn_login" />
 
     <TextView
         android:id="@+id/textForgotP"
@@ -128,6 +128,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_progress" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_cadastrar"
+        app:layout_constraintVertical_bias="0.148" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="408dp" />
 
 </android.support.constraint.ConstraintLayout>

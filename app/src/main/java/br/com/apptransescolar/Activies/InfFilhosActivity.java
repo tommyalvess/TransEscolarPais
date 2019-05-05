@@ -1,13 +1,18 @@
 package br.com.apptransescolar.Activies;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +38,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,6 +54,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static br.com.apptransescolar.API.URLs.URL_DELETE_KIDS;
 import static br.com.apptransescolar.API.URLs.URL_EDIT;
 import static br.com.apptransescolar.API.URLs.URL_EDIT_FILHO;
+import static br.com.apptransescolar.API.URLs.URL_EDIT_READ;
+import static br.com.apptransescolar.API.URLs.URL_READ;
 import static br.com.apptransescolar.API.URLs.URL_UPLOAD;
 import static br.com.apptransescolar.API.URLs.URL_UPLOAD_KIDS;
 
@@ -55,13 +63,15 @@ import static br.com.apptransescolar.API.URLs.URL_UPLOAD_KIDS;
 public class InfFilhosActivity extends AppCompatActivity {
 
     TextView nomeK, escolaK, endK, dt_nasc, txtApelido, txtTios, txtStatus, txtPeriodo,txtEmbarque, txtDesembarque;
-    String id, getNome, getEnd, getEscola, getDtnas, getTios, getStatus, getPeriodo;
+    String id, getNome, getEnd, getEscola, getDtnas, getTios, getStatus, getPeriodo, getEmbarque, getDesembarque;
     CircleImageView imgInfKids;
     private static final String TAG = PerfilActivity.class.getSimpleName();
     private Bitmap bitmap;
     Kids kids;
 
-    String idKids;
+    String idKids, userID;
+
+    RequestOptions cropOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,31 +96,46 @@ public class InfFilhosActivity extends AppCompatActivity {
         imgInfKids = findViewById(R.id.imgPerfilK);
         txtEmbarque = findViewById(R.id.txtEmbarque);
         txtDesembarque = findViewById(R.id.txtDesembarque);
-
         txtTios = findViewById(R.id.txtTios);
         txtStatus = findViewById(R.id.txtStatus);
         txtPeriodo = findViewById(R.id.txtPeriodo);
 
-        txtApelido.setText(kids.getNome());
-        nomeK.setText(kids.getNome());
-        escolaK.setText(kids.getNm_escola());
-        txtPeriodo.setText(kids.getPeriodo());
-        endK.setText(kids.getEnd_principal());
-        dt_nasc.setText(kids.getDt_nas());
-        txtTios.setText(kids.getTio());
-        txtStatus.setText(kids.getStatus());
-        txtEmbarque.setText("Sem Informação");
-        txtDesembarque.setText("Sem Informação");
-        getNome = kids.getNome();
-        getEscola = kids.getNm_escola();
-        getPeriodo = kids.getPeriodo();
-        getEnd = kids.getEnd_principal();
-        getDtnas = kids.getDt_nas();
-        getTios = kids.getTio();
 
+        getUserDetail();
+
+//        txtApelido.setText(kids.getNome());
+//        nomeK.setText(kids.getNome());
+//        escolaK.setText(kids.getNm_escola());
+//        txtPeriodo.setText(kids.getPeriodo());
+//        endK.setText(kids.getEnd_principal());
+//        dt_nasc.setText(kids.getDt_nas());
+//        txtTios.setText(kids.getTio());
+//        txtStatus.setText(kids.getStatus());
+//        txtEmbarque.setText(kids.getEmbarque());
+//        txtDesembarque.setText(kids.getDesembarque());
+
+        //Obj kids
+//        getNome = kids.getNome();
+//        getEscola = kids.getNm_escola();
+//        getPeriodo = kids.getPeriodo();
+//        getEnd = kids.getEnd_principal();
+//        getDtnas = kids.getDt_nas();
+//        getTios = kids.getTio();
+//        getEmbarque = kids.getEmbarque();
+//        getDesembarque = kids.getDesembarque();
         idKids = String.valueOf(kids.getIdKids());
 
-        RequestOptions cropOptions = new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)
+        getNome = nomeK.getText().toString().trim();
+        getEscola = escolaK.getText().toString().trim();
+        getPeriodo = txtPeriodo.getText().toString().trim();
+        getEnd = endK.getText().toString().trim();
+        getDtnas = dt_nasc.getText().toString().trim();
+        getTios = txtTios.getText().toString().trim();
+        getEmbarque = txtEmbarque.getText().toString().trim();
+        getDesembarque = txtDesembarque.getText().toString().trim();
+        getStatus = txtStatus.getText().toString().trim();
+
+        cropOptions = new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true).placeholder(R.drawable.kids).error(R.drawable.kids);
         Glide.with(this).load(kids.getImg()).apply(cropOptions).into(imgInfKids);
 
@@ -122,7 +147,11 @@ public class InfFilhosActivity extends AppCompatActivity {
             }
         });
 
+        IntentFilter inF1 = new IntentFilter("data_changed");
+        LocalBroadcastManager.getInstance(InfFilhosActivity.this).registerReceiver(dataChangeReceiver1,inF1);
+
     }
+
 
     private void chosseFile() {
         Intent intent = new Intent();
@@ -317,7 +346,7 @@ public class InfFilhosActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
                                         intent.putExtra("kids", kids);
@@ -348,6 +377,8 @@ public class InfFilhosActivity extends AppCompatActivity {
                         params.put("nome", nome);
                         params.put("dt_nas", getDtnas);
                         params.put("end_principal", getEnd);
+                        params.put("embarque", getEmbarque);
+                        params.put("desembarque", getDesembarque);
                         params.put("idKids", idKids);
                         return params;
                     }
@@ -405,11 +436,10 @@ public class InfFilhosActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
+                                        LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
-                                        intent.putExtra("kids", kids);
-                                        startActivity(intent);
+                                        dialog.dismiss();
                                     }else {
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
@@ -436,6 +466,8 @@ public class InfFilhosActivity extends AppCompatActivity {
                         params.put("nome", getNome);
                         params.put("dt_nas", getDtnas);
                         params.put("end_principal", end);
+                        params.put("embarque", getEmbarque);
+                        params.put("desembarque", getDesembarque);
                         params.put("idKids", idKids);
                         return params;
                     }
@@ -485,11 +517,10 @@ public class InfFilhosActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
+                                        LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
-                                        intent.putExtra("kids", kids);
-                                        startActivity(intent);
+                                        dialog.dismiss();
                                     }else {
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
@@ -516,6 +547,8 @@ public class InfFilhosActivity extends AppCompatActivity {
                         params.put("nome", getNome);
                         params.put("dt_nas", bday);
                         params.put("end_principal", getEnd);
+                        params.put("embarque", getEmbarque);
+                        params.put("desembarque", getDesembarque);
                         params.put("idKids", idKids);
                         return params;
                     }
@@ -567,11 +600,10 @@ public class InfFilhosActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
+                                        LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
-                                        intent.putExtra("kids", kids);
-                                        startActivity(intent);
+                                        dialog.dismiss();
                                     }else {
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
@@ -598,6 +630,8 @@ public class InfFilhosActivity extends AppCompatActivity {
                         params.put("nome", nome);
                         params.put("dt_nas", getDtnas);
                         params.put("end_principal", getEnd);
+                        params.put("embarque", getEmbarque);
+                        params.put("desembarque", getDesembarque);
                         params.put("idKids", idKids);
                         return params;
                     }
@@ -649,11 +683,10 @@ public class InfFilhosActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
+                                        LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
-                                        intent.putExtra("kids", kids);
-                                        startActivity(intent);
+                                        dialog.dismiss();
                                     }else {
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
@@ -680,6 +713,8 @@ public class InfFilhosActivity extends AppCompatActivity {
                         params.put("nome", getNome);
                         params.put("dt_nas", getDtnas);
                         params.put("end_principal", end);
+                        params.put("embarque", getEmbarque);
+                        params.put("desembarque", getDesembarque);
                         params.put("idKids", idKids);
                         return params;
                     }
@@ -729,11 +764,11 @@ public class InfFilhosActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
+                                        LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
-                                        intent.putExtra("kids", kids);
-                                        startActivity(intent);
+                                        dialog.dismiss();
+
                                     }else {
                                         Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
@@ -760,6 +795,8 @@ public class InfFilhosActivity extends AppCompatActivity {
                         params.put("nome", getNome);
                         params.put("dt_nas", bday);
                         params.put("end_principal", getEnd);
+                        params.put("embarque", getEmbarque);
+                        params.put("desembarque", getDesembarque);
                         params.put("idKids", idKids);
                         return params;
                     }
@@ -771,6 +808,272 @@ public class InfFilhosActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void editarEmbarque(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(InfFilhosActivity.this);
+
+        View mView = getLayoutInflater().inflate(R.layout.dialog_horario, null);
+        final EditText nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim =  mView.findViewById(R.id.btnSim);
+        Button mNao =  mView.findViewById(R.id.btnNao);
+
+        alertDialog.setTitle("Editar Horário de Embarque");
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText(getEmbarque);
+
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String embarque = nomeE.getText().toString().trim();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //progess.setVisibility(View.GONE);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    //boolean success = jsonObject.getBoolean("success");
+                                    String success = jsonObject.getString("success");
+
+                                    if (success.equals("OK")){
+                                        LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }else {
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+
+                                } catch (JSONException e1) {
+                                    Log.e("JSON", "Error parsing JSON", e1);
+                                    dialog.dismiss();
+                                }
+                                Log.e(TAG, "response: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("JSON", "Error parsing JSON", error);
+                                dialog.dismiss();
+                            }
+                        }){
+
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("nome", getNome);
+                        params.put("dt_nas", getDtnas);
+                        params.put("end_principal", getEnd);
+                        params.put("embarque", embarque);
+                        params.put("desembarque", getDesembarque);
+                        params.put("idKids", idKids);
+                        return params;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(InfFilhosActivity.this);
+                requestQueue.add(stringRequest);
+            }
+        });
+        dialog.show();
+    }
+
+    public void editarDesembarque(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(InfFilhosActivity.this);
+
+        View mView = getLayoutInflater().inflate(R.layout.dialog_horario, null);
+        final EditText nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim =  mView.findViewById(R.id.btnSim);
+        Button mNao =  mView.findViewById(R.id.btnNao);
+
+        alertDialog.setTitle("Editar Horário de Desembarque");
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText(getDesembarque);
+
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String desembarque = nomeE.getText().toString().trim();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //progess.setVisibility(View.GONE);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    //boolean success = jsonObject.getBoolean("success");
+                                    String success = jsonObject.getString("success");
+
+                                    if (success.equals("OK")){
+                                        LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }else {
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+
+                                } catch (JSONException e1) {
+                                    Log.e("JSON", "Error parsing JSON", e1);
+                                    dialog.dismiss();
+                                }
+                                Log.e(TAG, "response: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("JSON", "Error parsing JSON", error);
+                                dialog.dismiss();
+                            }
+                        }){
+
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("nome", getNome);
+                        params.put("dt_nas", getDtnas);
+                        params.put("end_principal", getEnd);
+                        params.put("embarque", getEmbarque);
+                        params.put("desembarque", desembarque);
+                        params.put("idKids", idKids);
+                        return params;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(InfFilhosActivity.this);
+                requestQueue.add(stringRequest);
+            }
+        });
+        dialog.show();
+    }
+
+    //Pegar as infs do BD
+    private void getUserDetail(){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_READ,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Mensagem GetUserDetail", response.toString());
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            JSONArray nameArray = json.names();
+                            String success = json.getString("error");
+                            JSONArray valArray = json.toJSONArray( nameArray );
+                            if (success.equals("sucesso")){
+                                for (int i = 0; i < valArray.length(); i++) {
+                                    JSONObject object = valArray.getJSONObject(i);
+                                    //String id = object.getString("idKids").trim();
+                                    String nome = object.getString("nome").trim();
+                                    String dt_nas = object.getString("dt_nas").trim();
+                                    String periodo = object.getString("periodo").trim();
+                                    String end_principal = object.getString("end_principal").trim();
+                                    String status = object.getString("status").trim();
+                                    String embarque = object.getString("embarque").trim();
+                                    String desembarque = object.getString("desembarque").trim();
+                                    String nm_escola = object.getString("nm_escola").trim();
+                                    String nm_tio = object.getString("nm_tio").trim();
+                                    String strImage = object.getString("img").trim();
+
+                                    txtApelido.setText(nome);
+                                    nomeK.setText(nome);
+                                    escolaK.setText(nm_escola);
+                                    txtPeriodo.setText(periodo);
+                                    endK.setText(end_principal);
+                                    dt_nasc.setText(dt_nas);
+                                    txtTios.setText(nm_tio);
+                                    txtStatus.setText(status);
+                                    txtEmbarque.setText(embarque);
+                                    txtDesembarque.setText(desembarque);
+
+                                    getNome = nome;
+                                    getEscola = nm_escola;
+                                    getPeriodo = periodo;
+                                    getEnd = end_principal;
+                                    getDtnas = dt_nas;
+                                    getTios = nm_tio;
+                                    getEmbarque = embarque;
+                                    getDesembarque = desembarque;
+                                    getStatus = status;
+
+                                    if (getStatus.equals("Faltou")){
+                                        txtStatus.setTextColor(Color.RED);
+                                    }
+
+                                    //Glide.with(InfFilhosActivity.this).load(strImage).apply(cropOptions).into(imgInfKids);
+                                }
+                            }else {
+                                Toast.makeText(InfFilhosActivity.this,json.getString("message"),Toast.LENGTH_LONG).show();
+                            }
+                        }catch ( JSONException e ) {
+                            Log.e("JSON", "Error parsing JSON", e);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VolleyError", "Error", error);
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<>();
+                param.put("idKids", idKids);
+                return param;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    private BroadcastReceiver dataChangeReceiver1= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // update your listview
+            getUserDetail();
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getUserDetail();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getUserDetail();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getUserDetail();
+    }
 }
 
 

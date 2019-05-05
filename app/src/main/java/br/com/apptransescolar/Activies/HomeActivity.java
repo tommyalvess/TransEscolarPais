@@ -89,7 +89,44 @@ public class HomeActivity extends AppCompatActivity {
         imgUsuario = findViewById(R.id.user);
         imgTios = findViewById(R.id.tios);
 
-        doTheAutoRefresh();
+        imgFilhos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick","FilhosActivity");
+                Intent intent = new Intent(HomeActivity.this, FilhosActivity.class);
+                startActivity(intent);
+            }
+        }); //Fim do imgPass
+
+        imgEscola.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick","EscolasActivity");
+                Intent intent = new Intent(HomeActivity.this, EscolaActivity.class);
+                startActivity(intent);
+
+            }
+        });// Fim imgEscola
+
+        imgUsuario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick","UsuarioActivity");
+                Intent intent = new Intent(HomeActivity.this, PerfilActivity.class);
+                startActivity(intent);
+            }
+        }); // Fim do imgUsuario
+
+        imgTios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("OnClick","TiosActivity");
+                Intent intent = new Intent(HomeActivity.this, TiosActivity.class);
+                startActivity(intent);
+            }
+        }); // Fim do imgPais
+
+        //doTheAutoRefresh();
 
     }//onCreate
 
@@ -209,7 +246,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        doTheAutoRefresh();
+        //doTheAutoRefresh();
 
     }// onResume
 

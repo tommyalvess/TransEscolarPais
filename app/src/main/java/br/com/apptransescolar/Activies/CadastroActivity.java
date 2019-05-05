@@ -1,5 +1,6 @@
 package br.com.apptransescolar.Activies;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -9,6 +10,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.com.apptransescolar.API.ApiClient;
@@ -101,11 +104,12 @@ public class CadastroActivity extends AppCompatActivity {
             editEmail.requestFocus();
             return;
         }
-        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (validateEmail(email) != true){
             editEmail.setError("Email invalido!");
             editEmail.requestFocus();
             return;
         }
+
 
         if (senha.isEmpty()){
             editSenha.setError("Insira sua senha!");
@@ -133,7 +137,11 @@ public class CadastroActivity extends AppCompatActivity {
                   if (response.code() == 201) {
 
                       s = response.body().string();
-                      Toast.makeText(CadastroActivity.this, "Usuário criado com sucesso!", Toast.LENGTH_SHORT).show();
+                      Toast toast= Toast.makeText(CadastroActivity.this, "Usuário criado com sucesso!", Toast.LENGTH_SHORT);
+                      toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
+                      toast.show();
+                      Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
+                      startActivity(intent);
 
                   }else {
                       s = response.errorBody().string();
@@ -145,8 +153,9 @@ public class CadastroActivity extends AppCompatActivity {
               if (s != null){
                   try {
                       JSONObject jsonObject = new JSONObject(s);
-                      Toast.makeText(CadastroActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
+                      Toast toast= Toast.makeText(CadastroActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT);
+                      toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
+                      toast.show();
 
                   }catch (JSONException e){
                       e.printStackTrace();
@@ -181,6 +190,20 @@ public class CadastroActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean isEmailCorrect(String email) {
+        Pattern emailPattern = Patterns.EMAIL_ADDRESS;
+        return emailPattern.matcher(email).matches();
+    }
+
+    private static boolean validateEmail(String email) {
+        Pattern patternEmail = Patterns.EMAIL_ADDRESS;
+        if (TextUtils.isEmpty(email))
+            return false;
+
+        Matcher matcher = patternEmail.matcher(email);
+        return matcher.matches();
     }
 
 

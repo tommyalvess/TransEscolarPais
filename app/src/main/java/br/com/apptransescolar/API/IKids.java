@@ -23,6 +23,13 @@ public interface IKids {
             @Query("key") String keyword
     );
 
+    @GET("getCrianca.php")
+    Call<List<Kids>> getKids(
+            @Query("item_type") String item_type,
+            @Query("key") String keyword,
+            @Query("idPais") String idPais
+    );
+
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(URL_ASP)
             .addConverterFactory(GsonConverterFactory.create())

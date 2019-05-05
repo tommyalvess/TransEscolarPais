@@ -34,6 +34,8 @@ public class URLs {
     public static String URL_EDIT_SENHA = "http://apptransescolar.com.br/apiapptransescolar/edit_senha.php";
     public static String URL_EDIT_FILHO = "http://apptransescolar.com.br/apiapptransescolar/edit_detail_kids.php";
     public static String URL_EDIT_FILHO_FULL = "http://apptransescolar.com.br/apiapptransescolar/edit_detail_kids.full.php";
+    public static String URL_EDIT_READ = "http://apptransescolar.com.br/apiapptransescolar/read_kids.php?apicall=findKids";
+
 
     //Recuperar Senha
     public static String URL_READ_FORGOT = "http://apptransescolar.com.br/apiapptransescolar/read_forgot.php?apicall=findPaisAll";
@@ -43,7 +45,7 @@ public class URLs {
     public static String URL_DELETE_TIOS = "http://apptransescolar.com.br/apiapptransescolar/delete_tio.php";
 
     //Cadastrar Tio
-    public static String INSERIR_TIO = "http://apptransescolar.com.br/apiapptransescolar/inserir_tio.php";
+    public static String INSERIR_TIO = "http://apptransescolar.com.br/apiapptransescolar/inserir_tio.php?apicall=inserir";
 
 
 

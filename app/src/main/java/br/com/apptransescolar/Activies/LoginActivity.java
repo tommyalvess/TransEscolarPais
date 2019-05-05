@@ -51,7 +51,7 @@ import static br.com.apptransescolar.API.URLs.URL_LOGIN;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    Button btnLogin;
+    Button btnLogin, btn_cadastrar;
     EditText editCpf, editSenha;
     TextView textForgotP;
 
@@ -80,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
         editCpf = findViewById(R.id.login_main);
         editSenha = findViewById(R.id.login_password);
         btnLogin = findViewById(R.id.btn_login);
+        btn_cadastrar = findViewById(R.id.btn_cadastrar);
         loginProgress = findViewById(R.id.login_progress);
         textForgotP = findViewById(R.id.textForgotP);
 
@@ -144,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                             String success = json.getString("error");
 
 
-                            if (success.equals("1")){
+                            if (success.equals("OK")){
 
                                 for ( int i = 0; i < valArray.length(); i++) {
                                     JSONObject object = valArray.getJSONObject(i);
@@ -172,11 +173,13 @@ public class LoginActivity extends AppCompatActivity {
                                     finish();
 
                                 }
-                            }else if(success.equals("0")) {
+                            }else if(success.equals("falhou")) {
                                 Toast.makeText(LoginActivity.this,json.getString("message"),Toast.LENGTH_LONG).show();
                                 loginProgress.setVisibility(View.GONE);
                                 btnLogin.setVisibility(View.VISIBLE);
 
+                            }else if(success.isEmpty()){
+                                Toast.makeText(LoginActivity.this,"Nenhum usuário localizado!",Toast.LENGTH_LONG).show();
                             }
                         }catch ( JSONException e ) {
                             loginProgress.setVisibility(View.GONE);

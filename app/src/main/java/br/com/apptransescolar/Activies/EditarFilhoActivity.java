@@ -221,7 +221,6 @@ public class EditarFilhoActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
-
     private void requestJsonObjectEscolas() {
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, PATH_TO_SERVER2, new Response.Listener<String>() {
@@ -246,25 +245,13 @@ public class EditarFilhoActivity extends AppCompatActivity {
         });
         queue.add(stringRequest);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Id correspondente ao botão Up/Home da actionbar
+        switch (item.getItemId()){
             case android.R.id.home:
-                Intent upIntent = NavUtils.getParentActivityIntent(this);
-                //Se essa atividade faz parte da tarefa do app
-                //navegamos para seu parente logico.
-                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-                    //Se a atividade não faz parte do aplicativo, criamos uma nova tarefa
-                    // para navegação com a pilha de volta sintetizada.
-                    TaskStackBuilder.create(this)
-                            // Adiciona todas atividades parentes na pilha de volta
-                            .addNextIntentWithParentStack(upIntent)
-                            .startActivities();
-                } else NavUtils.navigateUpTo(this, upIntent);
-                return true;
+                onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
-
 }//class

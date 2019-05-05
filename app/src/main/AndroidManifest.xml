@@ -137,9 +137,6 @@
                 android:value="br.com.apptransescolar.Activies.PerfilActivity" />
         </activity>
         <activity android:name=".Activies.EditarFilhoActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="br.com.apptransescolar.Activies.FilhosActivity" />
         </activity>
         <activity android:name=".Activies.RecuperarSenhaActivity" />
         <activity android:name=".Activies.ResetSenhaActivity" />

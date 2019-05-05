@@ -15,8 +15,10 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -376,7 +378,7 @@ public class PerfilActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             String success = jsonObject.getString("success");
 
-                            if (success.equals("1")){
+                            if (success.equals("OK")){
                                 Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
@@ -423,24 +425,35 @@ public class PerfilActivity extends AppCompatActivity {
 
     //Dialo para sair da tele
     private void dialogExit(){
-        // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(PerfilActivity.this);
-        builder.setMessage("VOCÊ DESEJA SAIR?")
-                .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        sessionManager.logout();
-                        finish();
-                        Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
-        // Create the AlertDialog object and return it
-        builder.show();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View mView = inflater.inflate(R.layout.dialog_text, null);
+        final TextView nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim = mView.findViewById(R.id.btnSim);
+        Button mNao = mView.findViewById(R.id.btnNao);
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText("Você deseja realmente deletar?");
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sessionManager.logout();
+                Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+        });
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
     }
 
     @Override
@@ -837,4 +850,5 @@ public class PerfilActivity extends AppCompatActivity {
          dialogExit();
 
     }
+
 }

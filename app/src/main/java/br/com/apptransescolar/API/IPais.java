@@ -9,9 +9,9 @@ import retrofit2.http.POST;
 public interface IPais {
 
     @FormUrlEncoded
-    @POST("createpais/")
+    @POST("createPais")
     Call<ResponseBody> createuser (
-            @Field("nome") String nome,
+            @Field("nm_pai") String nome,
             @Field("email") String email,
             @Field("cpf") String cpf,
             @Field("tell") String tell,
