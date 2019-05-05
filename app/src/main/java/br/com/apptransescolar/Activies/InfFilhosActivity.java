@@ -11,11 +11,14 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,14 +46,16 @@ import br.com.apptransescolar.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static br.com.apptransescolar.API.URLs.URL_DELETE_KIDS;
+import static br.com.apptransescolar.API.URLs.URL_EDIT;
+import static br.com.apptransescolar.API.URLs.URL_EDIT_FILHO;
 import static br.com.apptransescolar.API.URLs.URL_UPLOAD;
 import static br.com.apptransescolar.API.URLs.URL_UPLOAD_KIDS;
 
 
 public class InfFilhosActivity extends AppCompatActivity {
 
-    TextView nomeK, escolaK, endK, dt_nasc, txtApelido, txtTios, txtStatus, txtPeriodo;
-    String id;
+    TextView nomeK, escolaK, endK, dt_nasc, txtApelido, txtTios, txtStatus, txtPeriodo,txtEmbarque, txtDesembarque;
+    String id, getNome, getEnd, getEscola, getDtnas, getTios, getStatus, getPeriodo;
     CircleImageView imgInfKids;
     private static final String TAG = PerfilActivity.class.getSimpleName();
     private Bitmap bitmap;
@@ -79,6 +84,8 @@ public class InfFilhosActivity extends AppCompatActivity {
         endK = findViewById(R.id.txtEnderecoK);
         dt_nasc = findViewById(R.id.txtData);
         imgInfKids = findViewById(R.id.imgPerfilK);
+        txtEmbarque = findViewById(R.id.txtEmbarque);
+        txtDesembarque = findViewById(R.id.txtDesembarque);
 
         txtTios = findViewById(R.id.txtTios);
         txtStatus = findViewById(R.id.txtStatus);
@@ -91,6 +98,15 @@ public class InfFilhosActivity extends AppCompatActivity {
         endK.setText(kids.getEnd_principal());
         dt_nasc.setText(kids.getDt_nas());
         txtTios.setText(kids.getTio());
+        txtStatus.setText(kids.getStatus());
+        txtEmbarque.setText("Sem Informação");
+        txtDesembarque.setText("Sem Informação");
+        getNome = kids.getNome();
+        getEscola = kids.getNm_escola();
+        getPeriodo = kids.getPeriodo();
+        getEnd = kids.getEnd_principal();
+        getDtnas = kids.getDt_nas();
+        getTios = kids.getTio();
 
         idKids = String.valueOf(kids.getIdKids());
 
@@ -192,17 +208,6 @@ public class InfFilhosActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public void alterarKids(MenuItem item) {
         Intent intent = new Intent(InfFilhosActivity.this, EditarFilhoActivity.class);
         intent.putExtra("kids", kids);
@@ -271,6 +276,501 @@ public class InfFilhosActivity extends AppCompatActivity {
         // Create the AlertDialog object and return it
         builder.show();
     }
+
+    public void EditarNomeK(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(InfFilhosActivity.this);
+
+        View mView = getLayoutInflater().inflate(R.layout.dialog_nome, null);
+        final EditText nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim =  mView.findViewById(R.id.btnSim);
+        Button mNao =  mView.findViewById(R.id.btnNao);
+
+        nomeE.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
+        alertDialog.setTitle("Editar Nome");
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText(getNome);
+
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String nome = nomeE.getText().toString().trim();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //progess.setVisibility(View.GONE);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    //boolean success = jsonObject.getBoolean("success");
+                                    String success = jsonObject.getString("success");
+
+                                    if (success.equals("1")){
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
+                                        intent.putExtra("kids", kids);
+                                        startActivity(intent);
+                                    }else {
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+
+                                } catch (JSONException e1) {
+                                    Log.e("JSON", "Error parsing JSON", e1);
+                                    dialog.dismiss();
+                                }
+                                Log.e(TAG, "response: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("JSON", "Error parsing JSON", error);
+                                dialog.dismiss();
+                            }
+                        }){
+
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("nome", nome);
+                        params.put("dt_nas", getDtnas);
+                        params.put("end_principal", getEnd);
+                        params.put("idKids", idKids);
+                        return params;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(InfFilhosActivity.this);
+                requestQueue.add(stringRequest);
+            }
+        });
+        dialog.show();
+    }
+
+    public void EditarEscola(View view) {
+//        Intent intent = new Intent(InfFilhosActivity.this, EditarFilhoActivity.class);
+//        intent.putExtra("kids", kids);
+//        InfFilhosActivity.this.startActivity(intent);
+    }
+
+    public void EditarEnd(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(InfFilhosActivity.this);
+
+        View mView = getLayoutInflater().inflate(R.layout.dialog_end, null);
+        final EditText nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim =  mView.findViewById(R.id.btnSim);
+        Button mNao =  mView.findViewById(R.id.btnNao);
+
+        nomeE.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
+        alertDialog.setTitle("Editar Endereço");
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText(getEnd);
+
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String end = nomeE.getText().toString().trim();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //progess.setVisibility(View.GONE);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    //boolean success = jsonObject.getBoolean("success");
+                                    String success = jsonObject.getString("success");
+
+                                    if (success.equals("1")){
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
+                                        intent.putExtra("kids", kids);
+                                        startActivity(intent);
+                                    }else {
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+
+                                } catch (JSONException e1) {
+                                    Log.e("JSON", "Error parsing JSON", e1);
+                                    dialog.dismiss();
+                                }
+                                Log.e(TAG, "response: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("JSON", "Error parsing JSON", error);
+                                dialog.dismiss();
+                            }
+                        }){
+
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("nome", getNome);
+                        params.put("dt_nas", getDtnas);
+                        params.put("end_principal", end);
+                        params.put("idKids", idKids);
+                        return params;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(InfFilhosActivity.this);
+                requestQueue.add(stringRequest);
+            }
+        });
+        dialog.show();
+    }
+
+    public void EditarBday(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(InfFilhosActivity.this);
+
+        View mView = getLayoutInflater().inflate(R.layout.dialog_bday, null);
+        final EditText nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim =  mView.findViewById(R.id.btnSim);
+        Button mNao =  mView.findViewById(R.id.btnNao);
+
+        alertDialog.setTitle("Editar Aniversário");
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText(getDtnas);
+
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String bday = nomeE.getText().toString().trim();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //progess.setVisibility(View.GONE);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    //boolean success = jsonObject.getBoolean("success");
+                                    String success = jsonObject.getString("success");
+
+                                    if (success.equals("1")){
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
+                                        intent.putExtra("kids", kids);
+                                        startActivity(intent);
+                                    }else {
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+
+                                } catch (JSONException e1) {
+                                    Log.e("JSON", "Error parsing JSON", e1);
+                                    dialog.dismiss();
+                                }
+                                Log.e(TAG, "response: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("JSON", "Error parsing JSON", error);
+                                dialog.dismiss();
+                            }
+                        }){
+
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("nome", getNome);
+                        params.put("dt_nas", bday);
+                        params.put("end_principal", getEnd);
+                        params.put("idKids", idKids);
+                        return params;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(InfFilhosActivity.this);
+                requestQueue.add(stringRequest);
+            }
+        });
+        dialog.show();
+    }
+
+    public void EditNome(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(InfFilhosActivity.this);
+
+        View mView = getLayoutInflater().inflate(R.layout.dialog_nome, null);
+        final EditText nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim =  mView.findViewById(R.id.btnSim);
+        Button mNao =  mView.findViewById(R.id.btnNao);
+
+        nomeE.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
+        alertDialog.setTitle("Editar Nome");
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText(getNome);
+
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String nome = nomeE.getText().toString().trim();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //progess.setVisibility(View.GONE);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    //boolean success = jsonObject.getBoolean("success");
+                                    String success = jsonObject.getString("success");
+
+                                    if (success.equals("1")){
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
+                                        intent.putExtra("kids", kids);
+                                        startActivity(intent);
+                                    }else {
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+
+                                } catch (JSONException e1) {
+                                    Log.e("JSON", "Error parsing JSON", e1);
+                                    dialog.dismiss();
+                                }
+                                Log.e(TAG, "response: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("JSON", "Error parsing JSON", error);
+                                dialog.dismiss();
+                            }
+                        }){
+
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("nome", nome);
+                        params.put("dt_nas", getDtnas);
+                        params.put("end_principal", getEnd);
+                        params.put("idKids", idKids);
+                        return params;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(InfFilhosActivity.this);
+                requestQueue.add(stringRequest);
+            }
+        });
+        dialog.show();
+    }
+
+    public void EditEnd(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(InfFilhosActivity.this);
+
+        View mView = getLayoutInflater().inflate(R.layout.dialog_end, null);
+        final EditText nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim =  mView.findViewById(R.id.btnSim);
+        Button mNao =  mView.findViewById(R.id.btnNao);
+
+        nomeE.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
+        alertDialog.setTitle("Editar Endereço");
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText(getEnd);
+
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String end = nomeE.getText().toString().trim();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //progess.setVisibility(View.GONE);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    //boolean success = jsonObject.getBoolean("success");
+                                    String success = jsonObject.getString("success");
+
+                                    if (success.equals("1")){
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
+                                        intent.putExtra("kids", kids);
+                                        startActivity(intent);
+                                    }else {
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+
+                                } catch (JSONException e1) {
+                                    Log.e("JSON", "Error parsing JSON", e1);
+                                    dialog.dismiss();
+                                }
+                                Log.e(TAG, "response: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("JSON", "Error parsing JSON", error);
+                                dialog.dismiss();
+                            }
+                        }){
+
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("nome", getNome);
+                        params.put("dt_nas", getDtnas);
+                        params.put("end_principal", end);
+                        params.put("idKids", idKids);
+                        return params;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(InfFilhosActivity.this);
+                requestQueue.add(stringRequest);
+            }
+        });
+        dialog.show();
+    }
+
+    public void EditDat(View view) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(InfFilhosActivity.this);
+
+        View mView = getLayoutInflater().inflate(R.layout.dialog_bday, null);
+        final EditText nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim =  mView.findViewById(R.id.btnSim);
+        Button mNao =  mView.findViewById(R.id.btnNao);
+
+        alertDialog.setTitle("Editar Aniversário");
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText(getDtnas);
+
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String bday = nomeE.getText().toString().trim();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //progess.setVisibility(View.GONE);
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    //boolean success = jsonObject.getBoolean("success");
+                                    String success = jsonObject.getString("success");
+
+                                    if (success.equals("1")){
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
+                                        intent.putExtra("kids", kids);
+                                        startActivity(intent);
+                                    }else {
+                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }
+
+                                } catch (JSONException e1) {
+                                    Log.e("JSON", "Error parsing JSON", e1);
+                                    dialog.dismiss();
+                                }
+                                Log.e(TAG, "response: " + response);
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("JSON", "Error parsing JSON", error);
+                                dialog.dismiss();
+                            }
+                        }){
+
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("nome", getNome);
+                        params.put("dt_nas", bday);
+                        params.put("end_principal", getEnd);
+                        params.put("idKids", idKids);
+                        return params;
+                    }
+                };
+                RequestQueue requestQueue = Volley.newRequestQueue(InfFilhosActivity.this);
+                requestQueue.add(stringRequest);
+            }
+        });
+        dialog.show();
+    }
+
 }
 
 

@@ -56,10 +56,20 @@ public class KidsAdapter  extends RecyclerView.Adapter<KidsAdapter.MyViewHolder>
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         final Kids kids = this.nData.get(position);
         holder.nome.setText(nData.get(position).getNome());
-        holder.periodo.setText(nData.get(position).getTio());
-        holder.escola.setText(nData.get(position).getPeriodo());
+        holder.periodo.setText("STATUS: " + nData.get(position).getStatus());
+        holder.escola.setText(nData.get(position).getTio());
         Glide.with(context).load(kids.getImg()).apply(options).into(holder.img);
-        Log.e("Foto",  kids.getImg());
+        String status = holder.periodo.getText().toString().trim();
+
+        if (status.equals("STATUS: Desembarcou")){
+            holder.img.setBackgroundResource(R.drawable.circle_desembarcou);
+        }else if (status.equals("STATUS: Embarcou")){
+            holder.img.setBackgroundResource(R.drawable.circle_embarcou);
+        }else if (status.equals("STATUS: Faltou")){
+            holder.img.setBackgroundResource(R.drawable.circle_faltou);
+        }else {
+            holder.img.setBackgroundResource(R.drawable.circle);
+        }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

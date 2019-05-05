@@ -31,6 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.santalu.widget.MaskEditText;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONArray;
@@ -72,7 +73,8 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
 
     Spinner spinnerPeriodo;
     SearchableSpinner spinnerTios, spinnerEscola;
-    EditText editNomeT,dtNasc,endT;
+    EditText editNomeT,endT;
+    MaskEditText dtNasc, embarque, desembarque;
     boolean isUpdating = false;
     Kids kids;
     Button btnSaveCadastro;
@@ -94,7 +96,7 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
 
     String nome;
     String dtNas;
-    String end;
+    String end, embarqueK, desembarqueK;
     int tio;
     int escola;
     String periodo;
@@ -121,13 +123,15 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
         getSupportActionBar().setTitle("Cadastrar Filho");
 
-        spinnerEscola= (SearchableSpinner) findViewById(R.id.spinnerE);
-        spinnerTios= (SearchableSpinner) findViewById(R.id.spinnerT);
+        spinnerEscola= findViewById(R.id.spinnerE);
+        spinnerTios= findViewById(R.id.spinnerT);
         spinnerPeriodo = findViewById(R.id.spinnerP);
 
         editNomeT = findViewById(R.id.editNomeT);
         dtNasc = findViewById(R.id.dtNasc);
         endT = findViewById(R.id.end);
+        embarque = findViewById(R.id.embarque);
+        desembarque = findViewById(R.id.desembarque);
         btnSaveCadastro = findViewById(R.id.btnSaveCadastro);
 
         editNomeT.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -166,6 +170,8 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
                 nome  = editNomeT.getText().toString().trim();
                 dtNas  = dtNasc.getText().toString().trim();
                 end = endT.getText().toString().trim();
+                embarqueK = embarque.getText().toString().trim();
+                desembarqueK = desembarque.getText().toString().trim();
                 periodo = record.trim();
                 escola  = (int) spinnerEscola.getSelectedItemPosition()+1;
                 tio  = (int) spinnerTios.getSelectedItemPosition()+1;
@@ -185,6 +191,18 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
 
                 if (end.isEmpty()){
                     endT.setError("Insira seu endereço!");
+                    endT.requestFocus();
+                    return;
+                }
+
+                if (embarqueK.isEmpty()){
+                    endT.setError("Insira o horário!");
+                    endT.requestFocus();
+                    return;
+                }
+
+                if (desembarqueK.isEmpty()){
+                    endT.setError("Insira o horário!");
                     endT.requestFocus();
                     return;
                 }
@@ -382,7 +400,7 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
         Call<ResponseBody> call = ApiClient
                 .getInstance()
                 .getApi()
-                .createkids(nome, dtNas, end, periodo, tio, escola, id);
+                .createkids(nome, dtNas, end, periodo, embarqueK, desembarqueK, tio, escola, id);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override

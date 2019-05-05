@@ -33,6 +33,7 @@ public class URLs {
     public static String URL_EDIT = "http://apptransescolar.com.br/apiapptransescolar/edit_detail_pais.php";
     public static String URL_EDIT_SENHA = "http://apptransescolar.com.br/apiapptransescolar/edit_senha.php";
     public static String URL_EDIT_FILHO = "http://apptransescolar.com.br/apiapptransescolar/edit_detail_kids.php";
+    public static String URL_EDIT_FILHO_FULL = "http://apptransescolar.com.br/apiapptransescolar/edit_detail_kids.full.php";
 
     //Recuperar Senha
     public static String URL_READ_FORGOT = "http://apptransescolar.com.br/apiapptransescolar/read_forgot.php?apicall=findPaisAll";

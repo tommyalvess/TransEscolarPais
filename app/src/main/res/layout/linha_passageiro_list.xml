@@ -8,9 +8,9 @@
         app:cardBackgroundColor="#b0c4de"
         app:cardCornerRadius="@dimen/screen_percentage_05"
         app:cardElevation="@dimen/screen_percentage_10"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_height="wrap_content">
 
     <android.support.constraint.ConstraintLayout
@@ -18,46 +18,38 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
         android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/imgK"
-            android:layout_width="58dp"
-            android:layout_height="63dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_x="7dp"
-            android:layout_y="3dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/user"
-            app:civ_border_color="#000"
-            app:civ_border_width="2dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <com.gauravbhola.ripplepulsebackground.RipplePulseLayout
+            android:id="@+id/layout_ripplepulse"
+            android:layout_width="69dp"
+            android:layout_height="71dp"
+            android:clipChildren="false"
+            app:duration="5100"
+            app:endRadius="38dp"
+            app:rippleColor="@color/AzulTema"
+            app:rippleType="stroke"
+            app:startRadius="5dp"
+            app:strokeWidth="3dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgK"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="9dp"
+                android:background="@drawable/circle"
+                android:padding="3dp" />
+
+        </com.gauravbhola.ripplepulsebackground.RipplePulseLayout>
 
         <TextView
             android:id="@+id/textNome"
-            android:layout_width="195dp"
+            android:layout_width="307dp"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textApelido"
-            android:layout_alignTop="@+id/imageView2"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="250dp"
-            android:layout_x="73dp"
-            android:layout_y="11dp"
-            android:fontFamily="@font/roboto_black"
-            android:text="Nome"
-            android:textColor="#000"
-            android:textSize="13dp"
-            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Nome da Rota"
+            android:textSize="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline10"
@@ -65,19 +57,11 @@
 
         <TextView
             android:id="@+id/textApelido"
-            android:layout_width="195dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="250dp"
-            android:layout_x="73dp"
-            android:layout_y="30dp"
             android:fontFamily="@font/roboto_light"
             android:text="Escola"
-            android:textColor="#000"
-            android:textSize="@dimen/fab_margin"
+            android:textSize="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline10"
@@ -85,23 +69,15 @@
 
         <TextView
             android:id="@+id/textEmail"
-            android:layout_width="195dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="230dp"
-            android:layout_marginBottom="10dp"
-            android:layout_x="74dp"
-            android:layout_y="54dp"
             android:fontFamily="@font/roboto_light"
             android:text="Periodo"
-            android:textAllCaps="true"
-            android:textColor="#000"
+            android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline10"
+            app:layout_constraintStart_toEndOf="@+id/guideline10"
             app:layout_constraintTop_toBottomOf="@+id/textApelido"
             app:layout_constraintVertical_bias="0.0" />
 
@@ -110,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="77dp" />
+            app:layout_constraintGuide_begin="69dp" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -46,6 +46,7 @@ import static br.com.apptransescolar.API.URLs.PATH_TO_SERVER;
 import static br.com.apptransescolar.API.URLs.PATH_TO_SERVER2;
 import static br.com.apptransescolar.API.URLs.URL_EDIT;
 import static br.com.apptransescolar.API.URLs.URL_EDIT_FILHO;
+import static br.com.apptransescolar.API.URLs.URL_EDIT_FILHO_FULL;
 
 public class EditarFilhoActivity extends AppCompatActivity {
 
@@ -54,10 +55,7 @@ public class EditarFilhoActivity extends AppCompatActivity {
     Button btnSaveCadastro;
 
     String id;
-    String getId;
-    String nome;
-    String dtNas;
-    String end;
+    String getId, getNome, getDtNas, getEnd;
     int tio;
     int escola;
     String periodo;
@@ -65,7 +63,7 @@ public class EditarFilhoActivity extends AppCompatActivity {
     //Spinner
     List<Tio> spinnerTioData;
     List<Escolas> spinnerEscolaData;
-    String name [] = {"Manhã", "Tarde"};
+    String[] name  = {"Manhã", "Tarde"};
     String record = "";
 
     ArrayAdapter<String> arrayAdapter;
@@ -88,7 +86,6 @@ public class EditarFilhoActivity extends AppCompatActivity {
         //Dados do pai
         sessionManager = new SessionManager(this);
 
-        HashMap<String, String> user = sessionManager.getUserDetail();
         getId = String.valueOf(kids.getIdKids());
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
@@ -103,11 +100,6 @@ public class EditarFilhoActivity extends AppCompatActivity {
         dtNasc = findViewById(R.id.dtNasc);
         endT = findViewById(R.id.end);
         btnSaveCadastro = findViewById(R.id.btnSaveCadastro);
-
-        editNomeT.setText(kids.getNome());
-        endT.setText(kids.getEnd_principal());
-        dtNasc.setText(kids.getDt_nas());
-
 
         // Spinner periodo
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, name);
@@ -138,37 +130,16 @@ public class EditarFilhoActivity extends AppCompatActivity {
         btnSaveCadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nome  = editNomeT.getText().toString().trim();
-                dtNas  = dtNasc.getText().toString().trim();
-                end = endT.getText().toString().trim();
                 periodo = record.trim();
                 escola  = (int) spinnerEscola.getSelectedItemPosition()+1;
                 tio  = (int) spinnerTios.getSelectedItemPosition()+1;
-
-                if (nome.isEmpty()){
-                    editNomeT.setError("Insira o seu nome");
-                    editNomeT.requestFocus();
-                    return;
-                }
-
-                if (dtNas.isEmpty()){
-                    dtNasc.setError("Insira seu aniversario!");
-                    dtNasc.requestFocus();
-                    return;
-                }
-
-                if (end.isEmpty()){
-                    endT.setError("Insira seu endereço!");
-                    endT.requestFocus();
-                    return;
-                }
 
                 registroPadrao();
 
             }
         });
 
-        spinnerPeriodo.setPrompt("Selecione um Periodo:");
+        spinnerPeriodo.setPrompt("Selecione um Período:");
         spinnerTios.setPrompt("Selecione um Tio");
         spinnerEscola.setPrompt("Selecionar uma Escola");
 
@@ -180,7 +151,7 @@ public class EditarFilhoActivity extends AppCompatActivity {
     }// onCreate
 
     private void registroPadrao() {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_FILHO_FULL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -214,9 +185,6 @@ public class EditarFilhoActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("nome", nome);
-                params.put("dt_nas", dtNas);
-                params.put("end_principal", end);
                 params.put("periodo", periodo);
                 params.put("idTios", String.valueOf(tio));
                 params.put("idEscola", String.valueOf(escola));

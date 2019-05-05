@@ -25,6 +25,8 @@ public interface IPais {
             @Field("dt_nas") String data,
             @Field("end_principal") String end,
             @Field("periodo") String periodo,
+            @Field("embarque") String embarque,
+            @Field("desembarque") String desembarque,
             @Field("idTios") int idTios,
             @Field("idEscola") int idEscola,
             @Field("idPais") int idPais

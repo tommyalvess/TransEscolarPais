@@ -528,7 +528,6 @@ public class InfTioActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-
     public void deletarPais(MenuItem item) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(InfTioActivity.this);
@@ -549,4 +548,5 @@ public class InfTioActivity extends AppCompatActivity {
         // Create the AlertDialog object and return it
         builder.show();
     }
+
 }

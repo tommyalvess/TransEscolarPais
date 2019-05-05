@@ -13,10 +13,11 @@ public class Kids implements Serializable {
     @SerializedName("Escola") private String nm_escola;
     @SerializedName("DtNas") private String dt_nas;
     @SerializedName("End") private String end_principal;
+    @SerializedName("Status") private String status;
     @SerializedName("Tio") private String tio;
 
 
-    public Kids(int idKids, String nome, String periodo, String img, String nm_escola, String dt_nas, String end_principal, String tio) {
+    public Kids(int idKids, String nome, String periodo, String img, String nm_escola, String dt_nas, String end_principal, String status, String tio) {
         this.idKids = idKids;
         this.nome = nome;
         this.periodo = periodo;
@@ -24,20 +25,21 @@ public class Kids implements Serializable {
         this.nm_escola = nm_escola;
         this.dt_nas = dt_nas;
         this.end_principal = end_principal;
+        this.status = status;
         this.tio = tio;
-    }
-
-    public Kids(int id, String nome, String escola, String periodo, String endereco, String dtNas) {
-        this.idKids = id;
-        this.nome = nome;
-        this.nm_escola = escola;
-        this.periodo = periodo;
-        this.end_principal = endereco;
-        this.dt_nas = dtNas;
     }
 
     public Kids() {
 
+    }
+
+    public Kids(int id, String nome, String escola, String periodo, String endereco, String aniver) {
+        this.idKids = id;
+        this.nome = nome;
+        this.nm_escola = escola;
+        this.periodo = periodo;
+        this.dt_nas = aniver;
+        this.end_principal = endereco;
     }
 
     public int getIdKids() {
@@ -106,5 +108,13 @@ public class Kids implements Serializable {
 
     public void setTio(String tio) {
         this.tio = tio;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

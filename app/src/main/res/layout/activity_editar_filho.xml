@@ -15,53 +15,6 @@
         tools:ignore="ResAuto"
         tools:layout_editor_absoluteY="81dp">
 
-        <EditText
-            android:id="@+id/editNomeT"
-            android:layout_width="300dp"
-            android:layout_height="41dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/rounded_edittext"
-            android:ems="10"
-            android:hint=" Nome:"
-            android:inputType="text"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
-
-        <com.santalu.widget.MaskEditText
-            android:id="@+id/dtNasc"
-            android:layout_width="300dp"
-            android:layout_height="41dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/rounded_edittext"
-            android:ems="10"
-            android:hint=" Aniversario:"
-            android:inputType="date"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/editNomeT"
-            app:met_mask="##/##/####" />
-
-        <EditText
-            android:id="@+id/end"
-            android:layout_width="300dp"
-            android:layout_height="41dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/rounded_edittext"
-            android:hint=" Endereço:"
-            android:inputType="text"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/dtNasc"
-            tools:ignore="MissingConstraints" />
-
         <Button
             android:id="@+id/btnSaveCadastro"
             android:layout_width="300dp"
@@ -120,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="208dp" />
+            app:layout_constraintGuide_begin="27dp" />
 
 
         <TextView
@@ -130,7 +83,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Periodo:"
+            android:text="Período:"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline2"

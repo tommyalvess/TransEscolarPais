@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <EditText
+    <com.santalu.widget.MaskEditText
         android:id="@+id/nomeD"
         android:layout_width="match_parent"
         android:layout_height="41dp"
@@ -16,8 +15,9 @@
         android:layout_marginBottom="5dp"
         android:background="@drawable/edit_text_style"
         android:ems="10"
-        android:hint=" Nome:"
+        android:hint=" Aniversário:"
         android:imeOptions="actionDone"
+        app:met_mask="##/##/####"
         android:inputType="textCapWords"
         app:layout_constraintBottom_toTopOf="@+id/guideline16"
         app:layout_constraintEnd_toEndOf="parent"
