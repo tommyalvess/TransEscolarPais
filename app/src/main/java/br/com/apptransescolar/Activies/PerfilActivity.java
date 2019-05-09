@@ -1,28 +1,31 @@
 package br.com.apptransescolar.Activies;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.NavUtils;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,7 +42,6 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +52,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.apptransescolar.Conexao.NetworkChangeReceiver5;
 import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -76,11 +79,17 @@ public class PerfilActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
 
-    ConstraintLayout constraintLayout;
+    static NestedScrollView constraintLayout;
 
     RequestOptions cropOptions;
 
     private final Handler handler = new Handler();
+    static Thread thread;
+    static TextView tv_check_connection;
+    static ActionBar bar;
+    static Window window;
+    static Snackbar snackbar;
+    private NetworkChangeReceiver5 mNetworkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +101,11 @@ public class PerfilActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        mNetworkReceiver = new NetworkChangeReceiver5();
+        registerNetworkBroadcastForNougat();
+
+        window = PerfilActivity.this.getWindow();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
         getSupportActionBar().setTitle("");
@@ -99,6 +113,7 @@ public class PerfilActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
 
+        constraintLayout = findViewById(R.id.constraintLayout);
         txtNomeU =  findViewById(R.id.tv_name);
         txtNome = findViewById(R.id.txtNome);
         txtEmailU =  findViewById(R.id.txtEmailP);
@@ -108,6 +123,8 @@ public class PerfilActivity extends AppCompatActivity {
         periodo =  findViewById(R.id.periodoD);
         txtCountKids = findViewById(R.id.txtCountKids);
         txtCountTios = findViewById(R.id.txtCountTios);
+        tv_check_connection = findViewById(R.id.tv_check_connection);
+
 
         HashMap<String, String> user = sessionManager.getUserDetail();
         getId = user.get(sessionManager.ID);
@@ -128,6 +145,7 @@ public class PerfilActivity extends AppCompatActivity {
             }
         });
 
+
         if (verificaConexao() == true){
             getUserDetail();
             countKids();
@@ -137,8 +155,6 @@ public class PerfilActivity extends AppCompatActivity {
             txtCountKids.setText("0");
             txtCountTios.setText("0");
         }
-
-        doTheAutoRefresh();
 
     }
 
@@ -180,7 +196,6 @@ public class PerfilActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PerfilActivity.this, "Opss!!! Sem Conexão a internet.", Toast.LENGTH_SHORT).show();
                         Log.e("VolleyError", "Error", error);
                     }
                 }){
@@ -222,7 +237,6 @@ public class PerfilActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PerfilActivity.this, "Opss!!! Sem Conexão a internet.", Toast.LENGTH_SHORT).show();
                         Log.e("VolleyError", "Error", error);
                     }
                 }){
@@ -239,6 +253,15 @@ public class PerfilActivity extends AppCompatActivity {
 
     //Pegar inf da sessão
     private void getUserDetailSessão(){
+        HashMap<String, String> user = sessionManager.getUserDetail();
+        getId = user.get(sessionManager.ID);
+        getCpf = user.get(sessionManager.CPF);
+        nNome = user.get(sessionManager.NAME);
+        nEmail = user.get(sessionManager.EMAIL);
+        nCpf = user.get(sessionManager.CPF);
+        nTell = user.get(sessionManager.TELL);
+        nIMG = user.get(sessionManager.IMG);
+
         txtNomeU.setText(nNome);
         txtNome.setText(nNome);
         txtEmailU.setText(nEmail);
@@ -287,7 +310,6 @@ public class PerfilActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PerfilActivity.this, "Opss!!! Sem Conexão a internet.", Toast.LENGTH_SHORT).show();
                         Log.e("VolleyError", "Error", error);
                     }
                 }){
@@ -324,10 +346,10 @@ public class PerfilActivity extends AppCompatActivity {
             countTios();
         }else {
             getUserDetailSessão();
-            Toast.makeText(this, "Você está sem internet!", Toast.LENGTH_SHORT).show();
+            txtCountKids.setText("0");
+            txtCountTios.setText("0");
         }
     }
-
 
     @Override
     protected void onRestart() {
@@ -338,7 +360,8 @@ public class PerfilActivity extends AppCompatActivity {
             countTios();
         }else {
             getUserDetailSessão();
-            Toast.makeText(this, "Você está sem internet!", Toast.LENGTH_SHORT).show();
+            txtCountKids.setText("0");
+            txtCountTios.setText("0");
         }
     }
 
@@ -462,7 +485,6 @@ public class PerfilActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_perfil, menu);
         return true;
     }
-
 
     //Editar Perfil
     public void EditarNome(View view) {
@@ -840,7 +862,6 @@ public class PerfilActivity extends AppCompatActivity {
         //alertDialog.show();
     }
 
-
     public void alterarSenha(MenuItem item) {
         Intent intent = new Intent(PerfilActivity.this, AlterarSenhaActivity.class);
         startActivity(intent);
@@ -851,4 +872,45 @@ public class PerfilActivity extends AppCompatActivity {
 
     }
 
+    public static void dialogP(boolean value, final Context context){
+
+        if(value){
+            snackbar.dismiss();
+            Handler handler = new Handler();
+            Runnable delayrunnable = new Runnable() {
+                @Override
+                public void run() {
+                    snackbar.dismiss();
+                }
+            };
+            handler.postDelayed(delayrunnable, 300);
+        }else {
+            snackbar = Snackbar
+                    .make(constraintLayout, "Sem Conexão a Internet!", Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
+        }
+    }
+
+    private void registerNetworkBroadcastForNougat() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+    }
+
+    protected void unregisterNetworkChanges() {
+        try {
+            unregisterReceiver(mNetworkReceiver);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterNetworkChanges();
+    }
 }

@@ -35,7 +35,6 @@
         android:layout_marginEnd="32dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="218dp"
-        android:onClick="passageiro"
         android:src="@drawable/daughter"
         app:civ_border_color="@color/AzulTema"
         app:civ_border_width="2dp"
@@ -79,7 +78,6 @@
         app:layout_constraintStart_toEndOf="@+id/passageiros"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints,OnClick"
-        android:onClick="escola"
         android:clickable="true"/>
 
     <TextView
@@ -115,7 +113,6 @@
         app:layout_constraintStart_toEndOf="@+id/escolas"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints,OnClick"
-        android:onClick="intinerario"
         android:clickable="true"/>
 
     <TextView
@@ -144,7 +141,6 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="59dp"
         android:clickable="true"
-        android:onClick="usuario"
         android:src="@drawable/usersnew"
         app:civ_border_color="@color/AzulTema"
         app:civ_border_width="2dp"
@@ -160,13 +156,13 @@
         android:layout_width="73dp"
         android:layout_height="18dp"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="28dp"
         android:text="Usuário"
         android:textAlignment="center"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/user"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/user"
         tools:ignore="MissingConstraints" />
 
@@ -227,5 +223,17 @@
         app:layout_constraintStart_toStartOf="@+id/map"
         app:layout_constraintTop_toBottomOf="@+id/map"
         tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tv_check_connection"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

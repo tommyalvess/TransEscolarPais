@@ -1,41 +1,36 @@
 package br.com.apptransescolar.Activies;
 
-import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.net.ConnectivityManager;
+import android.os.Build;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daimajia.swipe.util.Attributes;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import br.com.apptransescolar.API.ApiClient;
 import br.com.apptransescolar.API.IKids;
-import br.com.apptransescolar.API.ITios;
-import br.com.apptransescolar.Adpter.FilhosAdapter;
 import br.com.apptransescolar.Adpter.KidsAdapter;
-import br.com.apptransescolar.Adpter.TiosAdapter;
-import br.com.apptransescolar.Classes.FilhosDAO;
 import br.com.apptransescolar.Classes.Kids;
-import br.com.apptransescolar.Classes.Tios;
+import br.com.apptransescolar.Conexao.NetworkChangeReceiver2;
 import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import retrofit2.Call;
@@ -54,6 +49,10 @@ public class FilhosActivity extends AppCompatActivity {
     SessionManager sessionManager;
     String getId;
     private int id;
+    static RelativeLayout relativeLayoutF;
+    private NetworkChangeReceiver2 mNetworkReceiver;
+    static Snackbar snackbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +65,19 @@ public class FilhosActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        mNetworkReceiver = new NetworkChangeReceiver2();
+        registerNetworkBroadcastForNougat();
+
         sessionManager = new SessionManager(this);
 
         HashMap<String, String> user = sessionManager.getUserDetail();
         getId = user.get(sessionManager.ID);
 
+        IntentFilter inF1 = new IntentFilter("data_changed");
+        LocalBroadcastManager.getInstance(FilhosActivity.this).registerReceiver(dataChangeReceiver1,inF1);
+
+
+        relativeLayoutF = findViewById(R.id.relativeLayoutF);
         progressBar = findViewById(R.id.progess);
         recyclerView = findViewById(R.id.paisList);
         textAviso = findViewById(R.id.textAviso);
@@ -79,7 +86,6 @@ public class FilhosActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         textAviso.setVisibility(View.GONE);
-
 
         //fetchKids();
         fetchKid("users", "", getId);
@@ -169,5 +175,58 @@ public class FilhosActivity extends AppCompatActivity {
         Intent it = new Intent(this, CadastroFilhoActivity.class);
         startActivity(it);
     }
+
+    public static void dialogF(boolean value, final Context context){
+
+        if(value){
+            snackbar.dismiss();
+            Handler handler = new Handler();
+            Runnable delayrunnable = new Runnable() {
+                @Override
+                public void run() {
+                    snackbar.dismiss();
+
+                }
+            };
+            handler.postDelayed(delayrunnable, 300);
+        }else {
+            snackbar = Snackbar
+                    .make(relativeLayoutF, "Sem Conexão a Internet!", Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
+
+        }
+    }
+
+    private void registerNetworkBroadcastForNougat() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+    }
+
+    protected void unregisterNetworkChanges() {
+        try {
+            unregisterReceiver(mNetworkReceiver);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterNetworkChanges();
+    }
+
+    private BroadcastReceiver dataChangeReceiver1= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // update your listview
+            fetchKid("users", "", getId);
+        }
+    };
+
 
 }

@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -254,7 +255,7 @@ public class InfFilhosActivity extends AppCompatActivity {
                             //boolean success = jsonObject.getBoolean("success");
                             String success = jsonObject.getString("success");
 
-                            if (success.equals("1")){
+                            if (success.equals("OK")){
                                 Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                             }else {
                                 Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
@@ -287,23 +288,30 @@ public class InfFilhosActivity extends AppCompatActivity {
     }
 
     public void deletarKids(MenuItem item) {
-        // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(InfFilhosActivity.this);
-        builder.setMessage("VOCÊ DESEJA DELETAR?")
-                .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        deletarKidsDialog();
-                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View mView = inflater.inflate(R.layout.dialog_text, null);
+        final TextView nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim = mView.findViewById(R.id.btnSim);
+        Button mNao = mView.findViewById(R.id.btnNao);
 
-                    }
-                });
-        // Create the AlertDialog object and return it
-        builder.show();
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText("Você deseja realmente deletar?");
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deletarKidsDialog();
+            }
+        });
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     public void EditarNomeK(View view) {

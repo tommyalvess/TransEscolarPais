@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="br.com.apptransescolar">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -47,10 +50,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activies.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Activies.FilhosActivity"
             android:parentActivityName=".Activies.FilhosActivity"
@@ -58,6 +68,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activies.HomeActivity"
@@ -65,7 +78,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -76,6 +89,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.FilhosActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activies.InfTioActivity"
@@ -84,6 +100,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.TiosActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activies.EscolaActivity"
@@ -92,8 +111,8 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activies.HomeActivity" />
@@ -104,6 +123,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activies.CadastroActivity"
@@ -111,6 +133,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activies.PerfilActivity"
@@ -118,6 +143,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Activies.TiosActivity"
@@ -125,28 +153,55 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.HomeActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity android:name=".Activies.CadastroFilhoActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.FilhosActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity android:name=".Activies.AlterarSenhaActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.PerfilActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
         <activity android:name=".Activies.EditarFilhoActivity">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
-        <activity android:name=".Activies.RecuperarSenhaActivity" />
-        <activity android:name=".Activies.ResetSenhaActivity" />
+        <activity android:name=".Activies.RecuperarSenhaActivity">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Activies.ResetSenhaActivity">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Activies.CountDownActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Activies.AddTiosActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.apptransescolar.Activies.TiosActivity" />
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
         </activity>
     </application>
 

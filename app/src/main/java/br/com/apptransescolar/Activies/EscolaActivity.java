@@ -4,9 +4,15 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -44,10 +50,14 @@ import br.com.apptransescolar.API.ApiClient;
 import br.com.apptransescolar.API.IEscolas;
 import br.com.apptransescolar.Adpter.EscolaAdapter;
 import br.com.apptransescolar.Classes.Escolas;
+import br.com.apptransescolar.Conexao.NetworkChangeReceiver;
+import br.com.apptransescolar.Conexao.NetworkChangeReceiver3;
 import br.com.apptransescolar.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static br.com.apptransescolar.Activies.FilhosActivity.relativeLayoutF;
 
 public class EscolaActivity extends AppCompatActivity {
 
@@ -59,7 +69,9 @@ public class EscolaActivity extends AppCompatActivity {
     ProgressBar progressBar;
     TextView textAviso;
     String[] item;
-
+    static Snackbar snackbar;
+    private NetworkChangeReceiver3 mNetworkReceiver;
+    static CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +88,7 @@ public class EscolaActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progess);
         recyclerView = findViewById(R.id.escolaList);
         textAviso = findViewById(R.id.textAviso);
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
 
         //layoutManager = new LinearLayoutManager(this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
@@ -85,6 +98,9 @@ public class EscolaActivity extends AppCompatActivity {
         fetchEscolas("users", "");
 
         textAviso.setVisibility(View.GONE);
+
+        mNetworkReceiver = new NetworkChangeReceiver3();
+        registerNetworkBroadcastForNougat();
 
     }
 
@@ -146,5 +162,48 @@ public class EscolaActivity extends AppCompatActivity {
         return true;
     }
 
+    public static void dialogE(boolean value, final Context context){
+
+        if(value){
+            snackbar.dismiss();
+            Handler handler = new Handler();
+            Runnable delayrunnable = new Runnable() {
+                @Override
+                public void run() {
+                    snackbar.dismiss();
+
+                }
+            };
+            handler.postDelayed(delayrunnable, 300);
+        }else {
+            snackbar = Snackbar
+                    .make(coordinatorLayout, "Sem Conexão a Internet!", Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
+
+        }
+    }
+
+    private void registerNetworkBroadcastForNougat() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            registerReceiver(mNetworkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+    }
+
+    protected void unregisterNetworkChanges() {
+        try {
+            unregisterReceiver(mNetworkReceiver);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterNetworkChanges();
+    }
 
 }

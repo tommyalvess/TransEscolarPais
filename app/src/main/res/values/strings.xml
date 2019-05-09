@@ -8,6 +8,7 @@
     <string name="endere_o">Endereço:</string>
     <string name="escola">Escola:</string>
     <string name="mensagem_enviada">Mensagem Enviada!</string>
+    <string name="sem_net">Sem conexão a internet</string>
 
     <string-array name="periodo_arrays">
         <item>Manhã</item>
