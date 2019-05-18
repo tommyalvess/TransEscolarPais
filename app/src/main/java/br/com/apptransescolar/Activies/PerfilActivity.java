@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +30,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,6 +93,7 @@ public class PerfilActivity extends AppCompatActivity {
     static Window window;
     static Snackbar snackbar;
     private NetworkChangeReceiver5 mNetworkReceiver;
+    static NestedScrollView perfilLay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +108,9 @@ public class PerfilActivity extends AppCompatActivity {
         mNetworkReceiver = new NetworkChangeReceiver5();
         registerNetworkBroadcastForNougat();
 
+        IntentFilter inF1 = new IntentFilter("data_changed");
+        LocalBroadcastManager.getInstance(PerfilActivity.this).registerReceiver(dataChangeReceiver1,inF1);
+
         window = PerfilActivity.this.getWindow();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
@@ -113,7 +120,7 @@ public class PerfilActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
 
-        constraintLayout = findViewById(R.id.constraintLayout);
+        constraintLayout = findViewById(R.id.perfilLay);
         txtNomeU =  findViewById(R.id.tv_name);
         txtNome = findViewById(R.id.txtNome);
         txtEmailU =  findViewById(R.id.txtEmailP);
@@ -123,8 +130,7 @@ public class PerfilActivity extends AppCompatActivity {
         periodo =  findViewById(R.id.periodoD);
         txtCountKids = findViewById(R.id.txtCountKids);
         txtCountTios = findViewById(R.id.txtCountTios);
-        tv_check_connection = findViewById(R.id.tv_check_connection);
-
+        perfilLay = findViewById(R.id.perfilLay);
 
         HashMap<String, String> user = sessionManager.getUserDetail();
         getId = user.get(sessionManager.ID);
@@ -300,7 +306,12 @@ public class PerfilActivity extends AppCompatActivity {
                                     Glide.with(PerfilActivity.this).load(strImage).apply(cropOptions).into(imgPerfilP);
                                 }
                             }else {
-                                Toast.makeText(PerfilActivity.this,json.getString("message"),Toast.LENGTH_LONG).show();
+                                snackbar = showSnackbar(perfilLay, Snackbar.LENGTH_LONG, PerfilActivity.this);
+                                snackbar.show();
+                                View view = snackbar.getView();
+                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                tv.setText(json.getString("message"));
+
                             }
                         }catch ( JSONException e ) {
                             Log.e("JSON", "Error parsing JSON", e);
@@ -402,12 +413,15 @@ public class PerfilActivity extends AppCompatActivity {
                             String success = jsonObject.getString("success");
 
                             if (success.equals("OK")){
-                                Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.e("Erro", "Upload", e);
-                            Toast.makeText(PerfilActivity.this,"Opss! Tente Novamente!",Toast.LENGTH_LONG).show();
+                            snackbar = showSnackbar(perfilLay, Snackbar.LENGTH_LONG, PerfilActivity.this);
+                            snackbar.show();
+                            View view = snackbar.getView();
+                            TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                            tv.setText("Opss! Tente Novamente!");
 
                         }
 
@@ -416,9 +430,6 @@ public class PerfilActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PerfilActivity.this,"Opss! Algo deu errado!",Toast.LENGTH_LONG).show();
-
-
                     }
                 }){
             @Override
@@ -446,38 +457,6 @@ public class PerfilActivity extends AppCompatActivity {
         return encodedImage;
     }
 
-    //Dialo para sair da tele
-    private void dialogExit(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View mView = inflater.inflate(R.layout.dialog_text, null);
-        final TextView nomeE = mView.findViewById(R.id.nomeD);
-        Button mSim = mView.findViewById(R.id.btnSim);
-        Button mNao = mView.findViewById(R.id.btnNao);
-
-        alertDialog.setView(mView);
-        final AlertDialog dialog = alertDialog.create();
-
-        nomeE.setText("Você deseja realmente deletar?");
-        mSim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sessionManager.logout();
-                Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-
-            }
-        });
-        mNao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -537,13 +516,17 @@ public class PerfilActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
                                         sessionManager.createSession(id, nome, email, cpf, tell, img);
-                                        Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(PerfilActivity.this, PerfilActivity.class);
-                                        startActivity(intent);
+                                        LocalBroadcastManager.getInstance(PerfilActivity.this).sendBroadcast(new Intent("data_changed"));
+                                        dialog.dismiss();
                                     }else {
-                                        Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        snackbar = showSnackbar(perfilLay, Snackbar.LENGTH_LONG, PerfilActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));
+
                                         dialog.dismiss();
                                     }
 
@@ -631,13 +614,16 @@ public class PerfilActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
                                         sessionManager.createSession(id, nome, email, cpf, tell, img);
-                                        Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(PerfilActivity.this, PerfilActivity.class);
-                                        startActivity(intent);
+                                        LocalBroadcastManager.getInstance(PerfilActivity.this).sendBroadcast(new Intent("data_changed"));
+                                        dialog.dismiss();
                                     }else {
-                                        Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        snackbar = showSnackbar(perfilLay, Snackbar.LENGTH_LONG, PerfilActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));
                                         dialog.dismiss();
                                     }
 
@@ -725,13 +711,17 @@ public class PerfilActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
                                         sessionManager.createSession(id, nome, email, cpf, tell, img);
-                                        Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(PerfilActivity.this, PerfilActivity.class);
-                                        startActivity(intent);
+                                        LocalBroadcastManager.getInstance(PerfilActivity.this).sendBroadcast(new Intent("data_changed"));
+                                        dialog.dismiss();
                                     }else {
-                                        Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        snackbar = showSnackbar(perfilLay, Snackbar.LENGTH_LONG, PerfilActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));
+
                                         dialog.dismiss();
                                     }
 
@@ -811,26 +801,35 @@ public class PerfilActivity extends AppCompatActivity {
                                     //boolean success = jsonObject.getBoolean("success");
                                     String success = jsonObject.getString("success");
 
-                                    if (success.equals("1")){
+                                    if (success.equals("OK")){
                                         sessionManager.createSession(id, nome, email, cpf, tell, img);
-                                        Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(PerfilActivity.this, PerfilActivity.class);
-                                        startActivity(intent);
+                                        LocalBroadcastManager.getInstance(PerfilActivity.this).sendBroadcast(new Intent("data_changed"));
+                                        dialog.dismiss();
                                     }else {
-                                        Toast.makeText(PerfilActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        snackbar = showSnackbar(perfilLay, Snackbar.LENGTH_LONG, PerfilActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));
+                                        dialog.dismiss();
+
                                     }
 
                                 } catch (JSONException e1) {
                                     Log.e("JSON", "Error parsing JSON", e1);
+                                    dialog.dismiss();
 
                                 }
                                 Log.e(TAG, "response: " + response);
+                                dialog.dismiss();
+
                             }
                         },
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 Log.e("JSON", "Error parsing JSON", error);
+                                dialog.dismiss();
 
                             }
                         }){
@@ -866,12 +865,7 @@ public class PerfilActivity extends AppCompatActivity {
         Intent intent = new Intent(PerfilActivity.this, AlterarSenhaActivity.class);
         startActivity(intent);
     }
-
-    public void Sair(MenuItem item) {
-         dialogExit();
-
-    }
-
+    
     public static void dialogP(boolean value, final Context context){
 
         if(value){
@@ -885,9 +879,12 @@ public class PerfilActivity extends AppCompatActivity {
             };
             handler.postDelayed(delayrunnable, 300);
         }else {
-            snackbar = Snackbar
-                    .make(constraintLayout, "Sem Conexão a Internet!", Snackbar.LENGTH_INDEFINITE);
+            snackbar = showSnackbar(perfilLay, Snackbar.LENGTH_INDEFINITE, context);
             snackbar.show();
+            View view = snackbar.getView();
+            TextView tv = (TextView) view.findViewById(R.id.textSnack);
+            tv.setText("Sem Conexão a Internet!");
+
         }
     }
 
@@ -912,5 +909,41 @@ public class PerfilActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         unregisterNetworkChanges();
+    }
+
+    private BroadcastReceiver dataChangeReceiver1= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // update your listview
+            getUserDetail();
+        }
+    };
+
+    private static Snackbar showSnackbar(NestedScrollView coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
+
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
     }
 }

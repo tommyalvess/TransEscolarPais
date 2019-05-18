@@ -1,19 +1,26 @@
 package br.com.apptransescolar.Activies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -71,6 +78,8 @@ public class EditarFilhoActivity extends AppCompatActivity {
     private RequestQueue queue;
 
     SessionManager sessionManager;
+    static Snackbar snackbar;
+    static ConstraintLayout  constraintLayoutEdi;
 
     Kids kids;
 
@@ -95,6 +104,7 @@ public class EditarFilhoActivity extends AppCompatActivity {
         spinnerPeriodo = findViewById(R.id.spinnerP);
         spinnerTios = findViewById(R.id.spinnerT);
         spinnerEscola = findViewById(R.id.spinnerE);
+        constraintLayoutEdi = findViewById(R.id.constraintLayoutEdi);
 
         editNomeT = findViewById(R.id.editNomeT);
         dtNasc = findViewById(R.id.dtNasc);
@@ -160,12 +170,20 @@ public class EditarFilhoActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             //boolean success = jsonObject.getBoolean("success");
                             String success = jsonObject.getString("success");
+                            //JSONArray success = jsonObject.getJSONArray("success");
 
-                            if (success.equals("1")){
-                                Toast.makeText(EditarFilhoActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                            if (success.equals("OK")){
+                                snackbar = showSnackbar(constraintLayoutEdi, Snackbar.LENGTH_LONG, EditarFilhoActivity.this);
+                                snackbar.show();
+                                View view = snackbar.getView();
+                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                tv.setText(jsonObject.getString("message"));
                             }else {
-                                Toast.makeText(EditarFilhoActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                            }
+                                snackbar = showSnackbar(constraintLayoutEdi, Snackbar.LENGTH_LONG, EditarFilhoActivity.this);
+                                snackbar.show();
+                                View view = snackbar.getView();
+                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                tv.setText(jsonObject.getString("message"));                            }
 
                         } catch (JSONException e1) {
                             Log.e("JSON", "Error parsing JSON", e1);
@@ -253,5 +271,33 @@ public class EditarFilhoActivity extends AppCompatActivity {
                 onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private static Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
+
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
     }
 }//class

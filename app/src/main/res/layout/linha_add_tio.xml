@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    app:cardBackgroundColor="#b0c4de"
+    app:cardBackgroundColor="@color/ColorTheme"
     app:cardCornerRadius="@dimen/screen_percentage_05"
     app:cardElevation="@dimen/screen_percentage_10"
     android:layout_marginTop="5dp"

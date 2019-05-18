@@ -1,28 +1,33 @@
 package br.com.apptransescolar.Activies;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,7 +44,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HomeActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
-    static CoordinatorLayout coordinatorLayout;
 
     static String LoggedIn_User_Email;
     String getCpf;
@@ -53,10 +57,10 @@ public class HomeActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
 
     public static String conectado;
-    private BroadcastReceiver mNetworkReceiver;
+    private NetworkChangeReceiver mNetworkReceiver;
     static Thread thread;
     static Animation animation;
-    static CoordinatorLayout coordinatorLayoutt;
+    static ConstraintLayout coordinatorLayoutt;
     static Snackbar snackbar;
 
     @Override
@@ -80,7 +84,7 @@ public class HomeActivity extends AppCompatActivity {
         ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
         ab.setDisplayShowTitleEnabled(false); // disable the default title element here (for centered title)
 
-        coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        coordinatorLayoutt = findViewById(R.id.coordinatorLayoutHome);
 
         sessionManager = new SessionManager(this);
 
@@ -96,7 +100,6 @@ public class HomeActivity extends AppCompatActivity {
         LoggedIn_User_Email = getCpf;
         OneSignal.sendTag("User_ID", LoggedIn_User_Email);
 
-        tv_check_connection = findViewById(R.id.tv_check_connection);
         imgFilhos = findViewById(R.id.passageiros);
         imgEscola = findViewById(R.id.escolas);
         imgUsuario = findViewById(R.id.user);
@@ -192,9 +195,12 @@ public class HomeActivity extends AppCompatActivity {
             };
             handler.postDelayed(delayrunnable, 300);
         }else {
-            snackbar = Snackbar
-                    .make(coordinatorLayout, "Sem Conexão a Internet!", Snackbar.LENGTH_INDEFINITE);
+
+            snackbar = showSnackbar(coordinatorLayoutt, Snackbar.LENGTH_INDEFINITE, context);
             snackbar.show();
+            View view = snackbar.getView();
+            TextView tv = (TextView) view.findViewById(R.id.textSnack);
+            tv.setText("Sem conexão a internt.");
 
             imgFilhos.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -299,7 +305,70 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    private static Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
+
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
+    }
 
 
+    public void logout(View view) {
+        dialogExit();
+    }
 
+    //Dialo para sair da tele
+    private void dialogExit(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View mView = inflater.inflate(R.layout.dialog_text, null);
+        final TextView nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim = mView.findViewById(R.id.btnSim);
+        Button mNao = mView.findViewById(R.id.btnNao);
+
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText("Você deseja realmente sair?");
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sessionManager.logout();
+                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+
+            }
+        });
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+    }
 }// HomeActivity

@@ -6,6 +6,7 @@ import android.os.CountDownTimer;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -75,7 +76,10 @@ public class CountDownActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                Toast.makeText(CountDownActivity.this, "Atentção! O Tio já vai sair!", Toast.LENGTH_SHORT).show();
+                Toast toast= Toast.makeText(CountDownActivity.this, "Atentção! O Tio já vai sair!", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+
                 Intent intent = new Intent(CountDownActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();

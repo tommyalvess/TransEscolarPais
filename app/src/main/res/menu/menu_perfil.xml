@@ -9,11 +9,5 @@
         android:onClick="alterarSenha"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/sair"
-        android:orderInCategory="100"
-        android:title="Sair"
-        android:onClick="Sair"
-        app:showAsAction="never" />
 
 </menu>

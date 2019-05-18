@@ -3,6 +3,7 @@ package br.com.apptransescolar.Adpter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +32,8 @@ import br.com.apptransescolar.Classes.Tios;
 import br.com.apptransescolar.Conexao.SessionManager;
 import br.com.apptransescolar.R;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static br.com.apptransescolar.Adpter.TiosAdapter.MyViewHolder.cardView;
 
 public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
 
@@ -74,7 +78,7 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
         holder.apelido.setText(nData.get(position).getTell());
         Glide.with(context).load(nData.get(position).getImg()).apply(options).into(holder.img);
 
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+        cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -83,12 +87,21 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
                     public void onClick(DialogInterface dialog, int item) {
                         // Do something with the selection
                         if (item == 0){
-                            Snackbar.make(v, R.string.mensagem_enviada, Snackbar.LENGTH_LONG)
-                                    .show();
+
+
+                            final Snackbar snackbar = showSnackbar(cardView, Snackbar.LENGTH_LONG, context);
+                            snackbar.show();
+                            View view = snackbar.getView();
+                            TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                            tv.setText(R.string.mensagem_enviada);
                             sendNotificationFirst();
                         }else if (item == 1){
-                            Snackbar.make(v, R.string.mensagem_enviada, Snackbar.LENGTH_LONG)
-                                    .show();
+                            final Snackbar snackbar = showSnackbar(cardView, Snackbar.LENGTH_LONG, context);
+                            snackbar.show();
+                            View view = snackbar.getView();
+                            TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                            tv.setText(R.string.mensagem_enviada);
+
                             sendNotificationSecond();
                         }
                     }
@@ -231,7 +244,7 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
 
         });
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
                 Intent it = new Intent(TiosAdapter.this.context, InfTioActivity.class);
@@ -242,6 +255,34 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
         holder.itemView.setLongClickable(true);
     }
 
+    private static Snackbar showSnackbar(CardView coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
+
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
+    }
+
     @Override
     public int getItemCount() {
         return nData.size();
@@ -249,7 +290,7 @@ public class TiosAdapter extends RecyclerView.Adapter<TiosAdapter.MyViewHolder>{
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
-        CardView cardView;
+        static CardView cardView;
         TextView nome, apelido;
         CircleImageView img;
 

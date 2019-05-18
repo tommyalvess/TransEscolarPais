@@ -1,13 +1,20 @@
 package br.com.apptransescolar.Activies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -40,6 +47,9 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
     SessionManager sessionManager;
 
     String cpf1;
+    static Snackbar snackbar;
+    ConstraintLayout constraintLayoutRec;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +66,7 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
 
         editTextCPF = findViewById(R.id.editTextCPF);
         btnOK = findViewById(R.id.btnOK);
+        constraintLayoutRec = findViewById(R.id.constraintLayoutRec);
 
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +93,7 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
                             JSONObject json = new JSONObject(response);
                             JSONArray nameArray = json.names();
                             JSONArray valArray = json.toJSONArray( nameArray );
-                            if (!json.equals("0")){
+                            if (!json.equals("falhou")){
                                 for (int i = 0; i < valArray.length(); i++) {
                                     JSONObject object = valArray.getJSONObject(i);
                                     String id = object.getString("idPais").trim();
@@ -92,7 +103,7 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
                                     String tell = object.getString("tell").trim();
                                     String img = object.getString("img").trim();
 
-                                    sessionManager.createSession(id, nome, email, cpf, tell, img);
+                                    sessionManager.createSessionSenha(id, nome, email, cpf, tell, img);
 
                                     Intent intent = new Intent(RecuperarSenhaActivity.this, ResetSenhaActivity.class);
                                     intent.putExtra("idPais", id);
@@ -102,10 +113,13 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
                                     intent.putExtra("tell", tell);
                                     startActivity(intent);
 
-                                    Toast.makeText(RecuperarSenhaActivity.this, "Localizado!!!", Toast.LENGTH_SHORT).show();
                                 }
                             }else {
-                                Toast.makeText(RecuperarSenhaActivity.this,json.getString("message"),Toast.LENGTH_LONG).show();
+                                snackbar = showSnackbar(constraintLayoutRec, Snackbar.LENGTH_LONG, RecuperarSenhaActivity.this);
+                                snackbar.show();
+                                View view = snackbar.getView();
+                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                tv.setText(json.getString("message"));
                             }
                         }catch ( JSONException e ) {
                             Log.e("JSON", "Error parsing JSON", e);
@@ -115,7 +129,6 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(RecuperarSenhaActivity.this, "Opss!!! Algo deu errado!", Toast.LENGTH_SHORT).show();
                         Log.e("VolleyError", "Error", error);
                     }
                 }){
@@ -128,5 +141,33 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
         };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    private static Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
+
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
     }
 }//Class

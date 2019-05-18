@@ -1,8 +1,12 @@
 package br.com.apptransescolar.Activies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,10 +15,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +45,8 @@ public class CadastroActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Button btnSaveCadastro;
     TextView text;
+    static Snackbar snackbar;
+    static ConstraintLayout constraintLayoutCas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,7 @@ public class CadastroActivity extends AppCompatActivity {
         editTell =  findViewById(R.id.periodo);
         editSenha = findViewById(R.id.editSenhaT);
         editEmail = findViewById(R.id.dtNasc);
+        constraintLayoutCas = findViewById(R.id.constraintLayoutCas);
 
         editNome.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
@@ -137,14 +146,16 @@ public class CadastroActivity extends AppCompatActivity {
                   if (response.code() == 201) {
 
                       s = response.body().string();
-                      Toast toast= Toast.makeText(CadastroActivity.this, "Usuário criado com sucesso!", Toast.LENGTH_SHORT);
-                      toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-                      toast.show();
                       Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
                       startActivity(intent);
 
                   }else {
                       s = response.errorBody().string();
+                      snackbar = showSnackbar(constraintLayoutCas, Snackbar.LENGTH_LONG, CadastroActivity.this);
+                      snackbar.show();
+                      View view = snackbar.getView();
+                      TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                      tv.setText(s);
                   }
               } catch (IOException e) {
                   e.printStackTrace();
@@ -153,9 +164,12 @@ public class CadastroActivity extends AppCompatActivity {
               if (s != null){
                   try {
                       JSONObject jsonObject = new JSONObject(s);
-                      Toast toast= Toast.makeText(CadastroActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT);
-                      toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-                      toast.show();
+
+                      snackbar = showSnackbar(constraintLayoutCas, Snackbar.LENGTH_LONG, CadastroActivity.this);
+                      snackbar.show();
+                      View view = snackbar.getView();
+                      TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                      tv.setText(jsonObject.getString("message"));
 
                   }catch (JSONException e){
                       e.printStackTrace();
@@ -166,7 +180,6 @@ public class CadastroActivity extends AppCompatActivity {
 
           @Override
           public void onFailure(Call<ResponseBody> call, Throwable t) {
-              Toast.makeText(CadastroActivity.this, "Opss!! Sem Conexão a internet", Toast.LENGTH_SHORT).show();
               Log.e("Call", "Error", t);
           }
       });
@@ -206,5 +219,32 @@ public class CadastroActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
+    private static Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
+
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
+    }
 
 }//CadastroActivity

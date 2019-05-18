@@ -1,8 +1,10 @@
 package br.com.apptransescolar.Adpter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -16,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +56,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static br.com.apptransescolar.API.URLs.INSERIR_TIO;
 import static br.com.apptransescolar.API.URLs.URL_EDIT;
+import static br.com.apptransescolar.Adpter.AddTiosAdapter.MyViewHolder.cardView;
 import static com.android.volley.VolleyLog.TAG;
 
 public class AddTiosAdapter  extends RecyclerView.Adapter<AddTiosAdapter.MyViewHolder>{
@@ -94,7 +99,7 @@ public class AddTiosAdapter  extends RecyclerView.Adapter<AddTiosAdapter.MyViewH
         holder.placa.setText(nData.get(position).getPlaca());
         Glide.with(context).load(nData.get(position).getImg()).apply(options).into(holder.img);
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
                 addTio();
@@ -132,16 +137,20 @@ public class AddTiosAdapter  extends RecyclerView.Adapter<AddTiosAdapter.MyViewH
                                             String success = jsonObject.getString("success");
 
                                             if (success.equals("OK")){
-                                                Toast.makeText(context,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                                 Intent intent = new Intent(context, TiosActivity.class);
                                                 context.startActivity(intent);
+                                                ((Activity)context).finish();
+                                                dialog.dismiss();
                                             }else {
-                                                Toast.makeText(context,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                                final Snackbar snackbar = showSnackbar(cardView, Snackbar.LENGTH_LONG, context);
+                                                snackbar.show();
+                                                View view = snackbar.getView();
+                                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                                tv.setText(jsonObject.getString("message"));
                                                 dialog.dismiss();
                                             }
 
-                                        } catch (JSONException e1) {
-                                            Toast.makeText(context, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
+                                        } catch (Throwable e1) {
                                             Log.e("JSON", "Error parsing JSON", e1);
                                             dialog.dismiss();
                                         }
@@ -151,7 +160,6 @@ public class AddTiosAdapter  extends RecyclerView.Adapter<AddTiosAdapter.MyViewH
                                     new Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
-                                            Toast.makeText(context, "Opss! Tente novamente mais tarde!", Toast.LENGTH_SHORT).show();
                                             Log.e("JSON", "Error Response", error);
                                             dialog.dismiss();
                                         }
@@ -173,9 +181,37 @@ public class AddTiosAdapter  extends RecyclerView.Adapter<AddTiosAdapter.MyViewH
             }
         });
         holder.itemView.setLongClickable(true);
+
+
     }
 
+    private static Snackbar showSnackbar(CardView coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
 
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
+    }
 
     @Override
     public int getItemCount() {
@@ -184,7 +220,7 @@ public class AddTiosAdapter  extends RecyclerView.Adapter<AddTiosAdapter.MyViewH
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
-        CardView cardView;
+        static CardView cardView;
         TextView nome, apelido, placa;
         CircleImageView img;
 

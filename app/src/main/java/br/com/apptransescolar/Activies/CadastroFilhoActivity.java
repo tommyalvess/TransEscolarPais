@@ -4,7 +4,10 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,13 +15,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -101,6 +108,8 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
     int escola;
     String periodo;
 
+    ScrollView scrollCadas;
+
     String Url="http://apptransescolar.com.br/apiapptransescolar/escolas";
     public static List<String> lst1=null;
     public static List<String> lst2=null;
@@ -133,6 +142,7 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
         embarque = findViewById(R.id.embarque);
         desembarque = findViewById(R.id.desembarque);
         btnSaveCadastro = findViewById(R.id.btnSaveCadastro);
+        scrollCadas = findViewById(R.id.scrollCadas);
 
         editNomeT.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         endT.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -414,8 +424,14 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
                         s = response.body().string();
                         Intent it = new Intent(CadastroFilhoActivity.this, FilhosActivity.class);
                         CadastroFilhoActivity.this.startActivity(it);
+                        finish();
                     }else {
                         s = response.errorBody().string();
+                        final Snackbar snackbar = showSnackbar(scrollCadas, Snackbar.LENGTH_LONG, CadastroFilhoActivity.this);
+                        snackbar.show();
+                        View view = snackbar.getView();
+                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                        tv.setText(s);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -424,7 +440,11 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
                 if (s != null){
                     try {
                         JSONObject jsonObject = new JSONObject(s);
-                        Toast.makeText(CadastroFilhoActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        final Snackbar snackbar = showSnackbar(scrollCadas, Snackbar.LENGTH_LONG, CadastroFilhoActivity.this);
+                        snackbar.show();
+                        View view = snackbar.getView();
+                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                        tv.setText(jsonObject.getString("message"));
 
                     }catch (JSONException e){
                         e.printStackTrace();
@@ -435,10 +455,36 @@ public class CadastroFilhoActivity extends AppCompatActivity implements  Searcha
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(CadastroFilhoActivity.this, "Opss!! Sem Conexão a internet", Toast.LENGTH_SHORT).show();
                 Log.e("Call", "Error", t);
             }
         });
+    }
+    private static Snackbar showSnackbar(ScrollView coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
+
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
     }
 
     private void requestJsonObjectTios() {

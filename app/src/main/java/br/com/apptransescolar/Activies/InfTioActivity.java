@@ -1,21 +1,28 @@
 package br.com.apptransescolar.Activies;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,7 +75,8 @@ public class InfTioActivity extends AppCompatActivity {
     View contextView;
 
     Tios tios;
-
+    static Snackbar snackbar;
+    static CoordinatorLayout coordinatorLayoutInfT;
 
     final String[] items = {"Desculpe, ele não irá hoje!", "Desculpe, estamos atrasados!"};
 
@@ -92,6 +100,7 @@ public class InfTioActivity extends AppCompatActivity {
         mapOn = findViewById(R.id.mapOn);
         countKids = findViewById(R.id.countKids);
         countPais = findViewById(R.id.countPais);
+        coordinatorLayoutInfT = findViewById(R.id.coordinatorLayoutInfT);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //Mostrar o botão
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
@@ -412,7 +421,6 @@ public class InfTioActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(InfTioActivity.this, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
                         Log.e("VolleyError", "Error", error);
                     }
                 }){
@@ -453,7 +461,6 @@ public class InfTioActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(InfTioActivity.this, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
                         Log.e("VolleyError", "Error", error);
                     }
                 }){
@@ -497,10 +504,13 @@ public class InfTioActivity extends AppCompatActivity {
                             //boolean success = jsonObject.getBoolean("success");
                             String success = jsonObject.getString("success");
 
-                            if (success.equals("1")){
-                                Toast.makeText(InfTioActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                            if (success.equals("OK")){
                             }else {
-                                Toast.makeText(InfTioActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                snackbar = showSnackbar(coordinatorLayoutInfT, Snackbar.LENGTH_LONG, InfTioActivity.this);
+                                snackbar.show();
+                                View view = snackbar.getView();
+                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                tv.setText(jsonObject.getString("message"));
                             }
 
                         } catch (JSONException e1) {
@@ -529,24 +539,61 @@ public class InfTioActivity extends AppCompatActivity {
     }
 
     public void deletarPais(MenuItem item) {
-        // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(InfTioActivity.this);
-        builder.setMessage("VOCÊ DESEJA DELETAR?")
-                .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        deletarTiosDialog();
-                        finish();
-                        Intent intent = new Intent(InfTioActivity.this, TiosActivity.class);
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View mView = inflater.inflate(R.layout.dialog_text, null);
+        final TextView nomeE = mView.findViewById(R.id.nomeD);
+        Button mSim = mView.findViewById(R.id.btnSim);
+        Button mNao = mView.findViewById(R.id.btnNao);
 
-                    }
-                });
-        // Create the AlertDialog object and return it
-        builder.show();
+        alertDialog.setView(mView);
+        final AlertDialog dialog = alertDialog.create();
+
+        nomeE.setText("Você deseja realmente deletar?");
+        mSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deletarTiosDialog();
+                finish();
+                Intent intent = new Intent(InfTioActivity.this, TiosActivity.class);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+        mNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
+    private static Snackbar showSnackbar(CoordinatorLayout coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
+
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
+    }
 }

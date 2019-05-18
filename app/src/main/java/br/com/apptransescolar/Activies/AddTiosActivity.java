@@ -3,16 +3,22 @@ package br.com.apptransescolar.Activies;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -39,7 +45,9 @@ public class AddTiosActivity extends AppCompatActivity {
     private AddTiosAdapter tiosAdapter;
     private ITios iTios;
     ProgressBar progressBar;
-    
+    ConstraintLayout constraintLayoutAdd;
+    static Snackbar snackbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +61,7 @@ public class AddTiosActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progess);
         recyclerView = findViewById(R.id.escolaList);
+        constraintLayoutAdd = findViewById(R.id.constraintLayoutAdd);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
@@ -77,13 +86,18 @@ public class AddTiosActivity extends AppCompatActivity {
                     tiosAdapter.notifyDataSetChanged();
                 }else {
                     progressBar.setVisibility(View.GONE);
+
+                    snackbar = showSnackbar(constraintLayoutAdd, Snackbar.LENGTH_LONG, AddTiosActivity.this);
+                    snackbar.show();
+                    View view = snackbar.getView();
+                    TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                    tv.setText("Nenhum tio localizado!");
                 }
             }
 
             @Override
             public void onFailure(Call<List<Tio>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(AddTiosActivity.this, "Algo deu errado!", Toast.LENGTH_LONG).show();
                 Log.e("Chamada", "Erro", t);
             }
         });
@@ -116,5 +130,31 @@ public class AddTiosActivity extends AppCompatActivity {
         return true;
     }
 
+    private static Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
 
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
+    }
 }

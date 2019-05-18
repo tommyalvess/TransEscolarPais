@@ -52,6 +52,16 @@ public class SessionManager {
 
     }
 
+    public void createSessionSenha(String id, String nome, String email, String cpf, String tell, String img){
+        editor.putString(NAME, nome);
+        editor.putString(EMAIL, email);
+        editor.putString(CPF, cpf);
+        editor.putString(TELL, tell);
+        editor.putString(IMG, img);
+        editor.putString(ID, id);
+        editor.apply();
+
+    }
     public void createSessionForgot(String id, String nome, String email, String cpf, String tell, String img){
         editor.putBoolean(LOGIN, true);
         editor.putString(NAME, nome);

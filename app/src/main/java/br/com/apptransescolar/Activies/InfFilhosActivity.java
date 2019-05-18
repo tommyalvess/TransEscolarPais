@@ -11,6 +11,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +78,10 @@ public class InfFilhosActivity extends AppCompatActivity {
 
     RequestOptions cropOptions;
 
+    static Snackbar snackbar;
+    static ConstraintLayout coordinatorLayoutinfF;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +108,7 @@ public class InfFilhosActivity extends AppCompatActivity {
         txtTios = findViewById(R.id.txtTios);
         txtStatus = findViewById(R.id.txtStatus);
         txtPeriodo = findViewById(R.id.txtPeriodo);
-
+        coordinatorLayoutinfF = findViewById(R.id.coordinatorLayoutinfF);
 
         getUserDetail();
 
@@ -124,6 +132,7 @@ public class InfFilhosActivity extends AppCompatActivity {
 //        getTios = kids.getTio();
 //        getEmbarque = kids.getEmbarque();
 //        getDesembarque = kids.getDesembarque();
+
         idKids = String.valueOf(kids.getIdKids());
 
         getNome = nomeK.getText().toString().trim();
@@ -190,22 +199,21 @@ public class InfFilhosActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             String success = jsonObject.getString("success");
 
-                            if (success.equals("1")){
+                            if (success.equals("OK")){
 
-                                Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                            }else {
+
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.e("Erro", "Upload", e);
-                            Toast.makeText(InfFilhosActivity.this,"Opss! Tente Novamente!",Toast.LENGTH_LONG).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(InfFilhosActivity.this,"Opss! Algo deu errado!",Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
@@ -254,15 +262,20 @@ public class InfFilhosActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             //boolean success = jsonObject.getBoolean("success");
                             String success = jsonObject.getString("success");
+                            //JSONArray success = jsonObject.getJSONArray("success");
 
                             if (success.equals("OK")){
-                                Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
+                                InfFilhosActivity.this.startActivity(intent);
                             }else {
-                                Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                snackbar.show();
+                                View view = snackbar.getView();
+                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                tv.setText(jsonObject.getString("message"));
                             }
 
                         } catch (JSONException e1) {
-                            Toast.makeText(InfFilhosActivity.this, "Ops! Algo deu errado!", Toast.LENGTH_SHORT).show();
                             Log.e("JSON", "Error parsing JSON", e1);
                         }
                         Log.e(TAG, "response: " + response);
@@ -271,7 +284,6 @@ public class InfFilhosActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(InfFilhosActivity.this, "Ops! Algo deu errado!", Toast.LENGTH_SHORT).show();
                         Log.e("JSON", "Error Response", error);
                     }
                 }){
@@ -303,6 +315,8 @@ public class InfFilhosActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 deletarKidsDialog();
+                dialog.dismiss();
+                finish();
             }
         });
         mNao.setOnClickListener(new View.OnClickListener() {
@@ -355,13 +369,14 @@ public class InfFilhosActivity extends AppCompatActivity {
                                     String success = jsonObject.getString("success");
 
                                     if (success.equals("OK")){
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(InfFilhosActivity.this, FilhosActivity.class);
-                                        intent.putExtra("kids", kids);
-                                        startActivity(intent);
-                                    }else {
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
                                         dialog.dismiss();
+                                    }else {
+                                        snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));                                        dialog.dismiss();
                                     }
 
                                 } catch (JSONException e1) {
@@ -446,11 +461,13 @@ public class InfFilhosActivity extends AppCompatActivity {
 
                                     if (success.equals("OK")){
                                         LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
                                     }else {
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
+                                        snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));                                        dialog.dismiss();
                                     }
 
                                 } catch (JSONException e1) {
@@ -527,11 +544,13 @@ public class InfFilhosActivity extends AppCompatActivity {
 
                                     if (success.equals("OK")){
                                         LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
                                     }else {
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
+                                        snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));                                        dialog.dismiss();
                                     }
 
                                 } catch (JSONException e1) {
@@ -610,11 +629,13 @@ public class InfFilhosActivity extends AppCompatActivity {
 
                                     if (success.equals("OK")){
                                         LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
                                     }else {
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
+                                        snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));                                        dialog.dismiss();
                                     }
 
                                 } catch (JSONException e1) {
@@ -693,11 +714,13 @@ public class InfFilhosActivity extends AppCompatActivity {
 
                                     if (success.equals("OK")){
                                         LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
                                     }else {
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
+                                        snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));                                        dialog.dismiss();
                                     }
 
                                 } catch (JSONException e1) {
@@ -774,12 +797,14 @@ public class InfFilhosActivity extends AppCompatActivity {
 
                                     if (success.equals("OK")){
                                         LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
 
                                     }else {
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
-                                        dialog.dismiss();
+                                        snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));                                        dialog.dismiss();
                                     }
 
                                 } catch (JSONException e1) {
@@ -856,10 +881,13 @@ public class InfFilhosActivity extends AppCompatActivity {
 
                                     if (success.equals("OK")){
                                         LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
                                     }else {
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));
                                         dialog.dismiss();
                                     }
 
@@ -937,10 +965,13 @@ public class InfFilhosActivity extends AppCompatActivity {
 
                                     if (success.equals("OK")){
                                         LocalBroadcastManager.getInstance(InfFilhosActivity.this).sendBroadcast(new Intent("data_changed"));
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
                                     }else {
-                                        Toast.makeText(InfFilhosActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
+                                        snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                        snackbar.show();
+                                        View view = snackbar.getView();
+                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                        tv.setText(jsonObject.getString("message"));
                                         dialog.dismiss();
                                     }
 
@@ -1033,7 +1064,11 @@ public class InfFilhosActivity extends AppCompatActivity {
                                     //Glide.with(InfFilhosActivity.this).load(strImage).apply(cropOptions).into(imgInfKids);
                                 }
                             }else {
-                                Toast.makeText(InfFilhosActivity.this,json.getString("message"),Toast.LENGTH_LONG).show();
+                                snackbar = showSnackbar(coordinatorLayoutinfF, Snackbar.LENGTH_LONG, InfFilhosActivity.this);
+                                snackbar.show();
+                                View view = snackbar.getView();
+                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
+                                tv.setText(json.getString("message"));
                             }
                         }catch ( JSONException e ) {
                             Log.e("JSON", "Error parsing JSON", e);
@@ -1081,6 +1116,34 @@ public class InfFilhosActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         getUserDetail();
+    }
+
+    private static Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration, Context context) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
+        // 15 is margin from all the sides for snackbar
+        int marginFromSides = 15;
+
+        float height = 100;
+
+        //inflate view
+        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
+
+        // White background
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+        // for rounded edges
+//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
+
+        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
+        parentParams.height = (int) height;
+        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
+        snackBarView.setLayoutParams(parentParams);
+
+        snackBarView.addView(snackView, 0);
+        return snackbar;
     }
 }
 

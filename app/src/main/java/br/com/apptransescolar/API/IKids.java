@@ -3,7 +3,6 @@ package br.com.apptransescolar.API;
 import java.util.List;
 
 import br.com.apptransescolar.Classes.Kids;
-import br.com.apptransescolar.Classes.Tios;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -23,7 +22,7 @@ public interface IKids {
             @Query("key") String keyword
     );
 
-    @GET("getCrianca.php")
+    @GET("getCriancas.php")
     Call<List<Kids>> getKids(
             @Query("item_type") String item_type,
             @Query("key") String keyword,
